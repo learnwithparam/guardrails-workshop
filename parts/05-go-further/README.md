@@ -4,18 +4,26 @@
 
 ## The problem
 
-Every guard so far reads text and makes a judgement, and a patient attacker adapts to judgements. The strongest
-promise comes from the shape of the data flow: fix the plan from the trusted job before any email is read, and
-never let a value that came from the email become a payee or an address. This optional part also swaps in a
-guard framework, generates new attacks, runs a public benchmark, shadows a new guard before switching it on,
-prices each layer, and attacks a peer's desk.
+Every guard so far reads text and makes a judgement. A patient attacker learns how a judgement works and changes
+the attack. The strongest promise comes from the shape of the data flow:
+
+- fix the plan from the trusted job before any email is read;
+- never let a value from the email become a payee or an address.
+
+For example, in attack `A-13` the account number `71820456` appears only in the email. In this part, that value
+is tagged "untrusted". The policy then denies it as a payee, even with the detector switched off.
+
+This part is optional. You also swap in a guard framework and make new attacks with a tool. You run a public
+benchmark and try a new guard in shadow mode first. In shadow mode a guard logs what it would block, and blocks
+nothing. Then you price each layer and attack a peer's desk.
 
 ## Why it matters
 
-Anthropic, reporting its own progress on browser agents, wrote that a 1% attack success rate, while a
-significant improvement, still represents meaningful risk
+Anthropic wrote about its own progress on browser agents. It said a 1% attack success rate was a big step
+forward. It also said that 1% is still a real risk
 ([Anthropic, Mitigating the risk of prompt injections in browser use](https://www.anthropic.com/research/prompt-injection-defenses)).
-Detection lowers the rate. Data flow is how you make a promise about the payee field that does not depend on it.
+Detection lowers the rate. Data flow lets you make a promise about the payee field that does not depend on the
+rate.
 
 ```mermaid
 flowchart LR

@@ -1,64 +1,76 @@
-// Read the learner's files without throwing: a missing or broken file is a failed rule, not a crashed check.
+// Read the learner's files without throwing: a missing or broken file is a failed rule,
+// not a crashed check.
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT } from "../../scripts/structure";
 
-export const has = (dir: string, rel: string) => existsSync(join(dir, rel));
+export const has = (folder: string, relativePath: string) => existsSync(join(folder, relativePath));
 
-export function text(dir: string, rel: string): string {
-  const p = join(dir, rel);
-  return existsSync(p) ? readFileSync(p, "utf8") : "";
+export function text(folder: string, relativePath: string): string {
+  const path = join(folder, relativePath);
+  if (!existsSync(path)) return "";
+  return readFileSync(path, "utf8");
 }
 
-export function json<T = any>(dir: string, rel: string): T | null {
+export function json<Shape = unknown>(folder: string, relativePath: string): Shape | null {
   try {
-    return JSON.parse(text(dir, rel)) as T;
+    return JSON.parse(text(folder, relativePath)) as Shape;
   } catch {
     return null;
   }
+}
+
+export function parseJsonLines<Row>(content: string): Row[] {
+  const lines = content.split("\n");
+  const filledLines = lines.filter((line) => line.trim());
+  return filledLines.map((line) => JSON.parse(line) as Row);
 }
 
 /** Rows of a .jsonl file, or null if any line is not valid JSON. */
-export function jsonlRows(dir: string, rel: string): any[] | null {
-  const t = text(dir, rel);
-  if (!t.trim()) return null;
+export function jsonlRows<Row>(folder: string, relativePath: string): Row[] | null {
+  const content = text(folder, relativePath);
+  if (!content.trim()) return null;
   try {
-    return t
-      .split("\n")
-      .filter((l) => l.trim())
-      .map((l) => JSON.parse(l));
+    return parseJsonLines<Row>(content);
   } catch {
     return null;
   }
 }
 
-export const sha256 = (path: string) =>
-  existsSync(path) ? createHash("sha256").update(readFileSync(path)).digest("hex") : "";
+export function sha256(path: string): string {
+  if (!existsSync(path)) return "";
+  const hash = createHash("sha256");
+  hash.update(readFileSync(path));
+  return hash.digest("hex");
+}
 
-/** Find the set file a score was made from: the path it names, the same name in this folder, or the world's copy. */
-export function findSet(dir: string, named: string | null, hash: string | null): string | null {
+/**
+ * Find the set file a score was made from: the path it names, the same name in this folder,
+ * or the world's copy.
+ */
+export function findSet(folder: string, named: string | null, hash: string | null): string | null {
   if (!named) return null;
-  const base = named.split("/").pop()!;
-  for (const p of [
+  const fileName = named.split("/").at(-1) ?? named;
+  const candidates = [
     join(ROOT, named),
-    join(dir, named),
-    join(dir, "sets", base),
-    join(ROOT, "world", "sets", base),
-  ])
-    if (existsSync(p) && (!hash || sha256(p) === hash)) return p;
-  return null;
+    join(folder, named),
+    join(folder, "sets", fileName),
+    join(ROOT, "world", "sets", fileName),
+  ];
+  const matchesHash = (path: string) => !hash || sha256(path) === hash;
+  return candidates.find((path) => existsSync(path) && matchesHash(path)) ?? null;
 }
 
-/** Lines of a markdown file that look like "Key: value". */
-export function fields(md: string): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const l of md.split("\n")) {
-    const m = l.match(/^\s*[-*]?\s*([A-Za-z][A-Za-z ]+?)\s*:\s*(.+?)\s*$/);
-    if (m) out[m[1].toLowerCase()] = m[2];
+/** Lines of a markdown file that look like "Key: value", keyed by the lower-case key. */
+export function fields(markdown: string): Record<string, string> {
+  const found: Record<string, string> = {};
+  for (const line of markdown.split("\n")) {
+    const match = line.match(/^\s*[-*]?\s*([A-Za-z][A-Za-z ]+?)\s*:\s*(.+?)\s*$/);
+    if (match) found[match[1].toLowerCase()] = match[2];
   }
-  return out;
+  return found;
 }
 
-export const world = (rel: string) => join(ROOT, "world", rel);
+export const world = (relativePath: string) => join(ROOT, "world", relativePath);

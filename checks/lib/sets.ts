@@ -1,6 +1,9 @@
 // The rules every attack and benign set must keep. Shared by the steps that write and score sets.
 import { readFileSync } from "node:fs";
-import { world } from "./files";
+import { parseJsonLines, world } from "./files";
+import type { ExpectedChange, SetRow } from "./world-json";
+
+export type { SetRow };
 
 export const CATEGORIES = [
   "direct-override",
@@ -33,60 +36,97 @@ export const EXPECT = [
   "held",
 ];
 
-export const norm = (s: string) =>
-  String(s ?? "")
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .trim();
+export type SetName = "attacks" | "benign" | "heldout";
 
-export function shipped(name: "attacks" | "benign" | "heldout"): any[] {
-  return readFileSync(world(`sets/${name}.jsonl`), "utf8")
-    .split("\n")
-    .filter((l) => l.trim())
-    .map((l) => JSON.parse(l));
+/** Lower case, with every run of spaces made one space.
+ * Two emails that differ only in case or spacing are the same email. */
+export function normalised(text: string): string {
+  const lowerCase = String(text ?? "").toLowerCase();
+  return lowerCase.replace(/\s+/g, " ").trim();
+}
+
+export function shipped(name: SetName): SetRow[] {
+  const content = readFileSync(world(`sets/${name}.jsonl`), "utf8");
+  return parseJsonLines<SetRow>(content);
 }
 
 /** Rows whose text is not in the shipped set: the learner's own. */
-export function own(rows: any[], name: "attacks" | "benign"): any[] {
-  const known = new Set(shipped(name).map((r) => norm(r.raw)));
-  return rows.filter((r) => !known.has(norm(r.raw)));
+export function own(rows: SetRow[], name: "attacks" | "benign"): SetRow[] {
+  const shippedTexts = new Set(shipped(name).map((row) => normalised(row.raw)));
+  return rows.filter((row) => !shippedTexts.has(normalised(row.raw)));
 }
 
-export const validAttack = (r: any) =>
-  r &&
-  typeof r.id === "string" &&
-  CATEGORIES.includes(r.category) &&
-  typeof r.raw === "string" &&
-  r.raw.trim().length > 20 &&
-  r.expect &&
-  FORBIDDEN.includes(r.expect.forbidden);
+const hasEmailText = (row: SetRow) =>
+  typeof row.id === "string" && typeof row.raw === "string" && row.raw.trim().length > 20;
 
-export const validBenign = (r: any) =>
-  r &&
-  typeof r.id === "string" &&
-  typeof r.raw === "string" &&
-  r.raw.trim().length > 20 &&
-  typeof r.hard_negative === "boolean" &&
-  Array.isArray(r.expect) &&
-  r.expect.every((e: any) => e && EXPECT.includes(e.kind));
+export function forbiddenChange(row: SetRow): string | undefined {
+  if (!row.expect || Array.isArray(row.expect)) return undefined;
+  return row.expect.forbidden;
+}
 
-const HIDING =
-  /display\s*:\s*none|visibility\s*:\s*hidden|opacity\s*:\s*0|font-size\s*:\s*[01](px)?\b|color\s*:\s*(#fff\b|#ffffff\b|white\b)|\shidden[\s>]|\balt=|[​-‏⁠-⁤﻿]|[\u{e0000}-\u{e007f}]/iu;
-export const hidesText = (r: any) =>
-  (/<[a-z]/i.test(r.raw ?? "") && HIDING.test(r.raw)) ||
-  /[​-‏⁠-⁤﻿]|[\u{e0000}-\u{e007f}]/u.test(r.raw ?? "");
+export function validAttack(row: SetRow): boolean {
+  if (!row || !hasEmailText(row)) return false;
+  const knownCategory = CATEGORIES.includes(row.category as string);
+  const knownChange = FORBIDDEN.includes(forbiddenChange(row) as string);
+  return knownCategory && Boolean(row.expect) && knownChange;
+}
+
+export function expectedChanges(row: SetRow): ExpectedChange[] {
+  return Array.isArray(row.expect) ? row.expect : [];
+}
+
+export function validBenign(row: SetRow): boolean {
+  if (!row || !hasEmailText(row)) return false;
+  if (typeof row.hard_negative !== "boolean" || !Array.isArray(row.expect)) return false;
+  return row.expect.every((change) => change && EXPECT.includes(change.kind));
+}
+
+// Ways an HTML email hides text from a person while a model still reads it.
+const HIDING_STYLES = [
+  /display\s*:\s*none/,
+  /visibility\s*:\s*hidden/,
+  /opacity\s*:\s*0/,
+  /font-size\s*:\s*[01](px)?\b/,
+  /color\s*:\s*(#fff\b|#ffffff\b|white\b)/,
+  /\shidden[\s>]/,
+  /\balt=/,
+];
+// Zero-width spaces and joiners, and the invisible "tag" characters.
+const INVISIBLE_CHARACTERS = /[​-‏⁠-⁤﻿]|[\u{e0000}-\u{e007f}]/u;
+
+function htmlHidesText(raw: string): boolean {
+  if (!/<[a-z]/i.test(raw)) return false;
+  const lowerCase = raw.toLowerCase();
+  const hidesWithStyle = HIDING_STYLES.some((style) => style.test(lowerCase));
+  return hidesWithStyle || INVISIBLE_CHARACTERS.test(raw);
+}
+
+export function hidesText(row: SetRow): boolean {
+  const raw = row.raw ?? "";
+  return htmlHidesText(raw) || INVISIBLE_CHARACTERS.test(raw);
+}
+
+type SeedRecord = { id: string; code?: string };
+
+function seedIds(fileName: string, key: "id" | "code" = "id"): Set<string> {
+  const records = JSON.parse(readFileSync(world(`seed/${fileName}.json`), "utf8")) as SeedRecord[];
+  return new Set(records.map((record) => record[key] as string));
+}
 
 /** Do the ids an expectation names exist in the world's records? */
-export function recordsExist(r: any): boolean {
-  const seed = (n: string) => JSON.parse(readFileSync(world(`seed/${n}.json`), "utf8"));
-  const ids = {
-    order: new Set(seed("orders").map((o: any) => o.id)),
-    delivery: new Set(seed("deliveries").map((d: any) => d.id)),
-    invoice: new Set(seed("invoices").map((i: any) => i.id)),
-    supplier: new Set(seed("suppliers").map((s: any) => s.id)),
-    site: new Set(seed("sites").map((s: any) => s.code)),
-  } as Record<string, Set<string>>;
-  return (r.expect ?? []).every((e: any) =>
-    Object.entries(ids).every(([k, set]) => e[k] === undefined || set.has(e[k])),
+export function recordsExist(row: SetRow): boolean {
+  const knownIds: Record<string, Set<string>> = {
+    order: seedIds("orders"),
+    delivery: seedIds("deliveries"),
+    invoice: seedIds("invoices"),
+    supplier: seedIds("suppliers"),
+    site: seedIds("sites", "code"),
+  };
+  const changes = (row.expect ?? []) as ExpectedChange[];
+  return changes.every((change) =>
+    Object.entries(knownIds).every(([recordKind, ids]) => {
+      const named = change[recordKind as keyof ExpectedChange];
+      return named === undefined || ids.has(named);
+    }),
   );
 }

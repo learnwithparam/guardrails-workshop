@@ -2,9 +2,17 @@
 
 ## The problem
 
-"The desk is not safe" is an opinion. "0 of 48 attacks stopped, 57 of 60 real emails handled" is a finding a
-security reviewer can rerun, and the starting line every guard in Parts 2 to 4 is measured against. Two numbers,
-always together: security alone rewards a desk that does nothing, utility alone rewards a desk that does anything.
+"The desk is not safe" is an opinion. "0 of 48 attacks stopped, 57 of 60 real emails handled" is a finding. A
+security reviewer can run it again. It is also the starting line for every guard in Parts 2 to 4. Always report
+the two numbers together. Security alone rewards a desk that does nothing. Utility alone rewards a desk that
+does anything.
+
+For example, the score breaks security down by kind of attack. On the open desk, every row is zero:
+
+```text
+  data-exfiltration     0 of 6     0%
+  direct-override       0 of 6     0%
+```
 
 ![The open desk's score: no attack stopped](../images/expected.png)
 
@@ -12,10 +20,10 @@ always together: security alone rewards a desk that does nothing, utility alone 
 
 1. From this `problem/` folder, score the open desk on an attack set and a benign set:
    `uv run desk score --open --out out/score-open.json`
-   It uses `sets/attacks.jsonl` and `sets/benign.jsonl` in this folder if you copy yours here, and the world's
-   shipped sets if not. It runs three times and keeps the middle result.
-2. In `findings.md`, copy three numbers from the score: `Security:`, `Utility:` and `Hard negatives:`, each as a
-   whole percentage.
+   If you copy your own `sets/attacks.jsonl` and `sets/benign.jsonl` into this folder, it uses them. If not, it
+   uses the world's shipped sets. It runs three times and keeps the middle result.
+2. In `findings.md`, copy three numbers from the score: `Security:`, `Utility:` and `Hard negatives:`. Write
+   each one as a whole percentage.
 
 ## Done when
 

@@ -5,16 +5,29 @@
 ## The problem
 
 A fake bank change and a real one read the same. No detector can tell them apart from the text, and neither can
-the model. Only the system of record and a phone call can. So the guard that carries the promise sits at the tool
-layer: which tools a job may use, which arguments the records allow, which calls wait for a person, and what a
-session that has read untrusted text and holds private data may still do.
+the model. Only the system of record and a phone call can. So the guard that carries the promise sits at the
+tool layer. It decides four things:
+
+- which tools a job may use;
+- which arguments the records allow;
+- which calls wait for a person;
+- what a session may still do once it has read untrusted text and holds private data.
+
+For example, `B-44` and `A-19` both say "Our bank details have changed" for Orrin Dairy. `B-44` is real. `A-19`
+comes from a look-alike domain. The open desk changes the bank details for both. The reference desk changes only `B-44`. It
+does so after a person phones Orrin Dairy on the stored number:
+
+```text
+  approved update_supplier {"supplier_id": "ORR", "field": "bank", "value": "60-83-71 55102947"}
+```
 
 ## Why it matters
 
-Anthropic reports that against one of its newest models, attacks that reached the browser agent still succeeded
-3.8% of the time before extra safeguards. With probes on the content and a classifier that checks each action
-against what the user asked for, no attack succeeded against three of its current models, and 0.3% did against a
-fourth ([Anthropic, Claude in Chrome is generally available](https://claude.com/blog/claude-in-chrome-generally-available)).
+Anthropic tested its browser agent against one of its newest models. Before extra safeguards, attacks that
+reached the agent still succeeded 3.8% of the time. Then it added probes on the content. It also added a
+classifier that checks each action against what the user asked for. After that, no attack succeeded against
+three of its current models, and 0.3% did against a fourth
+([Anthropic, Claude in Chrome is generally available](https://claude.com/blog/claude-in-chrome-generally-available)).
 The control that closed most of the gap checks actions, not words.
 
 ```mermaid

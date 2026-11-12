@@ -1,7 +1,8 @@
 # When something goes wrong
 
-Every message a command or a check prints on failure is in one of these tables. Search this page for the words
-you see.
+When a command or a check fails, it prints a message. Every such message is in one of the tables below. Search
+this page for the words you see. For example, search for `Address already in use` when the desk page does not
+start.
 
 ## Setup and commands
 

@@ -1,6 +1,6 @@
 // Reads the repo layout once. Every other script asks this file where things are.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 
 export const ROOT = join(import.meta.dir, "..");
 
@@ -12,51 +12,73 @@ export type Step = {
 };
 export type Part = { name: string; dir: string; steps: Step[] };
 
-const dirs = (p: string) =>
-  existsSync(p)
-    ? readdirSync(p)
-        .filter((d) => statSync(join(p, d)).isDirectory())
-        .sort()
-    : [];
-
-// Folders keep an order prefix for sorting only. Learners never type it.
-export const bareName = (folder: string) => folder.replace(/^\d+-/, "");
+type StepSettings = { minutes?: number; screen?: boolean; solution?: boolean };
 
 // The orientation's step lives in 00-orientation/ and counts as a part named "orientation".
 const ORIENTATION = join(ROOT, "00-orientation");
 
-export function parts(): Part[] {
-  const root = join(ROOT, "parts");
-  const folders = dirs(root).map((p) => join(root, p));
-  const stepDirs = (dir: string) =>
-    dirs(dir).filter((s) => existsSync(join(dir, s, "step.toml")) || dir !== ORIENTATION);
-  if (dirs(ORIENTATION).some((s) => existsSync(join(ORIENTATION, s, "step.toml"))))
-    folders.unshift(ORIENTATION);
-  return folders.map((dir) => {
-    const p = dir === ORIENTATION ? "orientation" : dir.split("/").pop()!;
-    const steps = stepDirs(dir).map((s) => {
-      const sdir = join(dir, s);
-      const metaPath = join(sdir, "step.toml");
-      const raw = existsSync(metaPath)
-        ? (Bun.TOML.parse(readFileSync(metaPath, "utf8")) as any)
-        : {};
-      return {
-        name: bareName(s),
-        dir: sdir,
-        part: bareName(p),
-        meta: {
-          minutes: Number(raw.minutes ?? 0),
-          screen: Boolean(raw.screen),
-          solution: Boolean(raw.solution),
-        },
-      };
-    });
-    return { name: bareName(p), dir, steps };
-  });
+function subfolders(folder: string): string[] {
+  if (!existsSync(folder)) return [];
+  const entries = readdirSync(folder);
+  const folders = entries.filter((entry) => statSync(join(folder, entry)).isDirectory());
+  return folders.sort();
 }
 
-export const allSteps = () => parts().flatMap((p) => p.steps);
+// Folders keep an order prefix for sorting only. Learners never type it.
+export const bareName = (folder: string) => folder.replace(/^\d+-/, "");
+
+const hasSettings = (folder: string) => existsSync(join(folder, "step.toml"));
+
+function readSettings(stepFolder: string): StepSettings {
+  const settingsPath = join(stepFolder, "step.toml");
+  if (!hasSettings(stepFolder)) return {};
+  return Bun.TOML.parse(readFileSync(settingsPath, "utf8")) as StepSettings;
+}
+
+function loadStep(partFolder: string, partName: string, stepName: string): Step {
+  const stepFolder = join(partFolder, stepName);
+  const settings = readSettings(stepFolder);
+  return {
+    name: bareName(stepName),
+    dir: stepFolder,
+    part: bareName(partName),
+    meta: {
+      minutes: Number(settings.minutes ?? 0),
+      screen: Boolean(settings.screen),
+      solution: Boolean(settings.solution),
+    },
+  };
+}
+
+// In the orientation only folders with a step.toml are steps; it also holds images/ and pages.
+function stepFolderNames(partFolder: string): string[] {
+  const names = subfolders(partFolder);
+  if (partFolder !== ORIENTATION) return names;
+  return names.filter((name) => hasSettings(join(partFolder, name)));
+}
+
+function partFolders(): string[] {
+  const partsFolder = join(ROOT, "parts");
+  const folders = subfolders(partsFolder).map((name) => join(partsFolder, name));
+  const orientationHasSteps = stepFolderNames(ORIENTATION).length > 0;
+  if (orientationHasSteps) folders.unshift(ORIENTATION);
+  return folders;
+}
+
+function loadPart(partFolder: string): Part {
+  const partName = partFolder === ORIENTATION ? "orientation" : basename(partFolder);
+  const steps = stepFolderNames(partFolder).map((stepName) =>
+    loadStep(partFolder, partName, stepName),
+  );
+  return { name: bareName(partName), dir: partFolder, steps };
+}
+
+export function parts(): Part[] {
+  return partFolders().map(loadPart);
+}
+
+export const allSteps = () => parts().flatMap((part) => part.steps);
 
 export function findStep(name: string): Step | undefined {
-  return allSteps().find((s) => s.name === name);
+  return allSteps().find((step) => step.name === name);
 }

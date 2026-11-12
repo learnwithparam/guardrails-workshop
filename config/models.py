@@ -7,8 +7,8 @@ Pick the provider with LLM_PROVIDER in .env:
   openai      needs OPENAI_API_KEY
   ollama      a local model; set OLLAMA_MODEL (and OLLAMA_API_BASE if it is not on this machine)
 
-Ids were read from each provider's model list on the build date in briefs/MODELS.md. Recheck them when you
-change provider: a retired id fails `uv run models` with a clear message.
+Ids were read from each provider's model list on the build date in briefs/MODELS.md.
+Recheck them when you change provider: a retired id fails `uv run models` with a clear message.
 """
 
 from __future__ import annotations
@@ -45,22 +45,31 @@ PROVIDERS = ("replay", "anthropic", "openrouter", "openai", "ollama")
 
 
 def provider() -> str:
-    p = os.environ.get("LLM_PROVIDER", "replay").strip().lower() or "replay"
-    if p not in PROVIDERS:
-        raise ValueError(f"LLM_PROVIDER is '{p}'. Use one of: {', '.join(PROVIDERS)}.")
-    return p
+    """The provider named by LLM_PROVIDER in .env. An empty value means replay."""
+    chosen_provider = os.environ.get("LLM_PROVIDER", "replay").strip().lower() or "replay"
+    if chosen_provider not in PROVIDERS:
+        raise ValueError(
+            f"LLM_PROVIDER is '{chosen_provider}'. Use one of: {', '.join(PROVIDERS)}."
+        )
+    return chosen_provider
 
 
 def model_for(role: str) -> str:
     """The LiteLLM id for a role on the chosen provider. Replay has no id."""
     if role not in ROLES:
         raise ValueError(f"unknown role '{role}'. Roles: {', '.join(ROLES)}")
-    p = provider()
-    if p == "replay":
+    chosen_provider = provider()
+    if chosen_provider == "replay":
         return "replay"
-    if p == "ollama":
-        local = os.environ.get(f"OLLAMA_MODEL_{role.upper()}") or os.environ.get("OLLAMA_MODEL")
-        if not local:
-            raise ValueError("LLM_PROVIDER is ollama but OLLAMA_MODEL is not set in .env.")
-        return f"ollama/{local}"
-    return IDS[p][role]
+    if chosen_provider == "ollama":
+        return f"ollama/{local_model_for(role)}"
+    return IDS[chosen_provider][role]
+
+
+def local_model_for(role: str) -> str:
+    """The Ollama model for a role. A role-specific setting wins over the shared OLLAMA_MODEL."""
+    role_setting = f"OLLAMA_MODEL_{role.upper()}"
+    local_model = os.environ.get(role_setting) or os.environ.get("OLLAMA_MODEL")
+    if not local_model:
+        raise ValueError("LLM_PROVIDER is ollama but OLLAMA_MODEL is not set in .env.")
+    return local_model

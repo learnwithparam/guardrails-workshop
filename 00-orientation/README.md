@@ -1,7 +1,8 @@
 # Start here: meet the desk
 
-You will set up the repo, meet Marrowfield Kitchens and its purchasing desk, run the finished guarded desk, and
-write down the goal in its own numbers. It takes about 15 minutes and needs no model key.
+In this first step you set up the repo and meet Marrowfield Kitchens and its purchasing desk. You run the
+finished, guarded desk. Then you write down the goal in that desk's own numbers. It takes about 15 minutes, and
+you need no model key.
 
 ![The finished desk holding a planted email](images/first-run.png)
 
@@ -19,8 +20,10 @@ flowchart LR
 ## What you need
 
 - [uv](https://docs.astral.sh/uv/) for Python and [Bun](https://bun.sh) for the checks.
-- No model key. The course runs in replay mode by default: recorded answers, then a scripted stand-in model.
-  To use a live model later, copy `.env.example` to `.env`, set `LLM_PROVIDER` and one key, and run `uv run models`.
+- No model key. The course runs in replay mode by default. In replay mode the desk uses recorded answers. When
+  there is no recording, a scripted stand-in plays the model.
+- Later, you can use a live model. Copy `.env.example` to `.env`, set `LLM_PROVIDER` and one key, and run
+  `uv run models`.
 
 ## Walkthrough
 
@@ -50,6 +53,9 @@ uv run desk inbox
 
 Expect: twelve emails, `MK-01` to `MK-12`. Two of them are attacks. Your step asks you to find which.
 
+For example, `uv run desk show MK-07` prints one email and the records it touches. It is a real short delivery
+from Tidewell Fish Co: 4 kg of hake fillet, worth £65.60.
+
 ```bash
 uv run desk serve --reference
 ```
@@ -69,5 +75,5 @@ bun run verify meet-the-desk
 
 Expect: `FAIL` lines for `goal.md` until you fill it in, then `Done. All 5 rules pass.`
 
-Your step is in [01-meet-the-desk/problem/README.md](01-meet-the-desk/problem/README.md). When a command prints
-something you do not expect, look it up in [troubleshooting.md](troubleshooting.md).
+Your step is in [01-meet-the-desk/problem/README.md](01-meet-the-desk/problem/README.md). Does a command print
+something you do not expect? Look it up in [troubleshooting.md](troubleshooting.md).
