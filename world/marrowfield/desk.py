@@ -264,7 +264,7 @@ def handle(raw: str, email_id: str, guards, con: sqlite3.Connection, log: RunLog
                 log.write("decisions.jsonl", {"email_id": email_id, "layer": "person", "rule": "approval",
                                               "decision": "approve" if ok else "deny", "reason": note, "tool": name,
                                               "latency_ms": 0})
-                verdict = "allow" if ok else "deny"
+                verdict = "approved" if ok else "deny"
                 if not ok:
                     v = {**v, "reason": f"a person said no: {note}"}
             result: Any
@@ -289,9 +289,9 @@ def handle(raw: str, email_id: str, guards, con: sqlite3.Connection, log: RunLog
                 result = tools.run(ctx, name, args)
                 if name == "cancel_order" and isinstance(result, dict) and result.get("ok"):
                     cancels += 1
-            if tools.TOOLS.get(name) and tools.TOOLS[name].effect == tools.PRIVATE and verdict == "allow":
+            if tools.TOOLS.get(name) and tools.TOOLS[name].effect == tools.PRIVATE and verdict in ("allow", "approved"):
                 session["holds_private"] = True
-            executed = verdict == "allow" or (verdict == "rewrite")
+            executed = verdict in ("allow", "approved")
             log.write("tool_calls.jsonl", {"email_id": email_id, "turn": turn, "tool": name, "args": args,
                                            "verdict": verdict, "rule": v.get("rule", "none"), "executed": executed,
                                            "ok": isinstance(result, (dict, list)) and not (isinstance(result, dict) and "error" in result)})

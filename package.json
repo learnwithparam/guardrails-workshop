@@ -1,10 +1,14 @@
 {
-  "name": "workshop-template",
+  "name": "guardrails-workshop",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.4.4",
   "scripts": {
     "check": "bun scripts/check.ts && bun scripts/verify.ts --all",
-    "verify": "bun scripts/verify.ts"
+    "verify": "bun scripts/verify.ts",
+    "shots": "bun images/shots.ts"
+  },
+  "devDependencies": {
+    "playwright": "1.65.0"
   }
 }

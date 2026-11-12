@@ -65,6 +65,7 @@ def make_handler(guards, approve: str):
                 return {}
 
         def do_GET(self):
+            self.path = self.path.split("?", 1)[0]
             if self.path in ("/", "/index.html"):
                 return self._send(200, PAGE.read_bytes(), "text/html; charset=utf-8")
             if self.path == "/api/state":

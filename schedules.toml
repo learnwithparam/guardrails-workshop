@@ -1,5 +1,34 @@
+# Parts mapped onto formats. Times live only in this file; course content uses parts and minutes.
+# Part minutes (core): orientation 15, break-the-desk 60, guard-what-comes-in 65, guard-what-the-desk-does 55,
+# guard-what-goes-out 60. go-further (optional) 180.
+# bun run check fails if a format leaves a part out or a session holds fewer minutes than its parts need.
+
 [one-day]
-sessions = [{ parts = ["meet-the-world"], minutes = 60 }]
+about = "One workshop day: the core in four blocks with breaks, go-further taken home."
+sessions = [
+  { label = "Block 1", parts = ["orientation", "break-the-desk"], minutes = 75, break_after = 15 },
+  { label = "Block 2", parts = ["guard-what-comes-in"], minutes = 65, break_after = 15 },
+  { label = "Block 3", parts = ["guard-what-the-desk-does"], minutes = 55, break_after = 10 },
+  { label = "Block 4", parts = ["guard-what-goes-out"], minutes = 60 },
+  { label = "Take home", parts = ["go-further"], minutes = 180 },
+]
 
 [four-evenings]
-sessions = [{ parts = ["meet-the-world"], minutes = 60 }]
+about = "Four evening sessions of about 65 minutes; go-further as optional homework."
+sessions = [
+  { label = "Evening 1", parts = ["orientation", "break-the-desk"], minutes = 75 },
+  { label = "Evening 2", parts = ["guard-what-comes-in"], minutes = 65 },
+  { label = "Evening 3", parts = ["guard-what-the-desk-does"], minutes = 55 },
+  { label = "Evening 4", parts = ["guard-what-goes-out"], minutes = 60 },
+  { label = "Homework", parts = ["go-further"], minutes = 180 },
+]
+
+[four-weeks]
+about = "A graded cohort: one live session a week, go-further steps as weekly homework (pick by persona)."
+sessions = [
+  { label = "Week 1 live", parts = ["orientation", "break-the-desk"], minutes = 75 },
+  { label = "Week 2 live", parts = ["guard-what-comes-in"], minutes = 65 },
+  { label = "Week 3 live", parts = ["guard-what-the-desk-does"], minutes = 55 },
+  { label = "Week 4 live", parts = ["guard-what-goes-out"], minutes = 60 },
+  { label = "Homework across weeks 1 to 4", parts = ["go-further"], minutes = 180 },
+]
