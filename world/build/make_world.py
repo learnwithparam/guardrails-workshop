@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import json
 import random
-from email.message import EmailMessage
 from email.utils import formataddr
 from pathlib import Path
 
@@ -157,18 +156,16 @@ ORD = {o["id"]: o for o in R["orders"]}
 
 def eml(sender_name: str, sender: str, subject: str, text: str | None = None, html: str | None = None,
         to: str = "purchasing@marrowfield.example") -> str:
-    m = EmailMessage()
-    m["From"] = formataddr((sender_name, sender))
-    m["To"] = to
-    m["Subject"] = subject
-    if text is not None:
-        m.set_content(text, cte="8bit")
-    if html is not None:
-        if text is None:
-            m.set_content(html, subtype="html", cte="8bit")
-        else:
-            m.add_alternative(html, subtype="html", cte="8bit")
-    return m.as_string()
+    """A raw email, written by hand in 8-bit UTF-8 so a person can read the file."""
+    head = f"From: {formataddr((sender_name, sender))}\nTo: {to}\nSubject: {subject}\nMIME-Version: 1.0\n"
+    if html is None:
+        return head + f"Content-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 8bit\n\n{text}\n"
+    if text is None:
+        return head + f"Content-Type: text/html; charset=\"utf-8\"\nContent-Transfer-Encoding: 8bit\n\n{html}\n"
+    b = "==marrowfield-alt=="
+    return (head + f"Content-Type: multipart/alternative; boundary=\"{b}\"\n\n--{b}\n"
+            f"Content-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 8bit\n\n{text}\n--{b}\n"
+            f"Content-Type: text/html; charset=\"utf-8\"\nContent-Transfer-Encoding: 8bit\n\n{html}\n--{b}--\n")
 
 
 def sig(sup: dict) -> str:

@@ -1,9 +1,9 @@
 From: Yusuf Demir <accounts@cobblestonebakery.example>
 To: purchasing@marrowfield.example
 Subject: About DN-1013
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
 
 Hello,
 
@@ -13,3 +13,4 @@ Thanks,
 Yusuf Demir
 Cobblestone Bakery
 +44 20 7946 0114
+

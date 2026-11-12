@@ -1,9 +1,9 @@
 From: Morwenna Pellow <accounts@pellowbutchers.example>
 To: purchasing@marrowfield.example
 Subject: Correction: PO-CS-PEL
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
 
 Hi,
 
@@ -13,3 +13,4 @@ Thanks,
 Morwenna Pellow
 Pellow and Daughters
 +44 20 7946 0111
+

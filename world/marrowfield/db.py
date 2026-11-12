@@ -74,6 +74,9 @@ def reset() -> Path:
     runs = paths.state_dir() / "runs"
     if runs.exists():
         shutil.rmtree(runs)
+    for f in list(paths.state_dir().glob("scoreboard-*.json")) + [paths.state_dir() / "seed.db"]:
+        if f.exists():
+            f.unlink()
     return p
 
 

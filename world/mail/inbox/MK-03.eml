@@ -1,9 +1,9 @@
 From: Dana Whitlock <accounts@greyhavenproduce.example>
 To: purchasing@marrowfield.example
 Subject: Stock on PO-WL-GRE
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
 
 Morning,
 
@@ -13,3 +13,4 @@ Thanks,
 Dana Whitlock
 Greyhaven Produce
 +44 20 7946 0110
+

@@ -14,6 +14,14 @@ def _pct(x: float) -> str:
     return f"{round(x * 100)}%"
 
 
+def rel(p: Path | None) -> str | None:
+    """A path as the repo sees it, so a file written here means the same on any machine."""
+    if p is None:
+        return None
+    a = Path(p).resolve()
+    return str(a.relative_to(paths.ROOT)) if a.is_relative_to(paths.ROOT) else str(p)
+
+
 def _write(path: str | None, data: dict) -> None:
     if not path:
         return
@@ -126,13 +134,17 @@ def cmd_handle(a) -> int:
     for f in r["forbidden"]:
         print(f"  FORBIDDEN: {f['kind']}")
     print(f"Held for a person: {'; '.join(r['held_reasons'])}" if r["held"] else "Not held.")
-    print(f"Run log: {log.dir}")
+    print(f"Run log: {rel(log.dir)}")
     return 0
 
 
 def cmd_run(a) -> int:
-    path = _set_path(a.set, "benign")
-    rows = sets.load(path)
+    if a.set == "inbox":
+        path = paths.MAIL / "inbox"
+        rows = [{"id": mid, "category": "inbox", "raw": raw} for mid, raw in mail.inbox()]
+    else:
+        path = _set_path(a.set, "benign")
+        rows = sets.load(path)
     guards = _guards(a)
     log = desk.new_run("run")
     results = score.run_rows(rows, guards, log, approve=a.approve)
@@ -154,11 +166,15 @@ def cmd_run(a) -> int:
             emails.append({"id": j["id"], "category": j["category"], "stopped": j["stopped"], "forbidden": j["forbidden"],
                            "held": r["held"], "changes": r["changes"]})
         st = sum(e["stopped"] for e in emails)
-        print(f"Security: {st} of {len(emails)} attacks caused no forbidden change ({_pct(st / len(emails))}).")
+        print(f"Security: {st} of {len(emails)} emails caused no forbidden change ({_pct(st / len(emails))}).")
+        for e in emails:
+            if e["forbidden"]:
+                print(f"  {e['id']}: {', '.join(e['forbidden'])}")
         summary = {"security": {"rate": round(st / len(emails), 4), "stopped": st, "n": len(emails)}}
-    _write(a.out, {"desk": getattr(guards, "name", "guards"), "set": str(path), "set_sha256": sets.sha256(path),
+    _write(a.out, {"desk": getattr(guards, "name", "guards"), "set": rel(path),
+                   "set_sha256": sets.sha256(path) if path.is_file() else None,
                    "run_id": log.run_id, **summary, "emails": emails})
-    print(f"Run log: {log.dir}")
+    print(f"Run log: {rel(log.dir)}")
     return 0
 
 
@@ -178,8 +194,18 @@ def print_score(s: dict) -> None:
 def cmd_score(a) -> int:
     att = None if a.attacks == "none" else _set_path(a.attacks, "heldout" if a.heldout else "attacks")
     ben = None if a.benign == "none" else _set_path(a.benign, "benign")
-    print(f"Scoring with attacks from {att} and benign mail from {ben}.")
-    s = score.score(_guards(a), att, ben, runs=a.runs, seed=a.seed, approve=a.approve, label="score")
+    print(f"Scoring with attacks from {rel(att)} and benign mail from {rel(ben)}.")
+    g = _guards(a)
+    if a.by_layer and att and ben:
+        rows = score.by_layer(g, att, ben, runs=1, seed=a.seed)
+        print(f"{'layers on':18} {'attacks stopped':>16} {'good work through':>18}")
+        for r in rows:
+            print(f"  {r['layer']:16} {r['security']['stopped']:>6} of {r['security']['n']:<3} {_pct(r['security']['rate']):>5}"
+                  f" {r['utility']['passed']:>7} of {r['utility']['n']:<3} {_pct(r['utility']['rate']):>5}")
+    s = score.score(g, att, ben, runs=a.runs, seed=a.seed, approve=a.approve, label="score")
+    s["attacks_file"], s["benign_file"] = rel(att), rel(ben)
+    if a.by_layer:
+        s["by_layer"] = rows if att and ben else []
     print_score(s)
     _write(a.out, s)
     return 0
@@ -218,13 +244,14 @@ def desk_main(argv: list[str] | None = None) -> int:
     p.add_argument("email_id")
     _desk_args(p)
     p = sub.add_parser("run", help="run the desk on a whole set and write each email's end state")
-    p.add_argument("--set", help="benign, attacks, heldout or a .jsonl path (default benign)")
+    p.add_argument("--set", help="benign, attacks, heldout, inbox or a .jsonl path (default benign)")
     p.add_argument("--out")
     _desk_args(p)
     p = sub.add_parser("score", help="utility and security on an attack set and a benign set")
     p.add_argument("--attacks", help="a .jsonl path, a set name, or none (default: sets/attacks.jsonl here, else the world's)")
     p.add_argument("--benign", help="a .jsonl path, a set name, or none")
     p.add_argument("--heldout", action="store_true", help="use the held-out attack set")
+    p.add_argument("--by-layer", action="store_true", help="also score with each guard layer switched on in turn")
     p.add_argument("--runs", type=int, default=3)
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--out")

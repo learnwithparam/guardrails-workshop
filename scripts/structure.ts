@@ -18,11 +18,17 @@ const dirs = (p: string) =>
 // Folders keep an order prefix for sorting only. Learners never type it.
 export const bareName = (folder: string) => folder.replace(/^\d+-/, "");
 
+// The orientation's step lives in 00-orientation/ and counts as a part named "orientation".
+const ORIENTATION = join(ROOT, "00-orientation");
+
 export function parts(): Part[] {
   const root = join(ROOT, "parts");
-  return dirs(root).map((p) => {
-    const dir = join(root, p);
-    const steps = dirs(dir).map((s) => {
+  const folders = dirs(root).map((p) => join(root, p));
+  const stepDirs = (dir: string) => dirs(dir).filter((s) => existsSync(join(dir, s, "step.toml")) || dir !== ORIENTATION);
+  if (dirs(ORIENTATION).some((s) => existsSync(join(ORIENTATION, s, "step.toml")))) folders.unshift(ORIENTATION);
+  return folders.map((dir) => {
+    const p = dir === ORIENTATION ? "orientation" : dir.split("/").pop()!;
+    const steps = stepDirs(dir).map((s) => {
       const sdir = join(dir, s);
       const metaPath = join(sdir, "step.toml");
       const raw = existsSync(metaPath) ? (Bun.TOML.parse(readFileSync(metaPath, "utf8")) as any) : {};

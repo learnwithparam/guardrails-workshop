@@ -21,7 +21,11 @@ def parse(raw: str) -> dict:
     """From, To, Subject, the plain text part and the HTML part."""
     if not re.match(r"^[A-Za-z-]+:", raw.lstrip()):
         raw = "From: unknown@unknown.example\nSubject: (none)\n\n" + raw
-    msg = email.message_from_string(raw, policy=policy.default)
+    head = raw.split("\n\n", 1)[0].lower()
+    if "content-type:" not in head:
+        # A hand-written email with no Content-Type is read as UTF-8 text, so "£950" stays "£950".
+        raw = "Content-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit\n" + raw
+    msg = email.message_from_bytes(raw.encode("utf-8", "surrogateescape"), policy=policy.default)
     text = html = None
     for part in msg.walk():
         ctype = part.get_content_type()

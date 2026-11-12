@@ -92,3 +92,36 @@ def score(guards, attacks_path: Path | None, benign_path: Path | None, runs: int
         "cost_usd": round(sum(s["cost_usd"] for s in per_run), 4),
     }
     return out
+
+
+class LayerGuards:
+    """The same guards with only some layers switched on, so each layer's share of the work shows."""
+
+    def __init__(self, base, layers: set[str], label: str):
+        from .desk import OpenGuards  # noqa: PLC0415
+
+        self.base, self.layers, self.name, self.open = base, layers, label, OpenGuards()
+
+    def input(self, req):
+        return (self.base if "input" in self.layers else self.open).input(req)
+
+    def tool(self, req):
+        return (self.base if "tool" in self.layers else self.open).tool(req)
+
+    def output(self, req):
+        return (self.base if "output" in self.layers else self.open).output(req)
+
+    def result(self, req):
+        return (self.base if "output" in self.layers else self.open).result(req)
+
+
+LAYERS = [("open desk", set()), ("+ input guards", {"input"}), ("+ tool guards", {"input", "tool"}),
+          ("+ output guards", {"input", "tool", "output"})]
+
+
+def by_layer(guards, attacks_path: Path, benign_path: Path, runs: int = 1, seed: int = 7) -> list[dict]:
+    out = []
+    for label, layers in LAYERS:
+        s = score(LayerGuards(guards, layers, label), attacks_path, benign_path, runs=runs, seed=seed, label="layers")
+        out.append({"layer": label, "security": s["security"], "utility": s["utility"]})
+    return out
