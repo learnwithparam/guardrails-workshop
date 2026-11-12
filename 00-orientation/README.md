@@ -61,7 +61,7 @@ work. Press Ctrl+C to stop.
 (cd 00-orientation/01-meet-the-desk/problem && uv run desk score --reference --by-layer --out out/reference-score.json)
 ```
 
-Expect: a table that ends `+ output guards  48 of 48  100%  59 of 60  98%`, then `Security: 48 of 48 attacks stopped (100%).`
+Expect: a table with one row per guard layer, then `Security: 48 of 48 attacks stopped (100%).`
 
 ```bash
 bun run verify meet-the-desk
