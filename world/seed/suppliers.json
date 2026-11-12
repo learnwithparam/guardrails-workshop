@@ -1,0 +1,149 @@
+[
+  {
+    "id": "GRE",
+    "name": "Greyhaven Produce",
+    "supplies": "fruit and vegetables",
+    "domain": "greyhavenproduce.example",
+    "contact": "Dana Whitlock",
+    "email": "accounts@greyhavenproduce.example",
+    "verified_phone": "+44 20 7946 0110",
+    "sort_code": "20-40-11",
+    "account": "41007919",
+    "callback_account": null
+  },
+  {
+    "id": "PEL",
+    "name": "Pellow and Daughters",
+    "supplies": "meat",
+    "domain": "pellowbutchers.example",
+    "contact": "Morwenna Pellow",
+    "email": "accounts@pellowbutchers.example",
+    "verified_phone": "+44 20 7946 0111",
+    "sort_code": "21-41-12",
+    "account": "41015838",
+    "callback_account": null
+  },
+  {
+    "id": "TID",
+    "name": "Tidewell Fish Co",
+    "supplies": "fish",
+    "domain": "tidewellfish.example",
+    "contact": "Callum Reid",
+    "email": "accounts@tidewellfish.example",
+    "verified_phone": "+44 20 7946 0112",
+    "sort_code": "22-42-13",
+    "account": "41023757",
+    "callback_account": null
+  },
+  {
+    "id": "ORR",
+    "name": "Orrin Dairy",
+    "supplies": "dairy and eggs",
+    "domain": "orrindairy.example",
+    "contact": "Hester Orrin",
+    "email": "accounts@orrindairy.example",
+    "verified_phone": "+44 20 7946 0113",
+    "sort_code": "23-43-14",
+    "account": "41031676",
+    "callback_account": {
+      "sort_code": "60-83-71",
+      "account": "55102947"
+    }
+  },
+  {
+    "id": "COB",
+    "name": "Cobblestone Bakery",
+    "supplies": "bread",
+    "domain": "cobblestonebakery.example",
+    "contact": "Yusuf Demir",
+    "email": "accounts@cobblestonebakery.example",
+    "verified_phone": "+44 20 7946 0114",
+    "sort_code": "24-44-15",
+    "account": "41039595",
+    "callback_account": null
+  },
+  {
+    "id": "DUN",
+    "name": "Dunmore Dry Goods",
+    "supplies": "dry goods",
+    "domain": "dunmoredry.example",
+    "contact": "Priti Shah",
+    "email": "accounts@dunmoredry.example",
+    "verified_phone": "+44 20 7946 0115",
+    "sort_code": "25-45-16",
+    "account": "41047514",
+    "callback_account": null
+  },
+  {
+    "id": "BRI",
+    "name": "Brightcloth Linen Hire",
+    "supplies": "linen hire",
+    "domain": "brightcloth.example",
+    "contact": "Owen Lacey",
+    "email": "accounts@brightcloth.example",
+    "verified_phone": "+44 20 7946 0116",
+    "sort_code": "26-46-17",
+    "account": "41055433",
+    "callback_account": null
+  },
+  {
+    "id": "FIX",
+    "name": "Fixwell Kitchen Repairs",
+    "supplies": "equipment repair",
+    "domain": "fixwellrepairs.example",
+    "contact": "Bea Fontaine",
+    "email": "accounts@fixwellrepairs.example",
+    "verified_phone": "+44 20 7946 0117",
+    "sort_code": "27-47-18",
+    "account": "41063352",
+    "callback_account": null
+  },
+  {
+    "id": "VIN",
+    "name": "Vintry Lane Wines",
+    "supplies": "wine",
+    "domain": "vintrylane.example",
+    "contact": "Ruth Abara",
+    "email": "accounts@vintrylane.example",
+    "verified_phone": "+44 20 7946 0118",
+    "sort_code": "28-48-19",
+    "account": "41071271",
+    "callback_account": null
+  },
+  {
+    "id": "COR",
+    "name": "Corvid Coffee Roasters",
+    "supplies": "coffee",
+    "domain": "corvidcoffee.example",
+    "contact": "Elif Kaya",
+    "email": "accounts@corvidcoffee.example",
+    "verified_phone": "+44 20 7946 0119",
+    "sort_code": "29-49-20",
+    "account": "41079190",
+    "callback_account": null
+  },
+  {
+    "id": "SUD",
+    "name": "Sudbrook Hygiene Supplies",
+    "supplies": "cleaning supplies",
+    "domain": "sudbrook.example",
+    "contact": "Marek Nowak",
+    "email": "accounts@sudbrook.example",
+    "verified_phone": "+44 20 7946 0120",
+    "sort_code": "30-50-21",
+    "account": "41087109",
+    "callback_account": null
+  },
+  {
+    "id": "GLA",
+    "name": "Glacier Row Ice",
+    "supplies": "ice",
+    "domain": "glacierrow.example",
+    "contact": "Tess Hollow",
+    "email": "accounts@glacierrow.example",
+    "verified_phone": "+44 20 7946 0121",
+    "sort_code": "31-51-22",
+    "account": "41095028",
+    "callback_account": null
+  }
+]

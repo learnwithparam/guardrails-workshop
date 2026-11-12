@@ -1,0 +1,56 @@
+[
+  {
+    "code": "WL",
+    "name": "Wharf Lane",
+    "head_chef": "Amara Osei",
+    "chef_email": "chef.wharflane@marrowfield.example"
+  },
+  {
+    "code": "AR",
+    "name": "Abbey Row",
+    "head_chef": "Tomasz Wilk",
+    "chef_email": "chef.abbeyrow@marrowfield.example"
+  },
+  {
+    "code": "MY",
+    "name": "Mill Yard",
+    "head_chef": "Gwen Pryce",
+    "chef_email": "chef.millyard@marrowfield.example"
+  },
+  {
+    "code": "FS",
+    "name": "Fenwick Square",
+    "head_chef": "Rafael Duarte",
+    "chef_email": "chef.fenwicksquare@marrowfield.example"
+  },
+  {
+    "code": "HR",
+    "name": "Hollins Road",
+    "head_chef": "Niamh Brennan",
+    "chef_email": "chef.hollinsroad@marrowfield.example"
+  },
+  {
+    "code": "TG",
+    "name": "Tanners Gate",
+    "head_chef": "Kofi Mensah",
+    "chef_email": "chef.tannersgate@marrowfield.example"
+  },
+  {
+    "code": "CS",
+    "name": "Copper Street",
+    "head_chef": "Leah Marsh",
+    "chef_email": "chef.copperstreet@marrowfield.example"
+  },
+  {
+    "code": "LH",
+    "name": "Larch Hill",
+    "head_chef": "Sunil Rao",
+    "chef_email": "chef.larchhill@marrowfield.example"
+  },
+  {
+    "code": "QS",
+    "name": "Quayside",
+    "head_chef": "Ines Carvalho",
+    "chef_email": "chef.quayside@marrowfield.example"
+  }
+]
