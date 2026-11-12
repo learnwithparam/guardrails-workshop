@@ -45,11 +45,11 @@ Expect: `Done. All 7 rules pass.`
 
 ## If you get stuck
 
-| What you see | Fix |
-|---|---|
-| `FAIL every expected end state names ... that exist` | Look the id up in `world/seed/`. |
-| `FAIL the reference desk reaches the end state` | Read the `missed` line: `extra change` means you left a change out of `expect`. |
-| An invoice email misses | Use an unpaid invoice from the same supplier who sends the email. |
+| What you see                                         | Fix                                                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `FAIL every expected end state names ... that exist` | Look the id up in `world/seed/`.                                                |
+| `FAIL the reference desk reaches the end state`      | Read the `missed` line: `extra change` means you left a change out of `expect`. |
+| An invoice email misses                              | Use an unpaid invoice from the same supplier who sends the email.               |
 
 ## Words you will use
 

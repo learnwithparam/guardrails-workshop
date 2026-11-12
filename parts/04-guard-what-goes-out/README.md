@@ -30,12 +30,12 @@ flowchart LR
 
 ## Steps
 
-| Step | Minutes | You produce | The check reads |
-|---|---|---|---|
-| `validate-the-reply` | 10 | an output guard: exact-host links, no guest data outside | the outbox after every output-channel attack, and benign chef messages |
-| `ground-the-reply` | 15 | a check that every number in a chef message matches the order | planted messages with a wrong quantity are blocked; the share needing a model call is printed |
-| `log-every-decision` | 10 | `out/decisions.jsonl` with every verdict, and one alert rule | the log's fields on the last run, and the alert on the shipped burst and on a quiet run |
-| `defend-the-desk` | 25 | your guarded desk, `out/score-guarded.json` and `out/guard-report.md` | Gatehouse 0 of 5, the held-out set, utility within 5 points of the open desk, and the report's sections |
+| Step                 | Minutes | You produce                                                           | The check reads                                                                                         |
+| -------------------- | ------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `validate-the-reply` | 10      | an output guard: exact-host links, no guest data outside              | the outbox after every output-channel attack, and benign chef messages                                  |
+| `ground-the-reply`   | 15      | a check that every number in a chef message matches the order         | planted messages with a wrong quantity are blocked; the share needing a model call is printed           |
+| `log-every-decision` | 10      | `out/decisions.jsonl` with every verdict, and one alert rule          | the log's fields on the last run, and the alert on the shipped burst and on a quiet run                 |
+| `defend-the-desk`    | 25      | your guarded desk, `out/score-guarded.json` and `out/guard-report.md` | Gatehouse 0 of 5, the held-out set, utility within 5 points of the open desk, and the report's sections |
 
 ## Walkthrough
 

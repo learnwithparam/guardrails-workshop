@@ -31,12 +31,12 @@ flowchart LR
 
 ## Steps
 
-| Step | Minutes | You produce | The check reads |
-|---|---|---|---|
-| `detect-injected-email` | 20 | an input guard behind `guard_input` (or `POST /guard/input`) and `out/threshold.json` | flag rates on the attack, benign and held-out sets, and the threshold curve |
-| `reveal-hidden-text` | 10 | a guard that compares what a person sees with what the model reads | decisions on every hidden-text attack and every benign HTML email |
-| `quarantine-supplier-text` | 20 | a quarantined reader that fills the notice form | the agent's context in the run log, and the forms on benign mail |
-| `redact-guest-data` | 15 | redaction of guest names and phones before the model | tool results in the run log: no phone number or allergy note reaches the model |
+| Step                       | Minutes | You produce                                                                           | The check reads                                                                |
+| -------------------------- | ------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `detect-injected-email`    | 20      | an input guard behind `guard_input` (or `POST /guard/input`) and `out/threshold.json` | flag rates on the attack, benign and held-out sets, and the threshold curve    |
+| `reveal-hidden-text`       | 10      | a guard that compares what a person sees with what the model reads                    | decisions on every hidden-text attack and every benign HTML email              |
+| `quarantine-supplier-text` | 20      | a quarantined reader that fills the notice form                                       | the agent's context in the run log, and the forms on benign mail               |
+| `redact-guest-data`        | 15      | redaction of guest names and phones before the model                                  | tool results in the run log: no phone number or allergy note reaches the model |
 
 ## Walkthrough
 

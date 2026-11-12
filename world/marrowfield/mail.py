@@ -40,8 +40,14 @@ def parse(raw: str) -> dict:
         elif ctype == "text/html" and html is None:
             html = body
     name, addr = parseaddr(str(msg.get("From", "")))
-    return {"from_name": name, "from": addr.lower(), "to": str(msg.get("To", "")), "subject": str(msg.get("Subject", "")),
-            "text": text, "html": html}
+    return {
+        "from_name": name,
+        "from": addr.lower(),
+        "to": str(msg.get("To", "")),
+        "subject": str(msg.get("Subject", "")),
+        "text": text,
+        "html": html,
+    }
 
 
 class _AllText(HTMLParser):

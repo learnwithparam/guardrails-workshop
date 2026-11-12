@@ -36,7 +36,11 @@ IDS: dict[str, dict[str, str]] = {
     },
 }
 
-KEYS = {"anthropic": "ANTHROPIC_API_KEY", "openrouter": "OPENROUTER_API_KEY", "openai": "OPENAI_API_KEY"}
+KEYS = {
+    "anthropic": "ANTHROPIC_API_KEY",
+    "openrouter": "OPENROUTER_API_KEY",
+    "openai": "OPENAI_API_KEY",
+}
 PROVIDERS = ("replay", "anthropic", "openrouter", "openai", "ollama")
 
 

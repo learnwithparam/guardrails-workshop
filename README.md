@@ -62,14 +62,14 @@ flowchart LR
 
 ## Parts
 
-| Part | Steps | Minutes | You can show |
-|---|---|---|---|
-| [Orientation](00-orientation/README.md) | `meet-the-desk` | 15 | the goal, in the finished desk's own numbers |
-| [1. Break the desk](parts/01-break-the-desk/README.md) | `run-the-open-desk`, `play-the-gatehouse`, `write-the-attack-set`, `write-the-benign-set`, `score-the-open-desk` | 60 | flags captured, your own attack and benign sets, a red scoreboard |
-| [2. Guard what comes in](parts/02-guard-what-comes-in/README.md) | `detect-injected-email`, `reveal-hidden-text`, `quarantine-supplier-text`, `redact-guest-data` | 65 | a detector with its threshold curve, and a desk that never reads raw email |
-| [3. Guard what the desk does](parts/03-guard-what-the-desk-does/README.md) | `list-allowed-tools`, `check-tool-arguments`, `ask-before-money-moves`, `break-the-trifecta` | 55 | the fake bank change held, the real one paid after a call back |
-| [4. Guard what goes out](parts/04-guard-what-goes-out/README.md) | `validate-the-reply`, `ground-the-reply`, `log-every-decision`, `defend-the-desk` | 60 | a green scoreboard on the held-out set, and the guard report |
-| [5. Go further](parts/05-go-further/README.md) (optional) | eight steps, from `fix-the-plan-first` to `attack-another-desk` | 180 | a desk that holds with the detector switched off |
+| Part                                                                       | Steps                                                                                                            | Minutes | You can show                                                               |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------- |
+| [Orientation](00-orientation/README.md)                                    | `meet-the-desk`                                                                                                  | 15      | the goal, in the finished desk's own numbers                               |
+| [1. Break the desk](parts/01-break-the-desk/README.md)                     | `run-the-open-desk`, `play-the-gatehouse`, `write-the-attack-set`, `write-the-benign-set`, `score-the-open-desk` | 60      | flags captured, your own attack and benign sets, a red scoreboard          |
+| [2. Guard what comes in](parts/02-guard-what-comes-in/README.md)           | `detect-injected-email`, `reveal-hidden-text`, `quarantine-supplier-text`, `redact-guest-data`                   | 65      | a detector with its threshold curve, and a desk that never reads raw email |
+| [3. Guard what the desk does](parts/03-guard-what-the-desk-does/README.md) | `list-allowed-tools`, `check-tool-arguments`, `ask-before-money-moves`, `break-the-trifecta`                     | 55      | the fake bank change held, the real one paid after a call back             |
+| [4. Guard what goes out](parts/04-guard-what-goes-out/README.md)           | `validate-the-reply`, `ground-the-reply`, `log-every-decision`, `defend-the-desk`                                | 60      | a green scoreboard on the held-out set, and the guard report               |
+| [5. Go further](parts/05-go-further/README.md) (optional)                  | eight steps, from `fix-the-plan-first` to `attack-another-desk`                                                  | 180     | a desk that holds with the detector switched off                           |
 
 Each step has a challenge, a Done when list and one command: `bun run verify <step-name>`. The same parts run as
 one day, four evenings or a four-session cohort; see `schedules.toml`. The full build map is in

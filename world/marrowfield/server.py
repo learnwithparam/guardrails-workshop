@@ -31,17 +31,28 @@ def _score_cache(guards) -> dict:
         cached = json.loads(p.read_text())
         if cached.get("key") == key:
             return cached
-    rows = score.by_layer(guards, att, ben, runs=1) if getattr(guards, "name", "") == "reference_guards" else []
+    rows = (
+        score.by_layer(guards, att, ben, runs=1)
+        if getattr(guards, "name", "") == "reference_guards"
+        else []
+    )
     s = score.score(guards, att, ben, runs=1, label="scoreboard")
-    out = {"key": key, "desk": getattr(guards, "name", "guards"), "by_layer": rows,
-           "security": s["security"], "utility": s["utility"]}
+    out = {
+        "key": key,
+        "desk": getattr(guards, "name", "guards"),
+        "by_layer": rows,
+        "security": s["security"],
+        "utility": s["utility"],
+    }
     p.write_text(json.dumps(out, indent=2))
     return out
 
 
 def label(guards) -> str:
     n = getattr(guards, "name", "")
-    return {"open": "Open desk", "reference_guards": "Reference guarded desk"}.get(n, f"Your desk ({n})")
+    return {"open": "Open desk", "reference_guards": "Reference guarded desk"}.get(
+        n, f"Your desk ({n})"
+    )
 
 
 def make_handler(guards, approve: str):
@@ -50,7 +61,11 @@ def make_handler(guards, approve: str):
             pass
 
         def _send(self, code: int, body, ctype="application/json"):
-            data = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False, default=str).encode()
+            data = (
+                body
+                if isinstance(body, bytes)
+                else json.dumps(body, ensure_ascii=False, default=str).encode()
+            )
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(len(data)))
@@ -72,11 +87,22 @@ def make_handler(guards, approve: str):
                 box = []
                 for mid, raw in mail.inbox():
                     m = mail.parse(raw)
-                    box.append({"id": mid, "from": m["from"], "name": m["from_name"], "subject": m["subject"]})
+                    box.append(
+                        {
+                            "id": mid,
+                            "from": m["from"],
+                            "name": m["from_name"],
+                            "subject": m["subject"],
+                        }
+                    )
                 return self._send(200, {"desk": label(guards), "inbox": box})
             if self.path.startswith("/api/email/"):
                 raw = mail.find(self.path.rsplit("/", 1)[-1])
-                return self._send(200, {"view": mail.model_view(raw)}) if raw else self._send(404, {"error": "no such email"})
+                return (
+                    self._send(200, {"view": mail.model_view(raw)})
+                    if raw
+                    else self._send(404, {"error": "no such email"})
+                )
             if self.path == "/api/score":
                 return self._send(200, _score_cache(guards))
             return self._send(404, {"error": "not found"})
@@ -89,14 +115,20 @@ def make_handler(guards, approve: str):
                     return self._send(404, {"error": "no such email"})
                 log = desk.new_run("page")
                 con = db.seed_copy()
-                r = desk.handle(raw, b["email_id"], guards, con, log, approve=b.get("approve", approve))
+                r = desk.handle(
+                    raw, b["email_id"], guards, con, log, approve=b.get("approve", approve)
+                )
                 con.close()
                 dec = []
                 f = log.dir / "decisions.jsonl"
                 if f.exists():
                     dec = [json.loads(x) for x in f.read_text().splitlines() if x.strip()]
                 return self._send(200, {**r, "decisions": dec})
-            route = {"/guard/input": guards.input, "/guard/tool": guards.tool, "/guard/output": guards.output}
+            route = {
+                "/guard/input": guards.input,
+                "/guard/tool": guards.tool,
+                "/guard/output": guards.output,
+            }
             if self.path in route:
                 return self._send(200, route[self.path](b))
             if self.path == "/guard/result":

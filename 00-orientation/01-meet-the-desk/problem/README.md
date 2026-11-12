@@ -37,11 +37,11 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see | Fix |
-|---|---|
+| What you see                                                     | Fix                                                                               |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | `FAIL out/reference-score.json is a score of the reference desk` | Run the score command from this `problem/` folder, with `--reference --by-layer`. |
-| `FAIL goal.md says how many attacks ...` | Write it as `Attacks stopped: 48 of 48`, the words then a colon. |
-| `FAIL goal.md names every planted email` | Run `uv run desk handle` on each inbox email with no flag (the open desk). |
+| `FAIL goal.md says how many attacks ...`                         | Write it as `Attacks stopped: 48 of 48`, the words then a colon.                  |
+| `FAIL goal.md names every planted email`                         | Run `uv run desk handle` on each inbox email with no flag (the open desk).        |
 
 ## Words you will use
 

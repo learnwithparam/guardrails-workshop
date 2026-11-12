@@ -1,6 +1,7 @@
 // Read the learner's files without throwing: a missing or broken file is a failed rule, not a crashed check.
-import { existsSync, readFileSync } from "node:fs";
+
 import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT } from "../../scripts/structure";
 
@@ -24,19 +25,28 @@ export function jsonlRows(dir: string, rel: string): any[] | null {
   const t = text(dir, rel);
   if (!t.trim()) return null;
   try {
-    return t.split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l));
+    return t
+      .split("\n")
+      .filter((l) => l.trim())
+      .map((l) => JSON.parse(l));
   } catch {
     return null;
   }
 }
 
-export const sha256 = (path: string) => (existsSync(path) ? createHash("sha256").update(readFileSync(path)).digest("hex") : "");
+export const sha256 = (path: string) =>
+  existsSync(path) ? createHash("sha256").update(readFileSync(path)).digest("hex") : "";
 
 /** Find the set file a score was made from: the path it names, the same name in this folder, or the world's copy. */
 export function findSet(dir: string, named: string | null, hash: string | null): string | null {
   if (!named) return null;
   const base = named.split("/").pop()!;
-  for (const p of [join(ROOT, named), join(dir, named), join(dir, "sets", base), join(ROOT, "world", "sets", base)])
+  for (const p of [
+    join(ROOT, named),
+    join(dir, named),
+    join(dir, "sets", base),
+    join(ROOT, "world", "sets", base),
+  ])
     if (existsSync(p) && (!hash || sha256(p) === hash)) return p;
   return null;
 }

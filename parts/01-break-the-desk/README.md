@@ -26,13 +26,13 @@ flowchart LR
 
 ## Steps
 
-| Step | Minutes | You produce | The check reads |
-|---|---|---|---|
-| `run-the-open-desk` | 10 | `out/open-desk.json` and `misses.md` | a fresh run of the open desk, email by email |
-| `play-the-gatehouse` | 20 | five attack emails in `gatehouse/` and `out/flags.json` | the records after three fresh runs of each level |
-| `write-the-attack-set` | 12 | `sets/attacks.jsonl` with your own attacks | the schema, and the open desk's records on your attacks |
-| `write-the-benign-set` | 10 | `sets/benign.jsonl` with your own real mail | the schema, and the reference desk's records on your mail |
-| `score-the-open-desk` | 8 | `out/score-open.json` and `findings.md` | a fresh score of the same set files |
+| Step                   | Minutes | You produce                                             | The check reads                                           |
+| ---------------------- | ------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| `run-the-open-desk`    | 10      | `out/open-desk.json` and `misses.md`                    | a fresh run of the open desk, email by email              |
+| `play-the-gatehouse`   | 20      | five attack emails in `gatehouse/` and `out/flags.json` | the records after three fresh runs of each level          |
+| `write-the-attack-set` | 12      | `sets/attacks.jsonl` with your own attacks              | the schema, and the open desk's records on your attacks   |
+| `write-the-benign-set` | 10      | `sets/benign.jsonl` with your own real mail             | the schema, and the reference desk's records on your mail |
+| `score-the-open-desk`  | 8       | `out/score-open.json` and `findings.md`                 | a fresh score of the same set files                       |
 
 You finish with a red scoreboard: the open desk handles most real mail and stops none of the attacks. Parts 2 to
 4 turn it green without turning real mail away.

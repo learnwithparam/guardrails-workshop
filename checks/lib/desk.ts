@@ -1,6 +1,6 @@
 // Start the learner's work and read what the world recorded. Checks never read the model's reply.
 // Every run here uses replay mode and a fresh, throwaway copy of the world, so a check never touches your state.
-import { existsSync, mkdtempSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ROOT } from "../../scripts/structure";
@@ -14,7 +14,12 @@ export function python(): string {
 export type Ran = { ok: boolean; code: number; out: string; state: string };
 
 /** Run `desk <args>` (or `world <args>`) from `cwd`, against a fresh world. */
-export function run(cmd: "desk" | "world", args: string[], cwd: string = ROOT, state?: string): Ran {
+export function run(
+  cmd: "desk" | "world",
+  args: string[],
+  cwd: string = ROOT,
+  state?: string,
+): Ran {
   const st = state ?? mkdtempSync(join(tmpdir(), "marrowfield-"));
   const p = Bun.spawnSync([python(), "-m", "marrowfield", cmd, ...args], {
     cwd,
@@ -48,18 +53,26 @@ export type Result = {
 /** Every run folder a command wrote under its state dir. */
 export function runDirs(state: string): string[] {
   const d = join(state, "runs");
-  return existsSync(d) ? readdirSync(d).sort().map((x) => join(d, x)) : [];
+  return existsSync(d)
+    ? readdirSync(d)
+        .sort()
+        .map((x) => join(d, x))
+    : [];
 }
 
 export function jsonl<T = any>(path: string): T[] {
   if (!existsSync(path)) return [];
-  return readFileSync(path, "utf8").split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l));
+  return readFileSync(path, "utf8")
+    .split("\n")
+    .filter((l) => l.trim())
+    .map((l) => JSON.parse(l));
 }
 
 /** Per-email results from the world's run logs (results.jsonl), keyed by email id. */
 export function results(state: string): Map<string, Result> {
   const m = new Map<string, Result>();
-  for (const d of runDirs(state)) for (const r of jsonl<Result>(join(d, "results.jsonl"))) m.set(r.email_id, r);
+  for (const d of runDirs(state))
+    for (const r of jsonl<Result>(join(d, "results.jsonl"))) m.set(r.email_id, r);
   return m;
 }
 
@@ -79,6 +92,10 @@ export function deskJson(args: string[], cwd: string = ROOT): { data: any; ran: 
   const out = join(st, "out.json");
   const ran = run("desk", [...args, "--out", out], cwd, st);
   let data = null;
-  try { data = JSON.parse(readFileSync(out, "utf8")); } catch { data = null; }
+  try {
+    data = JSON.parse(readFileSync(out, "utf8"));
+  } catch {
+    data = null;
+  }
   return { data, ran };
 }

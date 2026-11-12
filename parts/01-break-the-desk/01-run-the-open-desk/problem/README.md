@@ -33,11 +33,11 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see | Fix |
-|---|---|
-| `FAIL out/open-desk.json covers all 60 benign emails` | Run the command from this `problem/` folder so `out/` lands here. |
-| `FAIL every end state in the file matches a fresh run` | Do not edit the file. Run the command again. |
-| `FAIL misses.md names every benign email the open desk got wrong` | Copy each id from the `missed` lines, for example `- B-49: ...`. |
+| What you see                                                      | Fix                                                               |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `FAIL out/open-desk.json covers all 60 benign emails`             | Run the command from this `problem/` folder so `out/` lands here. |
+| `FAIL every end state in the file matches a fresh run`            | Do not edit the file. Run the command again.                      |
+| `FAIL misses.md names every benign email the open desk got wrong` | Copy each id from the `missed` lines, for example `- B-49: ...`.  |
 
 ## Words you will use
 

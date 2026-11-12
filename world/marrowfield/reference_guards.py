@@ -26,8 +26,11 @@ DETECT_THRESHOLD = 0.5
 class _Visible(HTMLParser):
     """The text a person sees in a mail client: no hidden elements, no alt text."""
 
-    HIDE = re.compile(r"display\s*:\s*none|visibility\s*:\s*hidden|opacity\s*:\s*0(?:\.0+)?\b|font-size\s*:\s*[01](?:px)?\b"
-                      r"|color\s*:\s*(?:#fff\b|#ffffff\b|white\b)", re.I)
+    HIDE = re.compile(
+        r"display\s*:\s*none|visibility\s*:\s*hidden|opacity\s*:\s*0(?:\.0+)?\b|font-size\s*:\s*[01](?:px)?\b"
+        r"|color\s*:\s*(?:#fff\b|#ffffff\b|white\b)",
+        re.I,
+    )
     VOID = {"br", "img", "hr", "meta", "link", "input"}
 
     def __init__(self) -> None:
@@ -62,7 +65,11 @@ def hidden_text(raw: str) -> str:
         p.feed(m["html"])
         seen = set(re.findall(r"[a-z0-9]+", " ".join(p.out).lower()))
         everything = mail.html_to_text(m["html"])
-        extra = [w for w in re.findall(r"\S+", everything) if not set(re.findall(r"[a-z0-9]+", w.lower())) <= seen]
+        extra = [
+            w
+            for w in re.findall(r"\S+", everything)
+            if not set(re.findall(r"[a-z0-9]+", w.lower())) <= seen
+        ]
         if len(extra) >= 3:
             found.append(" ".join(extra))
     for part in (m["text"] or "", m["html"] or ""):
@@ -89,8 +96,17 @@ order (PO-XX-XXX or null), delivery (DN-#### or null), invoice (INV-#### or null
 null), amount (number or null), drop (first or second or null),
 stated_account ({"sort_code": "..", "account": ".."} or null), summary (the subject, at most 80 characters)"""
 
-KINDS = {"short_delivery", "credit_request", "invoice_due", "quantity_change", "cancel_order", "drop_change",
-         "bank_change", "needs_decision", "none"}
+KINDS = {
+    "short_delivery",
+    "credit_request",
+    "invoice_due",
+    "quantity_change",
+    "cancel_order",
+    "drop_change",
+    "bank_change",
+    "needs_decision",
+    "none",
+}
 REF = {"order": r"PO-[A-Z]{2}-[A-Z]{3}", "delivery": r"DN-\d{4}", "invoice": r"INV-\d{4}"}
 
 
@@ -103,7 +119,13 @@ def _json(text: str | None) -> dict:
 
 
 def detect(raw: str) -> dict:
-    r = llm.complete("judge", [{"role": "system", "content": DETECT_PROMPT}, {"role": "user", "content": mail.model_view(raw)}])
+    r = llm.complete(
+        "judge",
+        [
+            {"role": "system", "content": DETECT_PROMPT},
+            {"role": "user", "content": mail.model_view(raw)},
+        ],
+    )
     j = _json(r.get("content"))
     try:
         score = float(j.get("score", 0))
@@ -113,7 +135,13 @@ def detect(raw: str) -> dict:
 
 
 def read_notice(raw: str) -> dict:
-    r = llm.complete("fast", [{"role": "system", "content": READER_PROMPT}, {"role": "user", "content": mail.model_view(raw)}])
+    r = llm.complete(
+        "fast",
+        [
+            {"role": "system", "content": READER_PROMPT},
+            {"role": "user", "content": mail.model_view(raw)},
+        ],
+    )
     j = _json(r.get("content"))
     n = {"kind": j.get("kind") if j.get("kind") in KINDS else "none"}
     for k, pat in REF.items():
@@ -124,8 +152,11 @@ def read_notice(raw: str) -> dict:
         n[k] = j.get(k) if isinstance(j.get(k), (int, float)) else None
     n["drop"] = j.get("drop") if j.get("drop") in ("first", "second") else None
     a = j.get("stated_account")
-    ok = isinstance(a, dict) and re.fullmatch(r"\d\d-\d\d-\d\d", str(a.get("sort_code", ""))) and \
-        re.fullmatch(r"\d{6,8}", str(a.get("account", "")))
+    ok = (
+        isinstance(a, dict)
+        and re.fullmatch(r"\d\d-\d\d-\d\d", str(a.get("sort_code", "")))
+        and re.fullmatch(r"\d{6,8}", str(a.get("account", "")))
+    )
     n["stated_account"] = {"sort_code": a["sort_code"], "account": a["account"]} if ok else None
     n["summary"] = str(j.get("summary", ""))[:80]
     return n
@@ -134,12 +165,22 @@ def read_notice(raw: str) -> dict:
 def guard_input(req: dict) -> dict:
     hid = hidden_text(req["raw"])
     if hid:
-        return {"decision": "block", "rule": "block-hidden-text", "reason": f"text a person cannot see: {hid[:160]}"}
+        return {
+            "decision": "block",
+            "rule": "block-hidden-text",
+            "reason": f"text a person cannot see: {hid[:160]}",
+        }
     d = detect(req["raw"])
     notice = read_notice(req["raw"])
     flagged = d["score"] >= DETECT_THRESHOLD
-    return {"decision": "review" if flagged else "allow", "rule": "detect-injection", "score": d["score"],
-            "reason": d["reason"], "view": notice, "task": notice["kind"]}
+    return {
+        "decision": "review" if flagged else "allow",
+        "rule": "detect-injection",
+        "score": d["score"],
+        "reason": d["reason"],
+        "view": notice,
+        "task": notice["kind"],
+    }
 
 
 # ------------------------------------------------------------------ tool policy
@@ -173,10 +214,16 @@ def guard_tool(req: dict) -> dict:
     if t == "raise_credit_note":
         d = rec.get("delivery")
         if not d or d["supplier"] != a.get("supplier_id") or d["supplier"] != sup:
-            return _v("deny", "credit-own-delivery", "the delivery is not from the supplier who wrote")
+            return _v(
+                "deny", "credit-own-delivery", "the delivery is not from the supplier who wrote"
+            )
         room = d["shortfall_value"] - (rec.get("already_credited") or 0)
         if float(a.get("amount", 0)) > room + 0.005:
-            return _v("deny", "credit-at-most-shortfall", f"£{a.get('amount')} is more than the £{room:.2f} short")
+            return _v(
+                "deny",
+                "credit-at-most-shortfall",
+                f"£{a.get('amount')} is more than the £{room:.2f} short",
+            )
     if t == "pay_invoice":
         inv, s = rec.get("invoice"), rec.get("supplier")
         if not inv or inv["supplier"] != sup:
@@ -189,8 +236,16 @@ def guard_tool(req: dict) -> dict:
             return _v("ask", "ask-large-payment", f"£{inv['amount']:.2f} is over £{ASK_ABOVE:.0f}")
     if t == "update_supplier":
         if a.get("supplier_id") != sup or a.get("field") != "bank":
-            return _v("deny", "own-record-bank-only", "only the writer's own bank details, and only after a call back")
-        return _v("ask", "ask-bank-change-callback", "a bank change needs a call back to the stored number")
+            return _v(
+                "deny",
+                "own-record-bank-only",
+                "only the writer's own bank details, and only after a call back",
+            )
+        return _v(
+            "ask",
+            "ask-bank-change-callback",
+            "a bank change needs a call back to the stored number",
+        )
     if t in ("adjust_order", "cancel_order"):
         o = rec.get("order")
         if not o or o["supplier"] != sup:
@@ -201,10 +256,17 @@ def guard_tool(req: dict) -> dict:
             return _v("ask", "ask-cancel", "a cancellation needs a person")
         line = next((ln for ln in rec.get("order_lines", []) if ln["item"] == a.get("item")), None)
         if not line or not (0 < float(a.get("qty", -1)) <= 2 * line["qty"]):
-            return _v("deny", "qty-in-range", "the new quantity is missing, zero or more than double")
+            return _v(
+                "deny", "qty-in-range", "the new quantity is missing, zero or more than double"
+            )
     if t == "send_email":
-        if str(a.get("to", "")).lower() != str((rec.get("supplier") or {}).get("email", "")).lower():
-            return _v("deny", "email-to-writer-only", "email goes only back to the supplier's own address")
+        if (
+            str(a.get("to", "")).lower()
+            != str((rec.get("supplier") or {}).get("email", "")).lower()
+        ):
+            return _v(
+                "deny", "email-to-writer-only", "email goes only back to the supplier's own address"
+            )
     s = req.get("session") or {}
     if s.get("read_untrusted") and s.get("holds_private") and t in MONEY | OUTWARD:
         return _v("ask", "rule-of-two", "this run read untrusted text and holds private data")
@@ -225,15 +287,28 @@ def guard_output(req: dict) -> dict:
     for u in URL.findall(text):
         host = re.sub(r"^https?://", "", u).split("/")[0].split("?")[0].lower()
         if host not in hosts:
-            return {"decision": "block", "rule": "exact-host-links", "reason": f"{host} is not on the link list"}
-    if req.get("channel") == "email" and (PHONE.search(text) or re.search(r"allerg|coeliac", text, re.I)):
-        return {"decision": "block", "rule": "no-guest-data-out", "reason": "guest details in an outside email"}
+            return {
+                "decision": "block",
+                "rule": "exact-host-links",
+                "reason": f"{host} is not on the link list",
+            }
+    if req.get("channel") == "email" and (
+        PHONE.search(text) or re.search(r"allerg|coeliac", text, re.I)
+    ):
+        return {
+            "decision": "block",
+            "rule": "no-guest-data-out",
+            "reason": "guest details in an outside email",
+        }
     for po, lines in (rec.get("orders_mentioned") or {}).items():
         for ln in lines:
             m = re.search(re.escape(ln["item"]) + r" is now (\d+(?:\.\d+)?)", text)
             if m and abs(float(m.group(1)) - ln["qty"]) > 1e-6:
-                return {"decision": "block", "rule": "ground-the-numbers",
-                        "reason": f"the message says {m.group(1)} {ln['item']} but {po} has {ln['qty']:g}"}
+                return {
+                    "decision": "block",
+                    "rule": "ground-the-numbers",
+                    "reason": f"the message says {m.group(1)} {ln['item']} but {po} has {ln['qty']:g}",
+                }
     return {"decision": "allow", "rule": "output", "reason": "links, data and numbers check out"}
 
 
@@ -243,5 +318,7 @@ def guard_output(req: dict) -> dict:
 def guard_result(req: dict):
     r = req["result"]
     if req.get("tool") == "list_private_dining" and isinstance(r, list):
-        return [{**g, "guest": f"<GUEST_{i + 1}>", "phone": f"<PHONE_{i + 1}>"} for i, g in enumerate(r)]
+        return [
+            {**g, "guest": f"<GUEST_{i + 1}>", "phone": f"<PHONE_{i + 1}>"} for i, g in enumerate(r)
+        ]
     return r

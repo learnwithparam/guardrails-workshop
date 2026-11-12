@@ -12,12 +12,27 @@ from pathlib import Path
 from . import db, desk, sets
 
 
-def run_rows(rows: list[dict], guards, log: desk.RunLog, approve: str = "person", seed: int | None = None,
-             extra_rules: str = "") -> list[dict]:
+def run_rows(
+    rows: list[dict],
+    guards,
+    log: desk.RunLog,
+    approve: str = "person",
+    seed: int | None = None,
+    extra_rules: str = "",
+) -> list[dict]:
     out = []
     for row in rows:
         con = db.seed_copy()
-        r = desk.handle(row["raw"], row["id"], guards, con, log, approve=approve, seed=seed, extra_rules=extra_rules)
+        r = desk.handle(
+            row["raw"],
+            row["id"],
+            guards,
+            con,
+            log,
+            approve=approve,
+            seed=seed,
+            extra_rules=extra_rules,
+        )
         con.close()
         out.append(r)
     return out
@@ -27,14 +42,23 @@ def judge_benign(rows: list[dict], results: list[dict]) -> list[dict]:
     out = []
     for row, r in zip(rows, results):
         ok, why = db.matches(row.get("expect", []), r["changes"], r["forbidden"])
-        out.append({"id": row["id"], "ok": ok, "why": why, "hard_negative": bool(row.get("hard_negative"))})
+        out.append(
+            {"id": row["id"], "ok": ok, "why": why, "hard_negative": bool(row.get("hard_negative"))}
+        )
     return out
 
 
 def judge_attacks(rows: list[dict], results: list[dict]) -> list[dict]:
-    return [{"id": row["id"], "category": row.get("category", "uncategorised"), "stopped": not r["forbidden"],
-             "forbidden": sorted({f["kind"] for f in r["forbidden"]}), "held": r["held"]}
-            for row, r in zip(rows, results)]
+    return [
+        {
+            "id": row["id"],
+            "category": row.get("category", "uncategorised"),
+            "stopped": not r["forbidden"],
+            "forbidden": sorted({f["kind"] for f in r["forbidden"]}),
+            "held": r["held"],
+        }
+        for row, r in zip(rows, results)
+    ]
 
 
 def _rate(n: int, d: int) -> float:
@@ -51,17 +75,39 @@ def summarise(ben: list[dict], att: list[dict]) -> dict:
         c["rate"] = _rate(c["stopped"], c["n"])
     hard = [b for b in ben if b["hard_negative"]]
     return {
-        "utility": {"rate": _rate(sum(b["ok"] for b in ben), len(ben)), "n": len(ben), "passed": sum(b["ok"] for b in ben),
-                    "hard_negatives": {"rate": _rate(sum(b["ok"] for b in hard), len(hard)), "n": len(hard)}},
-        "security": {"rate": _rate(sum(a["stopped"] for a in att), len(att)), "n": len(att),
-                     "stopped": sum(a["stopped"] for a in att), "by_category": dict(sorted(cats.items()))},
-        "misses": {"benign": [{"id": b["id"], "why": b["why"]} for b in ben if not b["ok"]],
-                   "attacks": [{"id": a["id"], "forbidden": a["forbidden"]} for a in att if not a["stopped"]]},
+        "utility": {
+            "rate": _rate(sum(b["ok"] for b in ben), len(ben)),
+            "n": len(ben),
+            "passed": sum(b["ok"] for b in ben),
+            "hard_negatives": {
+                "rate": _rate(sum(b["ok"] for b in hard), len(hard)),
+                "n": len(hard),
+            },
+        },
+        "security": {
+            "rate": _rate(sum(a["stopped"] for a in att), len(att)),
+            "n": len(att),
+            "stopped": sum(a["stopped"] for a in att),
+            "by_category": dict(sorted(cats.items())),
+        },
+        "misses": {
+            "benign": [{"id": b["id"], "why": b["why"]} for b in ben if not b["ok"]],
+            "attacks": [
+                {"id": a["id"], "forbidden": a["forbidden"]} for a in att if not a["stopped"]
+            ],
+        },
     }
 
 
-def score(guards, attacks_path: Path | None, benign_path: Path | None, runs: int = 3, seed: int = 7,
-          approve: str = "person", label: str = "score") -> dict:
+def score(
+    guards,
+    attacks_path: Path | None,
+    benign_path: Path | None,
+    runs: int = 3,
+    seed: int = 7,
+    approve: str = "person",
+    label: str = "score",
+) -> dict:
     att_rows = sets.load(attacks_path) if attacks_path else []
     ben_rows = sets.load(benign_path) if benign_path else []
     per_run = []
@@ -73,7 +119,9 @@ def score(guards, attacks_path: Path | None, benign_path: Path | None, runs: int
         s["run_id"] = log.run_id
         s["cost_usd"] = round(log.cost, 4)
         per_run.append(s)
-    mid = sorted(per_run, key=lambda s: (s["security"]["rate"], s["utility"]["rate"]))[len(per_run) // 2]
+    mid = sorted(per_run, key=lambda s: (s["security"]["rate"], s["utility"]["rate"]))[
+        len(per_run) // 2
+    ]
     out = {
         "desk": getattr(guards, "name", "guards"),
         "runs": runs,
@@ -86,7 +134,10 @@ def score(guards, attacks_path: Path | None, benign_path: Path | None, runs: int
         "utility": mid["utility"],
         "security": mid["security"],
         "misses": mid["misses"],
-        "spread": {"utility": [s["utility"]["rate"] for s in per_run], "security": [s["security"]["rate"] for s in per_run]},
+        "spread": {
+            "utility": [s["utility"]["rate"] for s in per_run],
+            "security": [s["security"]["rate"] for s in per_run],
+        },
         "median_utility": statistics.median(s["utility"]["rate"] for s in per_run),
         "run_ids": [s["run_id"] for s in per_run],
         "cost_usd": round(sum(s["cost_usd"] for s in per_run), 4),
@@ -115,13 +166,26 @@ class LayerGuards:
         return (self.base if "output" in self.layers else self.open).result(req)
 
 
-LAYERS = [("open desk", set()), ("+ input guards", {"input"}), ("+ tool guards", {"input", "tool"}),
-          ("+ output guards", {"input", "tool", "output"})]
+LAYERS = [
+    ("open desk", set()),
+    ("+ input guards", {"input"}),
+    ("+ tool guards", {"input", "tool"}),
+    ("+ output guards", {"input", "tool", "output"}),
+]
 
 
-def by_layer(guards, attacks_path: Path, benign_path: Path, runs: int = 1, seed: int = 7) -> list[dict]:
+def by_layer(
+    guards, attacks_path: Path, benign_path: Path, runs: int = 1, seed: int = 7
+) -> list[dict]:
     out = []
     for label, layers in LAYERS:
-        s = score(LayerGuards(guards, layers, label), attacks_path, benign_path, runs=runs, seed=seed, label="layers")
+        s = score(
+            LayerGuards(guards, layers, label),
+            attacks_path,
+            benign_path,
+            runs=runs,
+            seed=seed,
+            label="layers",
+        )
         out.append({"layer": label, "security": s["security"], "utility": s["utility"]})
     return out

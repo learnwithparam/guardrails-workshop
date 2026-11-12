@@ -33,11 +33,11 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see | Fix |
-|---|---|
+| What you see                           | Fix                                                                 |
+| -------------------------------------- | ------------------------------------------------------------------- |
 | `FAIL the numbers match a fresh score` | Keep the set files the score names, and do not edit the score file. |
-| `FAIL security is below 50%` | Score `--open`. The reference desk stops every shipped attack. |
-| `FAIL findings.md reports ...` | Write `Security: 0%` with a colon and a whole number. |
+| `FAIL security is below 50%`           | Score `--open`. The reference desk stops every shipped attack.      |
+| `FAIL findings.md reports ...`         | Write `Security: 0%` with a colon and a whole number.               |
 
 ## Words you will use
 

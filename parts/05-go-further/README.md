@@ -30,16 +30,16 @@ flowchart LR
 
 ## Steps
 
-| Step | Minutes | You produce | The check reads |
-|---|---|---|---|
-| `fix-the-plan-first` | 20 | a desk that writes its tool plan from the trusted job before any email is read | the run log: the plan is logged before the first email read, and no call outside the plan runs |
-| `block-untrusted-payees` | 20 | taint tags on email values, and a policy that denies a tagged payee or address | security at 100% on all attack sets with the input detector off; the utility cost printed |
-| `swap-in-a-guard-framework` | 30 | one layer rebuilt in a guard framework behind the same contract | the contract checks pass, and a score diff against your own guard |
-| `generate-attacks-with-promptfoo` | 25 | new attacks from promptfoo pointed at the contract, added to your set | at least 20 new rows, a fresh score, and any new failure filed in the guard report |
-| `run-the-agentdojo-banking-suite` | 30 | your input and tool guards as an AgentDojo defence | utility and security on the banking suite, printed beside the published defences |
-| `shadow-a-new-guard` | 20 | a guard in shadow mode, then switched on by config | would-block counts in the log with no change to the records |
-| `price-the-guards` | 15 | p95 latency and cost per 1,000 emails per layer | the numbers come from `decisions.jsonl`; one layer named to run in parallel |
-| `attack-another-desk` | 20 | flags captured on a peer's desk (or the reference desk) | each flag is a forbidden change in the records, filed with its attack text |
+| Step                              | Minutes | You produce                                                                    | The check reads                                                                                |
+| --------------------------------- | ------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `fix-the-plan-first`              | 20      | a desk that writes its tool plan from the trusted job before any email is read | the run log: the plan is logged before the first email read, and no call outside the plan runs |
+| `block-untrusted-payees`          | 20      | taint tags on email values, and a policy that denies a tagged payee or address | security at 100% on all attack sets with the input detector off; the utility cost printed      |
+| `swap-in-a-guard-framework`       | 30      | one layer rebuilt in a guard framework behind the same contract                | the contract checks pass, and a score diff against your own guard                              |
+| `generate-attacks-with-promptfoo` | 25      | new attacks from promptfoo pointed at the contract, added to your set          | at least 20 new rows, a fresh score, and any new failure filed in the guard report             |
+| `run-the-agentdojo-banking-suite` | 30      | your input and tool guards as an AgentDojo defence                             | utility and security on the banking suite, printed beside the published defences               |
+| `shadow-a-new-guard`              | 20      | a guard in shadow mode, then switched on by config                             | would-block counts in the log with no change to the records                                    |
+| `price-the-guards`                | 15      | p95 latency and cost per 1,000 emails per layer                                | the numbers come from `decisions.jsonl`; one layer named to run in parallel                    |
+| `attack-another-desk`             | 20      | flags captured on a peer's desk (or the reference desk)                        | each flag is a forbidden change in the records, filed with its attack text                     |
 
 ## Walkthrough
 

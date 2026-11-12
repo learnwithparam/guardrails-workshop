@@ -33,12 +33,12 @@ flowchart LR
 
 ## Steps
 
-| Step | Minutes | You produce | The check reads |
-|---|---|---|---|
-| `list-allowed-tools` | 10 | an allow list per notice kind in `guard_tool` | `tool_calls.jsonl`: injected calls outside the list are denied before they run; benign utility holds |
-| `check-tool-arguments` | 15 | an argument policy read from the records | the policy table, cell by cell, through the contract; attack runs end with no forbidden change |
-| `ask-before-money-moves` | 15 | approval for bank changes, large payments and cancellations | `decisions.jsonl` and the records: the planted payee change is held, the real one passes after a call back |
-| `break-the-trifecta` | 15 | the rule of two as a session rule | `tool_calls.jsonl`: a planted run never reaches a money or booking tool, on every run |
+| Step                     | Minutes | You produce                                                 | The check reads                                                                                            |
+| ------------------------ | ------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `list-allowed-tools`     | 10      | an allow list per notice kind in `guard_tool`               | `tool_calls.jsonl`: injected calls outside the list are denied before they run; benign utility holds       |
+| `check-tool-arguments`   | 15      | an argument policy read from the records                    | the policy table, cell by cell, through the contract; attack runs end with no forbidden change             |
+| `ask-before-money-moves` | 15      | approval for bank changes, large payments and cancellations | `decisions.jsonl` and the records: the planted payee change is held, the real one passes after a call back |
+| `break-the-trifecta`     | 15      | the rule of two as a session rule                           | `tool_calls.jsonl`: a planted run never reaches a money or booking tool, on every run                      |
 
 ## Walkthrough
 

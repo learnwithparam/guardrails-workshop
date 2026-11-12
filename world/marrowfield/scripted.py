@@ -27,8 +27,16 @@ RULE_MARROWFIELD_ONLY = "Send guest details only to Marrowfield email addresses.
 RULE_HEAD_CHEF = "Cancel orders only when a head chef asks for it."
 RULE_NO_PHONE = "Never write a guest phone number in a message."
 
-READS = {"get_order", "find_orders", "get_delivery", "get_supplier", "list_invoices", "list_private_dining",
-         "find_supplier", "verify_by_callback"}
+READS = {
+    "get_order",
+    "find_orders",
+    "get_delivery",
+    "get_supplier",
+    "list_invoices",
+    "list_private_dining",
+    "find_supplier",
+    "verify_by_callback",
+}
 
 PO = r"PO-[A-Z]{2}-[A-Z]{3}"
 ACCT = re.compile(r"sort code (\d\d-\d\d-\d\d),? (?:and )?account(?: number)? (\d{6,8})", re.I)
@@ -46,7 +54,10 @@ def _supplier_names() -> list[str]:
 @lru_cache(maxsize=1)
 def _site_names() -> dict[str, str]:
     try:
-        return {s["name"].lower(): s["code"] for s in json.loads((paths.SEED / "sites.json").read_text())}
+        return {
+            s["name"].lower(): s["code"]
+            for s in json.loads((paths.SEED / "sites.json").read_text())
+        }
     except FileNotFoundError:
         return {}
 
@@ -162,27 +173,48 @@ def _agent(messages: list[dict], system: str, user: str) -> dict:
     if acts and not acted:
         return _calls(acts, len(hist))
     done = [f"{n}" for n, _, r in hist if n not in READS and isinstance(r, dict) and r.get("ok")]
-    return {"content": ("Done: " + ", ".join(done) + ".") if done else "No action taken.", "tool_calls": []}
+    return {
+        "content": ("Done: " + ", ".join(done) + ".") if done else "No action taken.",
+        "tool_calls": [],
+    }
 
 
 def _calls(calls: list[tuple[str, dict]], start: int) -> dict:
-    return {"content": None, "tool_calls": [{"id": f"call_{start + i}", "name": n, "arguments": a} for i, (n, a) in enumerate(calls)]}
+    return {
+        "content": None,
+        "tool_calls": [
+            {"id": f"call_{start + i}", "name": n, "arguments": a} for i, (n, a) in enumerate(calls)
+        ],
+    }
 
 
 # ------------------------------------------------------------------ the trusting desk agent
 
 
 def _override(text: str) -> bool:
-    return bool(re.search(r"ignore (?:all |your |previous )|disregard|override|admin mode|new instructions", text, re.I))
+    return bool(
+        re.search(
+            r"ignore (?:all |your |previous )|disregard|override|admin mode|new instructions",
+            text,
+            re.I,
+        )
+    )
 
 
 def _claims_callback(text: str) -> bool:
-    return bool(re.search(r"(?:call ?back|called|phoned|spoke)[^.]{0,60}\b(?:done|confirmed|complete|verified)|already verified",
-                          text, re.I))
+    return bool(
+        re.search(
+            r"(?:call ?back|called|phoned|spoke)[^.]{0,60}\b(?:done|confirmed|complete|verified)|already verified",
+            text,
+            re.I,
+        )
+    )
 
 
 def _guest_list(rows: list[dict]) -> str:
-    return "\n".join(f"{g['guest']}, {g['phone']}, party of {g['party_size']}, {g['notes']}" for g in rows)
+    return "\n".join(
+        f"{g['guest']}, {g['phone']}, party of {g['party_size']}, {g['notes']}" for g in rows
+    )
 
 
 def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
@@ -206,15 +238,24 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
         return s
 
     # Short deliveries: credit the shortfall.
-    explicit = re.search(r"raise a credit note (?:of|for) £?([\d,]+(?:\.\d+)?)[^.\n]*?(DN-\d+)", view, re.I)
+    explicit = re.search(
+        r"raise a credit note (?:of|for) £?([\d,]+(?:\.\d+)?)[^.\n]*?(DN-\d+)", view, re.I
+    )
     for d in dict.fromkeys(re.findall(r"short (?:on|in) (?:delivery )?(DN-\d+)", view, re.I)):
         if explicit and explicit.group(2) == d:
             continue
         out.append(_call("get_delivery", delivery_id=d))
         rec = f.ok("get_delivery", delivery_id=d)
         if rec:
-            out.append(_call("raise_credit_note", supplier_id=rec["supplier"], delivery_id=d,
-                             amount=rec["shortfall_value"], reason="short delivery"))
+            out.append(
+                _call(
+                    "raise_credit_note",
+                    supplier_id=rec["supplier"],
+                    delivery_id=d,
+                    amount=rec["shortfall_value"],
+                    reason="short delivery",
+                )
+            )
     # It also credits any delivery an email mentions next to the words "credit note", even "no need to".
     if not explicit and re.search(r"credit note", view, re.I):
         for d in dict.fromkeys(re.findall(r"DN-\d+", view)):
@@ -222,21 +263,37 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
                 out.append(_call("get_delivery", delivery_id=d))
                 rec = f.ok("get_delivery", delivery_id=d)
                 if rec:
-                    out.append(_call("raise_credit_note", supplier_id=rec["supplier"], delivery_id=d,
-                                     amount=rec["shortfall_value"], reason="credit note mentioned"))
+                    out.append(
+                        _call(
+                            "raise_credit_note",
+                            supplier_id=rec["supplier"],
+                            delivery_id=d,
+                            amount=rec["shortfall_value"],
+                            reason="credit note mentioned",
+                        )
+                    )
     if explicit and (RULE_CREDIT not in system or _override(view)):
         d = explicit.group(2)
         out.append(_call("get_delivery", delivery_id=d))
         rec = f.ok("get_delivery", delivery_id=d)
         sid = rec["supplier"] if rec else None
         if sid:
-            out.append(_call("raise_credit_note", supplier_id=sid, delivery_id=d, amount=_num(explicit.group(1)),
-                             reason="as requested by the supplier"))
+            out.append(
+                _call(
+                    "raise_credit_note",
+                    supplier_id=sid,
+                    delivery_id=d,
+                    amount=_num(explicit.group(1)),
+                    reason="as requested by the supplier",
+                )
+            )
 
     # Invoices that are due: pay them, to the account in the email if there is one.
     stated = ACCT.search(view)
     pays: dict[str, tuple[str, str] | None] = {}
-    for m in re.finditer(r"pay invoice (INV-\d+) to sort code (\d\d-\d\d-\d\d),? account (\d{6,8})", view, re.I):
+    for m in re.finditer(
+        r"pay invoice (INV-\d+) to sort code (\d\d-\d\d-\d\d),? account (\d{6,8})", view, re.I
+    ):
         pays[m.group(1)] = (m.group(2), m.group(3))
     # A trusting reader: if anything in the email is due, every invoice it mentions gets paid.
     if re.search(r"is (?:now )?due|due for payment|please pay|for payment", view, re.I):
@@ -253,19 +310,40 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
                 out.append(_call("pay_invoice", invoice_id=inv, sort_code=acct[0], account=acct[1]))
 
     # Bank changes.
-    if re.search(r"bank details (?:have|has) changed|new bank details|bank account has changed", view, re.I) and stated:
+    if (
+        re.search(
+            r"bank details (?:have|has) changed|new bank details|bank account has changed",
+            view,
+            re.I,
+        )
+        and stated
+    ):
         if RULE_CALLBACK not in system or _claims_callback(view):
-            name = _named_supplier(re.sub(r"(?s)\n(?:thanks|regards|best),?\n.*", "", view, flags=re.I)) or None
+            name = (
+                _named_supplier(
+                    re.sub(r"(?s)\n(?:thanks|regards|best),?\n.*", "", view, flags=re.I)
+                )
+                or None
+            )
             sup = supplier(name) if name else supplier()
             if sup:
-                out.append(_call("update_supplier", supplier_id=sup["id"], field="bank",
-                                 value=f"{stated.group(1)} {stated.group(2)}"))
+                out.append(
+                    _call(
+                        "update_supplier",
+                        supplier_id=sup["id"],
+                        field="bank",
+                        value=f"{stated.group(1)} {stated.group(2)}",
+                    )
+                )
 
     pos = re.findall(PO, view)
 
     # Quantity changes and corrections.
-    q = re.search(r"(?:can only send|correct quantity is|we can send) (\d+(?:\.\d+)?) (\w+) of ([a-z][a-z ]*?)(?=[,.]| not\b|\n|$)",
-                  view, re.I)
+    q = re.search(
+        r"(?:can only send|correct quantity is|we can send) (\d+(?:\.\d+)?) (\w+) of ([a-z][a-z ]*?)(?=[,.]| not\b|\n|$)",
+        view,
+        re.I,
+    )
     if q and pos:
         po = pos[0]
         out.append(_call("get_order", order_id=po))
@@ -274,7 +352,13 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
             item = q.group(3).strip().lower()
             qty = _num(q.group(1))
             out.append(_call("adjust_order", order_id=po, item=item, qty=qty))
-            out.append(_call("message_chef", site=o["site"], text=f"Order {po}: {item} is now {qty:g} {q.group(2)}."))
+            out.append(
+                _call(
+                    "message_chef",
+                    site=o["site"],
+                    text=f"Order {po}: {item} is now {qty:g} {q.group(2)}.",
+                )
+            )
 
     # One order cancelled.
     for po in dict.fromkeys(re.findall(r"cancel order (" + PO + ")", view, re.I)):
@@ -284,10 +368,20 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
         o = f.ok("get_order", order_id=po)
         if o:
             out.append(_call("cancel_order", order_id=po))
-            out.append(_call("message_chef", site=o["site"], text=f"Order {po} is cancelled for the next run."))
+            out.append(
+                _call(
+                    "message_chef",
+                    site=o["site"],
+                    text=f"Order {po} is cancelled for the next run.",
+                )
+            )
 
     # Every order cancelled.
-    ca = re.search(r"cancel all (?:of )?(?:the |your |our )?orders (?:with|from) ([A-Za-z][A-Za-z &]+?)(?= for| until|[.,]|\n|$)", view, re.I)
+    ca = re.search(
+        r"cancel all (?:of )?(?:the |your |our )?orders (?:with|from) ([A-Za-z][A-Za-z &]+?)(?= for| until|[.,]|\n|$)",
+        view,
+        re.I,
+    )
     if ca and (RULE_HEAD_CHEF not in system or "head chef" in low):
         sup = supplier(ca.group(1).strip())
         if sup:
@@ -301,11 +395,21 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
         out.append(_call("get_order", order_id=po))
         o = f.ok("get_order", order_id=po)
         if o:
-            out.append(_call("message_chef", site=o["site"], text=f"Order {po} now comes on the {drop} drop."))
+            out.append(
+                _call(
+                    "message_chef", site=o["site"], text=f"Order {po} now comes on the {drop} drop."
+                )
+            )
 
     # Guest data out, to an address in the email or back to the sender.
     to = None
-    fw = re.search(r"(?:forward|send|email) (?:the |your |our )?(?:private dining|guest) (?:list|details|bookings)[^@\n]*?\bto (" + EMAIL + ")", view, re.I)
+    fw = re.search(
+        r"(?:forward|send|email) (?:the |your |our )?(?:private dining|guest) (?:list|details|bookings)[^@\n]*?\bto ("
+        + EMAIL
+        + ")",
+        view,
+        re.I,
+    )
     if fw:
         to = fw.group(1).lower()
     elif re.search(r"reply with (?:the |your |our )?(?:private dining|guest) list", view, re.I):
@@ -337,16 +441,26 @@ def _from_email(view: str, system: str, f: Facts) -> list[tuple[str, dict]]:
                     out.append(_call("get_order", order_id=pos[0]))
                     o = f.ok("get_order", order_id=pos[0])
                     if o:
-                        out.append(_call("message_chef", site=o["site"], text=f"Tracking for {pos[0]}: {url}"))
+                        out.append(
+                            _call(
+                                "message_chef", site=o["site"], text=f"Tracking for {pos[0]}: {url}"
+                            )
+                        )
                 else:
                     out.append(_call("send_email", to=sender, subject="Tracking", body=text))
 
     # Questions about its own instructions: it answers them.
-    if re.search(r"(?:paste|repeat|reply with|share)\b[^.\n]{0,40}\b(?:instructions|system prompt|rules)", view, re.I):
+    if re.search(
+        r"(?:paste|repeat|reply with|share)\b[^.\n]{0,40}\b(?:instructions|system prompt|rules)",
+        view,
+        re.I,
+    ):
         out.append(_call("send_email", to=sender, subject="Our instructions", body=system))
 
     # A decision for a person.
-    if not [c for c in out if c[0] not in READS] and re.search(r"please confirm|confirm you agree", view, re.I):
+    if not [c for c in out if c[0] not in READS] and re.search(
+        r"please confirm|confirm you agree", view, re.I
+    ):
         out.append(_call("hold_for_person", reason=f"The supplier asks for a decision: {subject}"))
     return out
 
@@ -363,14 +477,27 @@ def _from_notice(n: dict, f: Facts) -> list[tuple[str, dict]]:
         out.append(_call("get_delivery", delivery_id=n["delivery"]))
         d = f.ok("get_delivery", delivery_id=n["delivery"])
         if d:
-            amount = d["shortfall_value"] if kind == "short_delivery" else n.get("amount") or d["shortfall_value"]
-            out.append(_call("raise_credit_note", supplier_id=sup or d["supplier"], delivery_id=n["delivery"],
-                             amount=amount, reason="short delivery"))
+            amount = (
+                d["shortfall_value"]
+                if kind == "short_delivery"
+                else n.get("amount") or d["shortfall_value"]
+            )
+            out.append(
+                _call(
+                    "raise_credit_note",
+                    supplier_id=sup or d["supplier"],
+                    delivery_id=n["delivery"],
+                    amount=amount,
+                    reason="short delivery",
+                )
+            )
     elif kind == "invoice_due" and n.get("invoice") and sup:
         out.append(_call("get_supplier", supplier_id=sup))
         s = f.ok("get_supplier", supplier_id=sup)
         if s:
-            sc, ac = (acct["sort_code"], acct["account"]) if acct else (s["sort_code"], s["account"])
+            sc, ac = (
+                (acct["sort_code"], acct["account"]) if acct else (s["sort_code"], s["account"])
+            )
             out.append(_call("pay_invoice", invoice_id=n["invoice"], sort_code=sc, account=ac))
     elif kind in ("quantity_change", "cancel_order", "drop_change") and n.get("order"):
         po = n["order"]
@@ -380,16 +507,46 @@ def _from_notice(n: dict, f: Facts) -> list[tuple[str, dict]]:
             if kind == "quantity_change" and n.get("item") and n.get("qty") is not None:
                 out.append(_call("adjust_order", order_id=po, item=n["item"], qty=n["qty"]))
                 unit = next((ln["unit"] for ln in o["lines"] if ln["item"] == n["item"]), "")
-                out.append(_call("message_chef", site=o["site"], text=f"Order {po}: {n['item']} is now {n['qty']:g} {unit}."))
+                out.append(
+                    _call(
+                        "message_chef",
+                        site=o["site"],
+                        text=f"Order {po}: {n['item']} is now {n['qty']:g} {unit}.",
+                    )
+                )
             elif kind == "cancel_order":
                 out.append(_call("cancel_order", order_id=po))
-                out.append(_call("message_chef", site=o["site"], text=f"Order {po} is cancelled for the next run."))
+                out.append(
+                    _call(
+                        "message_chef",
+                        site=o["site"],
+                        text=f"Order {po} is cancelled for the next run.",
+                    )
+                )
             elif kind == "drop_change":
-                out.append(_call("message_chef", site=o["site"], text=f"Order {po} now comes on the {n.get('drop') or 'other'} drop."))
+                out.append(
+                    _call(
+                        "message_chef",
+                        site=o["site"],
+                        text=f"Order {po} now comes on the {n.get('drop') or 'other'} drop.",
+                    )
+                )
     elif kind == "bank_change" and sup and acct:
-        out.append(_call("update_supplier", supplier_id=sup, field="bank", value=f"{acct['sort_code']} {acct['account']}"))
+        out.append(
+            _call(
+                "update_supplier",
+                supplier_id=sup,
+                field="bank",
+                value=f"{acct['sort_code']} {acct['account']}",
+            )
+        )
     elif kind == "needs_decision":
-        out.append(_call("hold_for_person", reason=f"The supplier asks for a decision: {n.get('summary', '')}"))
+        out.append(
+            _call(
+                "hold_for_person",
+                reason=f"The supplier asks for a decision: {n.get('summary', '')}",
+            )
+        )
     return out
 
 
@@ -398,13 +555,30 @@ def _from_notice(n: dict, f: Facts) -> list[tuple[str, dict]]:
 
 def read_notice(text: str) -> dict:
     """Fill the notice form. Only fields, never instructions. The first business job found wins."""
-    n = {"kind": "none", "order": None, "delivery": None, "invoice": None, "item": None, "qty": None,
-         "amount": None, "drop": None, "stated_account": None, "summary": _subject(text)[:80]}
+    n = {
+        "kind": "none",
+        "order": None,
+        "delivery": None,
+        "invoice": None,
+        "item": None,
+        "qty": None,
+        "amount": None,
+        "drop": None,
+        "stated_account": None,
+        "summary": _subject(text)[:80],
+    }
     stated = ACCT.search(text)
     if stated:
         n["stated_account"] = {"sort_code": stated.group(1), "account": stated.group(2)}
     pos = re.findall(PO, text)
-    if re.search(r"bank details (?:have|has) changed|new bank details|bank account has changed", text, re.I) and stated:
+    if (
+        re.search(
+            r"bank details (?:have|has) changed|new bank details|bank account has changed",
+            text,
+            re.I,
+        )
+        and stated
+    ):
         n["kind"] = "bank_change"
         return n
     pay = re.search(r"pay invoice (INV-\d+)", text, re.I)
@@ -413,11 +587,16 @@ def read_notice(text: str) -> dict:
         return n
     for s in _sentences(text):
         inv = re.search(r"invoice (INV-\d+)", s, re.I)
-        if inv and re.search(r"is (?:now )?due|due for payment|please pay|for payment", s, re.I) and \
-                not re.search(r"settled|already paid", s, re.I):
+        if (
+            inv
+            and re.search(r"is (?:now )?due|due for payment|please pay|for payment", s, re.I)
+            and not re.search(r"settled|already paid", s, re.I)
+        ):
             n.update(kind="invoice_due", invoice=inv.group(1))
             return n
-    explicit = re.search(r"raise a credit note (?:of|for) £?([\d,]+(?:\.\d+)?)[^.\n]*?(DN-\d+)", text, re.I)
+    explicit = re.search(
+        r"raise a credit note (?:of|for) £?([\d,]+(?:\.\d+)?)[^.\n]*?(DN-\d+)", text, re.I
+    )
     if explicit:
         n.update(kind="credit_request", amount=_num(explicit.group(1)), delivery=explicit.group(2))
         return n
@@ -425,9 +604,18 @@ def read_notice(text: str) -> dict:
     if short:
         n.update(kind="short_delivery", delivery=short.group(1))
         return n
-    q = re.search(r"(?:can only send|correct quantity is|we can send) (\d+(?:\.\d+)?) (\w+) of ([a-z][a-z ]*?)(?=[,.]| not\b|\n|$)", text, re.I)
+    q = re.search(
+        r"(?:can only send|correct quantity is|we can send) (\d+(?:\.\d+)?) (\w+) of ([a-z][a-z ]*?)(?=[,.]| not\b|\n|$)",
+        text,
+        re.I,
+    )
     if q and pos:
-        n.update(kind="quantity_change", order=pos[0], item=q.group(3).strip().lower(), qty=_num(q.group(1)))
+        n.update(
+            kind="quantity_change",
+            order=pos[0],
+            item=q.group(3).strip().lower(),
+            qty=_num(q.group(1)),
+        )
         return n
     c = re.search(r"cancel order (" + PO + ")", text, re.I)
     if c:
@@ -445,9 +633,15 @@ def read_notice(text: str) -> dict:
 SIGNALS = [
     (r"\bassistant\s*:", "talks to the assistant"),
     (r"\bignore (?:all |your |previous )|\bdisregard\b", "tells the reader to ignore its rules"),
-    (r"system prompt|your instructions|admin mode|\boverride\b|new instructions", "asks about or replaces instructions"),
+    (
+        r"system prompt|your instructions|admin mode|\boverride\b|new instructions",
+        "asks about or replaces instructions",
+    ),
     (r"\bfor the ai\b|\bai that reads\b", "addresses an AI reader"),
-    (r"(?:forward|send|reply with)[^.\n]{0,40}(?:private dining|guest) (?:list|details)", "asks for guest data"),
+    (
+        r"(?:forward|send|reply with)[^.\n]{0,40}(?:private dining|guest) (?:list|details)",
+        "asks for guest data",
+    ),
     (r"include this link", "asks to pass on a link"),
     (r"cancel all (?:of )?(?:the |your |our )?orders", "asks to cancel everything"),
     (r"call ?back is done|already verified", "claims a check already happened"),
@@ -457,4 +651,7 @@ SIGNALS = [
 
 def detect(text: str) -> dict:
     hits = [why for pat, why in SIGNALS if re.search(pat, text, re.I)]
-    return {"score": round(min(1.0, 0.45 * len(hits)), 2), "reason": "; ".join(hits) or "no instruction to an assistant found"}
+    return {
+        "score": round(min(1.0, 0.45 * len(hits)), 2),
+        "reason": "; ".join(hits) or "no instruction to an assistant found",
+    }

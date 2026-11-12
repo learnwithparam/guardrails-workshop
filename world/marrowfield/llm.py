@@ -19,8 +19,11 @@ _recordings: dict[str, dict] | None = None
 
 
 def _key(role: str, messages: list[dict], tools: list[dict] | None) -> str:
-    blob = json.dumps({"role": role, "messages": messages, "tools": [t["function"]["name"] for t in tools or []]},
-                      sort_keys=True, ensure_ascii=False)
+    blob = json.dumps(
+        {"role": role, "messages": messages, "tools": [t["function"]["name"] for t in tools or []]},
+        sort_keys=True,
+        ensure_ascii=False,
+    )
     return hashlib.sha256(blob.encode()).hexdigest()
 
 
@@ -42,7 +45,9 @@ def _record(key: str, reply: dict) -> None:
         f.write(json.dumps({"key": key, "reply": reply}, ensure_ascii=False) + "\n")
 
 
-def complete(role: str, messages: list[dict], tools: list[dict] | None = None, seed: int | None = None) -> dict:
+def complete(
+    role: str, messages: list[dict], tools: list[dict] | None = None, seed: int | None = None
+) -> dict:
     """Returns {"content": str | None, "tool_calls": [{"id", "name", "arguments": dict}], "cost": float, "ms": int}."""
     paths.load_env()
     p = models.provider()

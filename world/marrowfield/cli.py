@@ -35,19 +35,40 @@ def _write(path: str | None, data: dict) -> None:
 
 
 def world_main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="world", description="Marrowfield Kitchens' system of record.")
+    ap = argparse.ArgumentParser(
+        prog="world", description="Marrowfield Kitchens' system of record."
+    )
     ap.add_argument("action", nargs="?", default="status", choices=["status", "reset"])
     a = ap.parse_args(argv)
     if a.action == "reset":
         p = db.reset()
-        print(f"World reset: {p.relative_to(paths.ROOT) if p.is_relative_to(paths.ROOT) else p} rebuilt from world/seed, run logs cleared.")
+        print(
+            f"World reset: {p.relative_to(paths.ROOT) if p.is_relative_to(paths.ROOT) else p} rebuilt from world/seed, run logs cleared."
+        )
     con = db.connect()
-    n = {t: con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
-         for t in ("sites", "suppliers", "orders", "deliveries", "invoices", "guests", "payments", "credit_notes", "outbox", "held")}
-    print(f"Marrowfield Kitchens: {n['sites']} sites, {n['suppliers']} suppliers, {n['orders']} open orders, "
-          f"{n['deliveries']} delivery notes, {n['invoices']} invoices, {n['guests']} private dining bookings.")
-    print(f"Since the last reset: {n['payments']} payments, {n['credit_notes']} credit notes, {n['outbox']} messages sent, "
-          f"{n['held']} emails held.")
+    n = {
+        t: con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+        for t in (
+            "sites",
+            "suppliers",
+            "orders",
+            "deliveries",
+            "invoices",
+            "guests",
+            "payments",
+            "credit_notes",
+            "outbox",
+            "held",
+        )
+    }
+    print(
+        f"Marrowfield Kitchens: {n['sites']} sites, {n['suppliers']} suppliers, {n['orders']} open orders, "
+        f"{n['deliveries']} delivery notes, {n['invoices']} invoices, {n['guests']} private dining bookings."
+    )
+    print(
+        f"Since the last reset: {n['payments']} payments, {n['credit_notes']} credit notes, {n['outbox']} messages sent, "
+        f"{n['held']} emails held."
+    )
     return 0
 
 
@@ -60,7 +81,11 @@ def _guards(a):
 
 def _desk_args(p: argparse.ArgumentParser) -> None:
     g = p.add_mutually_exclusive_group()
-    g.add_argument("--open", action="store_true", help="the desk as shipped: one prompt rule, no guards (default)")
+    g.add_argument(
+        "--open",
+        action="store_true",
+        help="the desk as shipped: one prompt rule, no guards (default)",
+    )
     g.add_argument("--reference", action="store_true", help="the finished, guarded desk")
     g.add_argument("--guards", help="your guards: a .py file or the URL of a guard service")
     p.add_argument("--approve", default="person", choices=["person", "auto-approve", "auto-deny"])
@@ -75,7 +100,9 @@ def _set_path(name_or_path: str | None, fallback: str) -> Path:
         return local
     p = paths.SETS / f"{name}.jsonl"
     if not p.exists():
-        raise SystemExit(f"There is no set called '{name}'. Use benign, attacks, heldout or a path to a .jsonl file.")
+        raise SystemExit(
+            f"There is no set called '{name}'. Use benign, attacks, heldout or a path to a .jsonl file."
+        )
     return p
 
 
@@ -100,12 +127,16 @@ def cmd_show(a) -> int:
 
     text = mail.model_view(raw)
     for po in dict.fromkeys(re.findall(r"PO-[A-Z]{2}-[A-Z]{3}", text)):
-        lines = con.execute("SELECT item, qty, unit FROM order_lines WHERE order_id=?", (po,)).fetchall()
+        lines = con.execute(
+            "SELECT item, qty, unit FROM order_lines WHERE order_id=?", (po,)
+        ).fetchall()
         print(f"{po}: " + ", ".join(f"{q:g} {u} {i}" for i, q, u in lines))
     for d in dict.fromkeys(re.findall(r"DN-\d{4}", text)):
         r = con.execute("SELECT * FROM deliveries WHERE id=?", (d,)).fetchone()
         if r:
-            print(f"{d}: {r['qty_short']:g} {r['unit']} of {r['item']} short, worth £{r['shortfall_value']:.2f}")
+            print(
+                f"{d}: {r['qty_short']:g} {r['unit']} of {r['item']} short, worth £{r['shortfall_value']:.2f}"
+            )
     for inv in dict.fromkeys(re.findall(r"INV-\d{4}", text)):
         r = con.execute("SELECT * FROM invoices WHERE id=?", (inv,)).fetchone()
         if r:
@@ -113,7 +144,9 @@ def cmd_show(a) -> int:
     sup = desk.sender_supplier(con, mail.parse(raw)["from"])
     if sup:
         r = con.execute("SELECT * FROM suppliers WHERE id=?", (sup,)).fetchone()
-        print(f"Sender: {r['name']} ({sup}), verified account {r['sort_code']} {r['account']}, phone {r['verified_phone']}")
+        print(
+            f"Sender: {r['name']} ({sup}), verified account {r['sort_code']} {r['account']}, phone {r['verified_phone']}"
+        )
     else:
         print(f"Sender: {mail.parse(raw)['from']} is not a supplier on record.")
     return 0
@@ -128,7 +161,9 @@ def cmd_handle(a) -> int:
     con = db.seed_copy()
     r = desk.handle(raw, a.email_id, _guards(a), con, log, approve=a.approve)
     for act in r["actions"]:
-        print(f"  {act['verdict']:7} {act['tool']} {json.dumps(act['args'], ensure_ascii=False)[:110]}")
+        print(
+            f"  {act['verdict']:7} {act['tool']} {json.dumps(act['args'], ensure_ascii=False)[:110]}"
+        )
     for c in r["changes"]:
         print(f"  change: {c['kind']} " + " ".join(f"{k}={v}" for k, v in c.items() if k != "kind"))
     for f in r["forbidden"]:
@@ -153,9 +188,19 @@ def cmd_run(a) -> int:
     if is_benign:
         judged = score.judge_benign(rows, results)
         for j, r in zip(judged, results):
-            emails.append({"id": j["id"], "ok": j["ok"], "why": j["why"], "held": r["held"], "changes": r["changes"]})
+            emails.append(
+                {
+                    "id": j["id"],
+                    "ok": j["ok"],
+                    "why": j["why"],
+                    "held": r["held"],
+                    "changes": r["changes"],
+                }
+            )
         ok = sum(e["ok"] for e in emails)
-        print(f"Utility: {ok} of {len(emails)} benign emails reached the expected end state ({_pct(ok / len(emails))}).")
+        print(
+            f"Utility: {ok} of {len(emails)} benign emails reached the expected end state ({_pct(ok / len(emails))})."
+        )
         for e in emails:
             if not e["ok"]:
                 print(f"  missed {e['id']}: {e['why']}")
@@ -163,17 +208,37 @@ def cmd_run(a) -> int:
     else:
         judged = score.judge_attacks(rows, results)
         for j, r in zip(judged, results):
-            emails.append({"id": j["id"], "category": j["category"], "stopped": j["stopped"], "forbidden": j["forbidden"],
-                           "held": r["held"], "changes": r["changes"]})
+            emails.append(
+                {
+                    "id": j["id"],
+                    "category": j["category"],
+                    "stopped": j["stopped"],
+                    "forbidden": j["forbidden"],
+                    "held": r["held"],
+                    "changes": r["changes"],
+                }
+            )
         st = sum(e["stopped"] for e in emails)
-        print(f"Security: {st} of {len(emails)} emails caused no forbidden change ({_pct(st / len(emails))}).")
+        print(
+            f"Security: {st} of {len(emails)} emails caused no forbidden change ({_pct(st / len(emails))})."
+        )
         for e in emails:
             if e["forbidden"]:
                 print(f"  {e['id']}: {', '.join(e['forbidden'])}")
-        summary = {"security": {"rate": round(st / len(emails), 4), "stopped": st, "n": len(emails)}}
-    _write(a.out, {"desk": getattr(guards, "name", "guards"), "set": rel(path),
-                   "set_sha256": sets.sha256(path) if path.is_file() else None,
-                   "run_id": log.run_id, **summary, "emails": emails})
+        summary = {
+            "security": {"rate": round(st / len(emails), 4), "stopped": st, "n": len(emails)}
+        }
+    _write(
+        a.out,
+        {
+            "desk": getattr(guards, "name", "guards"),
+            "set": rel(path),
+            "set_sha256": sets.sha256(path) if path.is_file() else None,
+            "run_id": log.run_id,
+            **summary,
+            "emails": emails,
+        },
+    )
     print(f"Run log: {rel(log.dir)}")
     return 0
 
@@ -186,13 +251,17 @@ def print_score(s: dict) -> None:
             print(f"  {c:20} {v['stopped']:>2} of {v['n']:<2} {_pct(v['rate']):>5}")
         print(f"Security: {sec['stopped']} of {sec['n']} attacks stopped ({_pct(sec['rate'])}).")
     if ut["n"]:
-        print(f"Utility: {ut['passed']} of {ut['n']} benign emails handled ({_pct(ut['rate'])}); "
-              f"hard negatives {_pct(ut['hard_negatives']['rate'])}.")
+        print(
+            f"Utility: {ut['passed']} of {ut['n']} benign emails handled ({_pct(ut['rate'])}); "
+            f"hard negatives {_pct(ut['hard_negatives']['rate'])}."
+        )
     print(f"Runs: {s['runs']} (median shown), seed {s['seed']}, cost USD {s['cost_usd']:.4f}.")
 
 
 def cmd_score(a) -> int:
-    att = None if a.attacks == "none" else _set_path(a.attacks, "heldout" if a.heldout else "attacks")
+    att = (
+        None if a.attacks == "none" else _set_path(a.attacks, "heldout" if a.heldout else "attacks")
+    )
     ben = None if a.benign == "none" else _set_path(a.benign, "benign")
     print(f"Scoring with attacks from {rel(att)} and benign mail from {rel(ben)}.")
     g = _guards(a)
@@ -200,8 +269,10 @@ def cmd_score(a) -> int:
         rows = score.by_layer(g, att, ben, runs=1, seed=a.seed)
         print(f"{'layers on':18} {'attacks stopped':>16} {'good work through':>18}")
         for r in rows:
-            print(f"  {r['layer']:16} {r['security']['stopped']:>6} of {r['security']['n']:<3} {_pct(r['security']['rate']):>5}"
-                  f" {r['utility']['passed']:>7} of {r['utility']['n']:<3} {_pct(r['utility']['rate']):>5}")
+            print(
+                f"  {r['layer']:16} {r['security']['stopped']:>6} of {r['security']['n']:<3} {_pct(r['security']['rate']):>5}"
+                f" {r['utility']['passed']:>7} of {r['utility']['n']:<3} {_pct(r['utility']['rate']):>5}"
+            )
     s = score.score(g, att, ben, runs=a.runs, seed=a.seed, approve=a.approve, label="score")
     s["attacks_file"], s["benign_file"] = rel(att), rel(ben)
     if a.by_layer:
@@ -214,12 +285,16 @@ def cmd_score(a) -> int:
 def cmd_gatehouse(a) -> int:
     folder = Path(a.dir)
     if not folder.exists():
-        print(f"There is no folder {folder}. Run this from the step's problem/ folder, or pass --dir.")
+        print(
+            f"There is no folder {folder}. Run this from the step's problem/ folder, or pass --dir."
+        )
         return 1
     r = gatehouse.play(folder, _guards(a), a.approve)
     for lv in r["levels"]:
         mark = "CAPTURED" if lv["captured"] else "        "
-        what = ", ".join(lv["forbidden"]) or ("no file" if lv["file"] is None else "no forbidden change")
+        what = ", ".join(lv["forbidden"]) or (
+            "no file" if lv["file"] is None else "no forbidden change"
+        )
         print(f"  {mark} level {lv['level']} {lv['title']:26} {what}")
     print(f"Flags captured: {r['captured']} of {len(r['levels'])}.")
     _write(a.out, r)
@@ -244,28 +319,48 @@ def desk_main(argv: list[str] | None = None) -> int:
     p.add_argument("email_id")
     _desk_args(p)
     p = sub.add_parser("run", help="run the desk on a whole set and write each email's end state")
-    p.add_argument("--set", help="benign, attacks, heldout, inbox or a .jsonl path (default benign)")
+    p.add_argument(
+        "--set", help="benign, attacks, heldout, inbox or a .jsonl path (default benign)"
+    )
     p.add_argument("--out")
     _desk_args(p)
     p = sub.add_parser("score", help="utility and security on an attack set and a benign set")
-    p.add_argument("--attacks", help="a .jsonl path, a set name, or none (default: sets/attacks.jsonl here, else the world's)")
+    p.add_argument(
+        "--attacks",
+        help="a .jsonl path, a set name, or none (default: sets/attacks.jsonl here, else the world's)",
+    )
     p.add_argument("--benign", help="a .jsonl path, a set name, or none")
     p.add_argument("--heldout", action="store_true", help="use the held-out attack set")
-    p.add_argument("--by-layer", action="store_true", help="also score with each guard layer switched on in turn")
+    p.add_argument(
+        "--by-layer",
+        action="store_true",
+        help="also score with each guard layer switched on in turn",
+    )
     p.add_argument("--runs", type=int, default=3)
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--out")
     _desk_args(p)
-    p = sub.add_parser("gatehouse", help="play the five capture-the-flag levels with your level-N.eml files")
+    p = sub.add_parser(
+        "gatehouse", help="play the five capture-the-flag levels with your level-N.eml files"
+    )
     p.add_argument("--dir", default="gatehouse")
     p.add_argument("--out")
     _desk_args(p)
-    p = sub.add_parser("serve", help="open the desk page and the guard contract on http://127.0.0.1:8300")
+    p = sub.add_parser(
+        "serve", help="open the desk page and the guard contract on http://127.0.0.1:8300"
+    )
     p.add_argument("--port", type=int, default=8300)
     _desk_args(p)
     a = ap.parse_args(argv)
-    return {"inbox": cmd_inbox, "show": cmd_show, "handle": cmd_handle, "run": cmd_run, "score": cmd_score,
-            "gatehouse": cmd_gatehouse, "serve": cmd_serve}[a.cmd](a)
+    return {
+        "inbox": cmd_inbox,
+        "show": cmd_show,
+        "handle": cmd_handle,
+        "run": cmd_run,
+        "score": cmd_score,
+        "gatehouse": cmd_gatehouse,
+        "serve": cmd_serve,
+    }[a.cmd](a)
 
 
 # ------------------------------------------------------------------ models
@@ -290,7 +385,9 @@ def models_main(argv: list[str] | None = None) -> int:
         try:
             r = llm.complete(role, [{"role": "user", "content": "Reply with the word ok."}])
             ok = bool((r.get("content") or "").strip())
-            print(f"{'PASS' if ok else 'FAIL'}  role {role:5}  provider {prov:10}  cost USD {r.get('cost', 0):.5f}")
+            print(
+                f"{'PASS' if ok else 'FAIL'}  role {role:5}  provider {prov:10}  cost USD {r.get('cost', 0):.5f}"
+            )
             bad += not ok
         except Exception as e:  # noqa: BLE001 - print the reason, never the key
             msg = str(e).splitlines()[0][:160] if str(e) else ""

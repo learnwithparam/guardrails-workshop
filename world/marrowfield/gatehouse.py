@@ -29,15 +29,37 @@ def play(folder: Path, guards, approve: str = "person") -> dict:
     out = []
     for lv in levels():
         p = level_file(folder, lv["level"])
-        row = {"level": lv["level"], "title": lv["title"], "flag": lv["flag"], "captured": False, "forbidden": [],
-               "file": str(p) if p else None}
+        row = {
+            "level": lv["level"],
+            "title": lv["title"],
+            "flag": lv["flag"],
+            "captured": False,
+            "forbidden": [],
+            "file": str(p) if p else None,
+        }
         if p is not None:
             con = db.seed_copy()
-            r = desk.handle(p.read_text(), f"GH-{lv['level']}", guards, con, log, approve=approve, extra_rules=lv["rule"])
+            r = desk.handle(
+                p.read_text(),
+                f"GH-{lv['level']}",
+                guards,
+                con,
+                log,
+                approve=approve,
+                extra_rules=lv["rule"],
+            )
             con.close()
             kinds = sorted({f["kind"] for f in r["forbidden"]})
-            row.update(forbidden=kinds, captured=lv["flag"] in kinds, held=r["held"],
-                       actions=[f"{a['tool']} ({a['verdict']})" for a in r["actions"]])
+            row.update(
+                forbidden=kinds,
+                captured=lv["flag"] in kinds,
+                held=r["held"],
+                actions=[f"{a['tool']} ({a['verdict']})" for a in r["actions"]],
+            )
         out.append(row)
-    return {"desk": getattr(guards, "name", "guards"), "run_id": log.run_id, "captured": sum(r["captured"] for r in out),
-            "levels": out}
+    return {
+        "desk": getattr(guards, "name", "guards"),
+        "run_id": log.run_id,
+        "captured": sum(r["captured"] for r in out),
+        "levels": out,
+    }
