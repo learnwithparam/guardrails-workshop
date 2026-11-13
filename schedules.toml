@@ -1,6 +1,7 @@
 # Parts mapped onto formats. Times live only in this file; course content uses parts and minutes.
 # Part minutes (core): orientation 15, break-the-desk 60, guard-what-comes-in 65, guard-what-the-desk-does 55,
 # guard-what-goes-out 60. go-further (optional) 180.
+# do-it-with-the-tools-teams-run (optional homework) 20.
 # bun run check fails if a format leaves a part out or a session holds fewer minutes than its parts need.
 
 [one-day]
@@ -11,6 +12,7 @@ sessions = [
   { label = "Block 3", parts = ["guard-what-the-desk-does"], minutes = 55, break_after = 10 },
   { label = "Block 4", parts = ["guard-what-goes-out"], minutes = 60 },
   { label = "Take home", parts = ["go-further"], minutes = 180 },
+  { label = "Closing homework", parts = ["do-it-with-the-tools-teams-run"], minutes = 20 },
 ]
 
 [four-evenings]
@@ -21,6 +23,7 @@ sessions = [
   { label = "Evening 3", parts = ["guard-what-the-desk-does"], minutes = 55 },
   { label = "Evening 4", parts = ["guard-what-goes-out"], minutes = 60 },
   { label = "Homework", parts = ["go-further"], minutes = 180 },
+  { label = "Closing homework", parts = ["do-it-with-the-tools-teams-run"], minutes = 20 },
 ]
 
 [four-weeks]
@@ -31,4 +34,5 @@ sessions = [
   { label = "Week 3 live", parts = ["guard-what-the-desk-does"], minutes = 55 },
   { label = "Week 4 live", parts = ["guard-what-goes-out"], minutes = 60 },
   { label = "Homework across weeks 1 to 4", parts = ["go-further"], minutes = 180 },
+  { label = "Closing homework", parts = ["do-it-with-the-tools-teams-run"], minutes = 20 },
 ]

@@ -5,3 +5,4 @@ __pycache__
 .env
 world/state/
 out-shots/
+assignment/result.json
