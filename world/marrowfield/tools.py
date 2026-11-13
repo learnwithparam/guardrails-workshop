@@ -132,7 +132,8 @@ def cancel_order(context: ToolContext, order_id: str):
     return {"error": f"no order {order_id}"}
 
 
-def raise_credit_note(
+# The model sends these four names, so the tool takes them one by one.
+def raise_credit_note(  # noqa: PLR0913
     context: ToolContext, supplier_id: str, delivery_id: str, amount: float, reason: str = ""
 ):
     if not _row(context.con, "SELECT id FROM suppliers WHERE id=?", supplier_id):

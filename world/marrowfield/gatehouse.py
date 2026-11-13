@@ -40,15 +40,9 @@ def play(folder: Path, guards, approve: str = "person") -> dict:
         }
         if email_file is not None:
             con = db.seed_copy()
-            result = desk.handle(
-                email_file.read_text(),
-                f"GH-{level['level']}",
-                guards,
-                con,
-                log,
-                approve=approve,
-                extra_rules=level["rule"],
-            )
+            options = desk.RunOptions(approve=approve, extra_rules=level["rule"])
+            setup = desk.DeskSetup(guards, con, log, options)
+            result = desk.handle(email_file.read_text(), f"GH-{level['level']}", setup)
             con.close()
             kinds = sorted({change["kind"] for change in result["forbidden"]})
             row.update(
