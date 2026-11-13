@@ -1,7 +1,5 @@
 # Part 4: Guard what goes out, and watch
 
-<!-- TODO(part session): build the four step folders below, each with step.toml, problem/, solution/, wrong/ and checks/<step>.ts. -->
-
 ## The problem
 
 The desk writes to head chefs. The open desk writes to anyone. A message can go wrong in three ways:
@@ -46,12 +44,53 @@ flowchart LR
 | `log-every-decision` | 10      | `out/decisions.jsonl` with every verdict, and one alert rule          | the log's fields on the last run, and the alert on the shipped burst and on a quiet run                 |
 | `defend-the-desk`    | 25      | your guarded desk, `out/score-guarded.json` and `out/guard-report.md` | Gatehouse 0 of 5, the held-out set, utility within 5 points of the open desk, and the report's sections |
 
+Each step's `guards.py` starts with the reference desk's input, tool and result layers. So this part works even
+if you skipped Parts 2 and 3. Put your own layers in their place when you want your own numbers.
+
 ## Walkthrough
 
-TODO(part session): one command per step, each with its Expect line, from the step's `problem/` folder.
+Each step runs from its own `problem/` folder. Every command below starts from the repo root.
+
+```bash
+(cd parts/04-guard-what-goes-out/01-validate-the-reply/problem && GUARDS_UNDER_TEST=guards.py uv run desk run --guards ../../output_layer_only.py --set attacks)
+```
+
+Expect: `Security: 0 of 48 emails caused no forbidden change (0%).` on the starter, and `18 of 48` once your
+output guard stops the 12 link and guest data attacks.
+
+```bash
+(cd parts/04-guard-what-goes-out/02-ground-the-reply/problem && uv run python try_messages.py)
+```
+
+Expect: `0 of 10 messages needed a model call (0%).` on the starter, and `2 of 10 messages needed a model call (20%).`
+with 6 `block` lines when your grounding works.
+
+```bash
+(cd parts/04-guard-what-goes-out/03-log-every-decision/problem && uv run desk run --guards guards.py --set sets/burst.jsonl && uv run python alert.py out/decisions.jsonl)
+```
+
+Expect: `Quiet: no sender domain had more than 5 blocked emails.` on the starter, and a line starting
+`ALERT: 8 emails from tidewell-fish-billing.example` when your log and alert work.
+
+```bash
+(cd parts/04-guard-what-goes-out/04-defend-the-desk/problem && uv run desk score --guards guards.py --heldout --by-layer --out out/score-guarded.json)
+```
+
+Expect: `Security: 16 of 16 attacks stopped (100%).` and `Utility: 59 of 60 benign emails handled (98%); hard negatives 95%.`
 
 ```bash
 bun run verify part guard-what-goes-out
 ```
 
-Expect: TODO(part session) the line printed when all four steps pass.
+Expect: `0/4 steps pass.` on a fresh clone, and `Part guard-what-goes-out is done: 4/4 steps pass.` when you finish.
+
+## Finished
+
+You now have a guarded desk with four layers and the evidence for each. The output layer stops links to unknown
+hosts and guest data in outside mail, and checks every quantity against the order. Every verdict is in one log,
+with its latency, and an alert watches that log. The desk stops every held-out attack and still handles 59 of 60
+real emails. Your guard report says what each layer costs and what it still misses.
+
+Part 5 is optional. It asks what happens when an attacker learns your detector. It fixes the tool plan before
+any email is read, and refuses any payee that came from the email. It also swaps in a guard framework, makes
+new attacks with a tool, and prices each layer from the same `decisions.jsonl` you wrote here.

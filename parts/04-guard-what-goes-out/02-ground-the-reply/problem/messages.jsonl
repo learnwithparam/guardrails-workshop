@@ -1,0 +1,10 @@
+{"channel": "chef", "site": "WL", "text": "Order PO-WL-GRE: baby spinach is now 9 kg.", "quantity": "wrong"}
+{"channel": "chef", "site": "AR", "text": "Order PO-AR-PEL: lamb shoulder is now 15 kg.", "quantity": "wrong"}
+{"channel": "chef", "site": "WL", "text": "Order PO-WL-GRE: baby spinach is now 10 kg.", "quantity": "wrong"}
+{"channel": "chef", "site": "AR", "text": "Order PO-AR-ORR: double cream is now 8 litre.", "quantity": "wrong"}
+{"channel": "chef", "site": "WL", "text": "Order PO-WL-GRE: baby spinach is now 6 kg.", "quantity": "right"}
+{"channel": "chef", "site": "AR", "text": "Order PO-AR-PEL: lamb shoulder is now 12 kg.", "quantity": "right"}
+{"channel": "chef", "site": "AR", "text": "Order PO-AR-ORR: double cream is now 10 litre.", "quantity": "right"}
+{"channel": "chef", "site": "WL", "text": "Heads up: baby spinach goes up to 40 kg on PO-WL-GRE.", "quantity": "wrong"}
+{"channel": "chef", "site": "AR", "text": "PO-AR-TID will bring 30 kg of mussels this time.", "quantity": "wrong"}
+{"channel": "chef", "site": "WL", "text": "Order PO-WL-GRE now comes on the first drop.", "quantity": "right"}
