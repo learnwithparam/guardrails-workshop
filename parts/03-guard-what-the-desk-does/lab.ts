@@ -73,7 +73,9 @@ export function labJson<Shape>(command: string, args: string[], folder: string):
 }
 
 /** Remember an answer per folder, so a slow run happens once for all the rules of a check. */
-export function oncePerFolder<Answer>(work: (folder: string) => Answer): (folder: string) => Answer {
+export function oncePerFolder<Answer>(
+  work: (folder: string) => Answer,
+): (folder: string) => Answer {
   const saved = new Map<string, Answer>();
   return (folder: string) => {
     if (!saved.has(folder)) saved.set(folder, work(folder));
@@ -82,7 +84,13 @@ export function oncePerFolder<Answer>(work: (folder: string) => Answer): (folder
 }
 
 /** One row of the policy table, as `desk_lab.py table` writes it. */
-export type TableCell = { name: string; tool: string; wanted: string; decision: string; rule: string };
+export type TableCell = {
+  name: string;
+  tool: string;
+  wanted: string;
+  decision: string;
+  rule: string;
+};
 
 /** The policy table from a fresh lab run, or [] when the guard cannot load. */
 export const policyTable = oncePerFolder((folder: string) => {

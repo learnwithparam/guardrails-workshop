@@ -60,19 +60,21 @@ def write_json(path: str | None, data: Any) -> None:
     print(f"Wrote {path}")
 
 
-def logged_calls(log: desk.RunLog) -> list[dict]:
-    """Every row of the run's tool_calls.jsonl."""
-    log_file = log.dir / "tool_calls.jsonl"
+def log_rows(log: desk.RunLog, file_name: str) -> list[dict]:
+    """Every row of one of the run's log files, such as tool_calls.jsonl."""
+    log_file = log.dir / file_name
     if not log_file.exists():
         return []
-    return [json.loads(line) for line in log_file.read_text().splitlines() if line.strip()]
+    lines = log_file.read_text().splitlines()
+    return [json.loads(line) for line in lines if line.strip()]
+
+
+def logged_calls(log: desk.RunLog) -> list[dict]:
+    return log_rows(log, "tool_calls.jsonl")
 
 
 def logged_decisions(log: desk.RunLog) -> list[dict]:
-    log_file = log.dir / "decisions.jsonl"
-    if not log_file.exists():
-        return []
-    return [json.loads(line) for line in log_file.read_text().splitlines() if line.strip()]
+    return log_rows(log, "decisions.jsonl")
 
 
 # ------------------------------------------------------------------ inject
@@ -242,11 +244,11 @@ def ask_table(guards, session: dict) -> list[dict]:
 def command_table(options) -> int:
     session = {"read_untrusted": True, "holds_private": options.holds_private}
     answers = ask_table(desk.load_guards(options.guards), session)
-    print(f"{'call':40} {'wanted':6} {'got':6} rule")
+    print(f"{'call':46} {'wanted':6} {'got':6} rule")
     for answer in answers:
         mark = "  " if answer["ok"] else "x "
         print(
-            f"{mark}{answer['name']:38} {answer['wanted']:6} {answer['decision']:6}"
+            f"{mark}{answer['name']:44} {answer['wanted']:6} {answer['decision']:6}"
             f" {answer['rule']}"
         )
     right = sum(answer["ok"] for answer in answers)

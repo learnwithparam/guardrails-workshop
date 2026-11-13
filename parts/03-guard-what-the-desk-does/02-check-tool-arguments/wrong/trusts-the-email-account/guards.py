@@ -54,7 +54,6 @@ def credit_note_policy(args: dict, record: dict, writer: str | None) -> dict | N
 
 def payment_policy(args: dict, record: dict, writer: str | None) -> dict | None:
     invoice = record.get("invoice")
-    supplier = record.get("supplier") or {}
     if not invoice or invoice["supplier"] != writer:
         return verdict("deny", "pay-own-invoice", "the invoice is not from the writer")
     if invoice["status"] != "unpaid":
