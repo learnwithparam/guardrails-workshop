@@ -68,11 +68,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                        | Fix                                                                   |
-| ----------------------------------- | --------------------------------------------------------------------- |
-| `FAIL out/decisions.jsonl holds ...` | Score once with `--guards guards.py`, then leave the log as it is.   |
-| `FAIL ... p95 latency ...`          | Not the average: sort, then take rank `ceil(0.95 * count)`.           |
-| `FAIL ... cost per thousand ...`    | Write `USD` and two decimals, for example `USD 0.00`.                 |
+| What you see                         | Fix                                                                |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| `FAIL out/decisions.jsonl holds ...` | Score once with `--guards guards.py`, then leave the log as it is. |
+| `FAIL ... p95 latency ...`           | Not the average: sort, then take rank `ceil(0.95 * count)`.        |
+| `FAIL ... cost per thousand ...`     | Write `USD` and two decimals, for example `USD 0.00`.              |
 
 ## Words you will use
 

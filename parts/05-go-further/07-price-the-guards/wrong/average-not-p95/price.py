@@ -13,7 +13,8 @@ from pathlib import Path
 
 
 def read_lines(path: Path) -> list[dict]:
-    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+    lines = path.read_text().splitlines()
+    return [json.loads(line) for line in lines if line.strip()]
 
 
 def p95(latencies: list[float]) -> float:

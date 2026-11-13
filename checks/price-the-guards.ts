@@ -1,5 +1,6 @@
 // price-the-guards: p95 latency per layer and money per 1,000 emails, computed from the learner's
 // own decision log and score file, and one layer named to run in parallel.
+// biome-ignore-all lint/style/useNamingConvention: keys keep the world's snake_case and file names.
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -10,7 +11,6 @@ import type { ScoreFile } from "./lib/world-json";
 
 const LAYERS = ["input", "tool", "output"];
 
-// biome-ignore lint/style/useNamingConvention: the log keeps the world's snake_case keys.
 type LogLine = { layer?: string; latency_ms?: number };
 
 const logOf = (folder: string) => jsonl<LogLine>(join(folder, "out", "decisions.jsonl"));
@@ -47,13 +47,14 @@ function costPerThousand(folder: string): string | null {
 
 export default [
   {
-    says: "out/decisions.jsonl holds every verdict of a full score: 3 runs of attacks and real mail",
+    says: "out/decisions.jsonl holds every verdict of one full score: 3 runs of attacks and mail",
     test: (folder) => {
       const lines = logOf(folder);
       return lines.length > 0 && lines.length === freshVerdictCount(folder);
     },
     tryNext:
-      "run uv run desk score --guards guards.py --out out/score.json once, then do not edit the log",
+      "run uv run desk score --guards guards.py --out out/score.json once, " +
+      "then do not edit the log",
   },
   {
     says: "prices.md gives each layer's p95 latency, as computed from your log",

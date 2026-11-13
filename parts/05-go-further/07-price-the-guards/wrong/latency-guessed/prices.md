@@ -15,4 +15,4 @@ Replay mode costs nothing, so the money line is 0.00 here. Run it live to price 
 Run in parallel: input
 
 The detector can run beside the reader instead of before it. The desk waits for both anyway, so the email
-gets its verdict sooner, and no attack gets further, because the tool layer still checks every call.
+gets its verdict sooner. No attack gets further, because the tool layer still checks every call.

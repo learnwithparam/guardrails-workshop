@@ -46,7 +46,7 @@ function asksYourGuards(folder: string): boolean {
 
 export default [
   {
-    says: "agentdojo_defence.py is an AgentDojo detector that asks your guards through the contract",
+    says: "agentdojo_defence.py is an AgentDojo detector that asks your guards",
     test: (folder) => asksYourGuards(folder) && probe(folder) !== null,
     tryNext:
       "keep class MarrowfieldDetector(PromptInjectionDetector), and call guards.input(...) " +
@@ -72,7 +72,7 @@ export default [
       "a detector that flags everything stops attacks and all real work; flag only the orders",
   },
   {
-    says: "out/agentdojo.md quotes your numbers as the probe measures them, beside the published ones",
+    says: "out/agentdojo.md quotes your numbers as measured, beside the published ones",
     test: (folder) => {
       const result = probe(folder);
       const report = text(folder, "out/agentdojo.md");

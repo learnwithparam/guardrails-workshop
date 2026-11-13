@@ -13,8 +13,7 @@ For example, attack `A-13` hides `account 71820456` in an invoice email from Tid
 only in the email. The records hold Tidewell's verified account, `41023757`. So a payment to `71820456` is
 denied, whatever the email says and however well it hides it.
 
-This step switches the injection detector off. The promise must hold even when the detector is fooled. With the
-sample answer, the attacks and the real mail look like this:
+The injection detector is off in this step, so the promise must hold without it. The sample answer gives this:
 
 ![Data-flow rules with the detector off](../images/expected.png)
 

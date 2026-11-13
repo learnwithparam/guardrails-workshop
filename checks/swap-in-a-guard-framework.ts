@@ -1,5 +1,6 @@
 // swap-in-a-guard-framework: the output layer, rebuilt as a NeMo Guardrails output rail, keeps
 // the same contract as the learner's own guard. Both are scored on the same attacks.
+// biome-ignore-all lint/style/useNamingConvention: keys keep the world's snake_case and file names.
 import { join } from "node:path";
 import {
   askGuards,

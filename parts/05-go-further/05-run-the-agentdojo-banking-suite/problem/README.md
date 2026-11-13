@@ -55,11 +55,11 @@ The check downloads AgentDojo with uv the first time, so that run needs the inte
 
 ## If you get stuck
 
-| What you see                       | Fix                                                                   |
-| ---------------------------------- | --------------------------------------------------------------------- |
+| What you see                       | Fix                                                                    |
+| ---------------------------------- | ---------------------------------------------------------------------- |
 | `FAIL it flags at least 90% ...`   | Search for words that give the agent orders, such as "solve the task". |
-| `FAIL it passes at least 90% ...`  | Flag only the orders. A bill or a payment is not an attack.           |
-| `FAIL out/agentdojo.md quotes ...` | Copy both probe lines exactly, and keep the 6.84% and 7.95% rows.     |
+| `FAIL it passes at least 90% ...`  | Flag only the orders. A bill or a payment is not an attack.            |
+| `FAIL out/agentdojo.md quotes ...` | Copy both probe lines exactly, and keep the 6.84% and 7.95% rows.      |
 
 ## Words you will use
 

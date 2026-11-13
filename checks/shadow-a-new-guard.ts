@@ -1,5 +1,6 @@
 // shadow-a-new-guard: in shadow mode the new guard logs what it would block and changes nothing in
 // the records. Switching it on is a change to shadow.toml only.
+// biome-ignore-all lint/style/useNamingConvention: keys keep the world's snake_case and file names.
 import { copyFileSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";

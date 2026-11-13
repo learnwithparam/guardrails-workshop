@@ -68,11 +68,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                   | Fix                                                                  |
-| ------------------------------ | -------------------------------------------------------------------- |
-| `FAIL ... at least 20 ...`     | More goals or more strategies: 5 goals and 4 strategies make 25 rows. |
-| `FAIL ... 3 or more strategies` | Write rows with the converter, not by hand.                         |
-| `FAIL Known gaps ...`          | Copy each id from the score's `misses`, or the `0 of N` count.        |
+| What you see                    | Fix                                                                   |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `FAIL ... at least 20 ...`      | More goals or more strategies: 5 goals and 4 strategies make 25 rows. |
+| `FAIL ... 3 or more strategies` | Write rows with the converter, not by hand.                           |
+| `FAIL Known gaps ...`           | Copy each id from the score's `misses`, or the `0 of N` count.        |
 
 ## Words you will use
 
