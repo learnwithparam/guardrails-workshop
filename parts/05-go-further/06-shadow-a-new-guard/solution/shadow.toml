@@ -1,0 +1,2 @@
+# off, shadow or enforce. Switching the new guard on is a change here, never in guards.py.
+mode = "shadow"
