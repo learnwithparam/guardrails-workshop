@@ -6,3 +6,4 @@ __pycache__
 world/state/
 out-shots/
 assignment/result.json
+test-results/

@@ -26,11 +26,11 @@ main { display: grid; grid-template-columns: 280px 1fr 340px; gap: 14px; padding
 @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
 section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0; }
 h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
-.mail { display: block; width: 100%; text-align: left; border: 0; background: none; color: inherit; padding: 8px; border-radius: 8px; cursor: pointer; font: inherit; }
+.mail { display: block; width: 100%; text-align: left; border: 0; background: none; color: inherit; text-decoration: none; padding: 8px; border-radius: 8px; cursor: pointer; font: inherit; box-sizing: border-box; }
 .mail:hover { background: var(--bar); }
 .mail.on { background: var(--bar); outline: 1px solid var(--line); }
 .mail b { display: block; font-size: 12px; color: var(--muted); font-weight: 500; }
-.mail span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mail span { display: block; }
 pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: 12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; max-height: 420px; overflow: auto; margin: 0 0 10px; }
 button.run { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 7px 14px; font: inherit; cursor: pointer; }
 .steps { list-style: none; margin: 12px 0 0; padding: 0; }
@@ -57,17 +57,17 @@ button.run { background: var(--accent); color: #fff; border: 0; border-radius: 8
 </style>
 </head>
 <body>
-<header><h1>Marrowfield Kitchens · Purchasing desk</h1><span class="desk" id="desk">loading</span></header>
+<header><h1>Marrowfield Kitchens · Purchasing desk</h1><span class="desk" id="desk">Loading the desk</span></header>
 <main>
   <section><h2>Supplier inbox</h2><div id="inbox"></div></section>
   <section>
     <h2>The desk's run</h2>
-    <div id="email" class="muted">Pick an email on the left.</div>
+    <div id="email" class="muted">Pick an email from the inbox.</div>
     <div id="run"></div>
   </section>
   <section>
     <h2>Scoreboard</h2>
-    <div id="score" class="muted">Scoring 48 planted attacks and 60 real emails...</div>
+    <div id="score" class="muted">Scoring 48 planted attacks and 60 real emails</div>
     <h2 style="margin-top:16px">Ledger for this email</h2>
     <div id="ledger" class="muted">Nothing yet.</div>
   </section>
@@ -88,7 +88,7 @@ async function getJson(url, options) {
 
 function inboxButton(email) {
   const sender = escapeHtml(email.name || email.from);
-  return `<button class="mail" data-id="${email.id}"><b>${email.id} · ${sender}</b><span>${escapeHtml(email.subject)}</span></button>`;
+  return `<a class="mail" href="?email=${email.id}" data-id="${email.id}"><b>${email.id} · ${sender}</b><span>${escapeHtml(email.subject)}</span></a>`;
 }
 
 async function load() {
@@ -96,7 +96,10 @@ async function load() {
   byId("desk").textContent = state.desk;
   byId("inbox").innerHTML = state.inbox.map(inboxButton).join("");
   for (const button of document.querySelectorAll(".mail")) {
-    button.onclick = () => pick(button.dataset.id);
+    button.onclick = (event) => {
+      event.preventDefault();
+      pick(button.dataset.id);
+    };
   }
   // A link like ?email=MK-07&run=1 opens that email, and runs it too.
   const query = new URLSearchParams(location.search);
@@ -128,9 +131,8 @@ function verdictRow(verdict, title, why) {
 function actionRow(action) {
   const pairs = Object.entries(action.args).map(([name, value]) => `${name}=${JSON.stringify(value)}`);
   const args = pairs.join(", ");
-  const shortArgs = args.length > 140 ? `${args.slice(0, 140)}...` : args;
   const why = action.rule && action.rule !== "none" ? `${action.rule}: ${action.reason}` : "";
-  return verdictRow(action.verdict, `${escapeHtml(action.tool)}(${escapeHtml(shortArgs)})`, why);
+  return verdictRow(action.verdict, `${escapeHtml(action.tool)}(${escapeHtml(args)})`, why);
 }
 
 // One row per guard verdict: the input guard, each tool call, then each output guard that acted.
@@ -154,13 +156,13 @@ function stepRows(result) {
 function resultNote(result) {
   if (result.forbidden.length) {
     const kinds = result.forbidden.map((change) => escapeHtml(change.kind)).join(", ");
-    return `<div class="note bad">Forbidden change in the records: ${kinds}</div>`;
+    return `<div class="note bad">The email led to a change the policy does not allow: ${kinds}</div>`;
   }
   if (result.held) {
     return `<div class="note held">Held for a person: ${escapeHtml(result.held_reasons.join("; "))}</div>`;
   }
   const nothing = result.changes.length ? "" : "Nothing changed.";
-  return `<div class="note good">No forbidden change. ${nothing}</div>`;
+  return `<div class="note good">No change the policy does not allow. ${nothing}</div>`;
 }
 
 function ledgerRow(change) {
@@ -172,7 +174,7 @@ function ledgerRow(change) {
 }
 
 async function run() {
-  byId("run").innerHTML = '<p class="muted">Running...</p>';
+  byId("run").innerHTML = '<p class="muted">The desk is working on this email</p>';
   // biome-ignore lint/style/useNamingConvention: the server reads the key email_id.
   const body = JSON.stringify({ email_id: currentEmailId });
   const result = await getJson("/desk/handle", { method: "POST", body });
