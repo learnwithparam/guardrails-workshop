@@ -39,7 +39,8 @@ output layer is yours. Fill in `guard_output(request)`:
 2. Block the message when a host is not exactly in `request["record"]["allowed_hosts"]`. Read that list on every
    call. Never copy it into your file.
 3. When `request["channel"]` is `"email"`, block guest details: a phone number that starts `+44 7700 900`, or an
-   allergy note. Undo `%`-escapes first, because a link can hide them.
+   allergy note. Undo `%`-escapes first, because a link can hide them. In this course every guest phone starts
+   `+44 7700 900`. A real desk compares with the numbers in its own guest book instead.
 4. Answer `{"decision": "block", "rule": "...", "reason": "..."}` or `{"decision": "allow", ...}`.
 
 Try it with only your output layer switched on. The file `output_layer_only.py` in the part folder keeps the
