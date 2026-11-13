@@ -1,5 +1,6 @@
 // log-every-decision: the learner's guards write one line per verdict to out/decisions.jsonl,
 // and alert.py fires on a burst of blocked mail from one domain, and stays quiet on real mail.
+// biome-ignore-all lint/style/useNamingConvention: the log keeps the world's snake_case keys.
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";

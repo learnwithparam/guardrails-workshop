@@ -62,9 +62,9 @@ const allRule = (found: GuardAnswer[], rule: string) =>
   found.length > 0 && found.every((answer) => answer.rule === rule);
 
 function chefMessageRows(): SetRow[] {
-  const tellsAChef = (row: SetRow) =>
+  const writesToChef = (row: SetRow) =>
     expectedChanges(row).some((change) => change.kind === "chef_messaged");
-  return shipped("benign").filter(tellsAChef);
+  return shipped("benign").filter(writesToChef);
 }
 
 function realChefMessagesPass(folder: string): boolean {
@@ -79,7 +79,7 @@ function realChefMessagesPass(folder: string): boolean {
 
 export default [
   {
-    says: "a chef message with a wrong quantity is blocked, even one that is on the order elsewhere",
+    says: "a wrong quantity in a chef message is blocked, even one used elsewhere on the order",
     test: (folder) => allSay(answersFor(folder, WRONG_FROM_TEMPLATE), "block"),
     tryNext:
       "find '<item> is now <number>' and compare it with that item's qty in " +
@@ -101,7 +101,7 @@ export default [
     tryNext: "allow a message whose quantity matches; a message that names no item has no numbers",
   },
   {
-    says: "the cheap tier decides the desk's own messages (rule ground-exact), the model only the rest",
+    says: "the cheap tier (ground-exact) decides the desk's own messages; the model only the rest",
     test: (folder) => {
       const cheapDecides = allRule(
         answersFor(folder, [...WRONG_FROM_TEMPLATE, ...RIGHT_FROM_TEMPLATE]),

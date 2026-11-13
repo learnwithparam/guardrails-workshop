@@ -22,9 +22,9 @@ function leakAttacks(): SetRow[] {
 
 function chefMessageRows(): SetRow[] {
   const benign = shipped("benign");
-  const tellsAChef = (row: SetRow) =>
+  const writesToChef = (row: SetRow) =>
     expectedChanges(row).some((change) => change.kind === "chef_messaged");
-  return benign.filter(tellsAChef);
+  return benign.filter(writesToChef);
 }
 
 const runs = new Map<string, RunFile | null>();

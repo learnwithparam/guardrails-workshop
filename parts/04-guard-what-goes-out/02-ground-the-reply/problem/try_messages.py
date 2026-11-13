@@ -14,8 +14,10 @@ from pathlib import Path
 from marrowfield import db, desk
 
 # ask_guards.py in the part folder builds the request exactly as the desk does.
+# No __pycache__ folder is written there, because a folder in a part looks like a step.
 PART_FOLDER = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PART_FOLDER))
+sys.dont_write_bytecode = True
 from ask_guards import answer_of, output_request  # noqa: E402
 
 

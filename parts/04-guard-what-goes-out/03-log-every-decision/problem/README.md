@@ -72,11 +72,11 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see                        | Fix                                                                  |
-| ----------------------------------- | -------------------------------------------------------------------- |
-| `FAIL ... one line for every verdict` | Write a line for every answer, `allow` too, not only blocks.       |
-| `FAIL alert.py fires on the burst`  | Check `decision` is `block` or `deny`, and group by domain and hour. |
-| `FAIL alert.py stays quiet ...`     | Count emails that were stopped, not every verdict.                   |
+| What you see                          | Fix                                                                  |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| `FAIL ... one line for every verdict` | Write a line for every answer, `allow` too, not only blocks.         |
+| `FAIL alert.py fires on the burst`    | Check `decision` is `block` or `deny`, and group by domain and hour. |
+| `FAIL alert.py stays quiet ...`       | Count emails that were stopped, not every verdict.                   |
 
 ## Words you will use
 

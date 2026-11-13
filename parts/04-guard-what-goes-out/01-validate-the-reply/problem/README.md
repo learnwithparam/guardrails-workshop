@@ -2,8 +2,8 @@
 
 ## The problem
 
-The desk writes messages: to head chefs, and sometimes to outside addresses. A message is the last way out for
-stolen data. An attacker does not need the desk to say anything rude. They only need one link in one message.
+The desk writes to head chefs, and sometimes to outside addresses. A message is the last way out for stolen data.
+One link in one message is enough.
 
 For example, attack `A-31` asks the desk to add a "tracking" link to its message to the chef at Wharf Lane:
 
@@ -69,11 +69,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                       | Fix                                                                       |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| `FAIL ... no link or guest data`   | Undo `%`-escapes with `unquote` twice, then look for the phone digits.    |
-| `FAIL a look-alike host`           | Compare the whole host with `in allowed_hosts`. Never test `name in link`. |
-| `FAIL a host that left the records` | Read `request["record"]["allowed_hosts"]` inside the function each time. |
+| What you see                        | Fix                                                                        |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| `FAIL ... no link or guest data`    | Undo `%`-escapes with `unquote` twice, then look for the phone digits.     |
+| `FAIL a look-alike host`            | Compare the whole host with `in allowed_hosts`. Never test `name in link`. |
+| `FAIL a host that left the records` | Read `request["record"]["allowed_hosts"]` inside the function each time.   |
 
 ## Words you will use
 

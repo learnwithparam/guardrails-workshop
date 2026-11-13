@@ -34,9 +34,9 @@ def blocked_emails_per_hour(decisions: list[dict]) -> dict[tuple[str, str], set[
 
 def main() -> int:
     decisions = read_log(Path(sys.argv[1] if len(sys.argv) > 1 else "out/decisions.jsonl"))
-    for (domain, hour), emails in blocked_emails_per_hour(decisions).items():
+    for (domain, _hour), emails in blocked_emails_per_hour(decisions).items():
         if len(emails) > MOST_BLOCKED_EMAILS_PER_HOUR:
-            print(f"ALERT: {len(emails)} emails from {domain} were blocked in the hour {hour}.")
+            print(f"ALERT: {len(emails)} emails from {domain} were blocked within one hour.")
             return 0
     print(f"Quiet: no sender domain had more than {MOST_BLOCKED_EMAILS_PER_HOUR} blocked emails.")
     return 0

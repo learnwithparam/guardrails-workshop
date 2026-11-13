@@ -47,8 +47,7 @@ function spawnPython(args: string[], environment: Record<string, string | undefi
 export function askOutputGuard(guards: string, cases: MessageCase[]): GuardAnswer[] | null {
   const folder = newFolder("marrowfield-cases-");
   const casesFile = join(folder, "cases.json");
-  const asPython = cases.map((messageCase) => ({ ...messageCase, drop_hosts: messageCase.dropHosts }));
-  writeFileSync(casesFile, JSON.stringify(asPython));
+  writeFileSync(casesFile, JSON.stringify(cases));
   const script = join(PART_FOLDER, "ask_guards.py");
   const ran = spawnPython([script, guards, casesFile], replayEnvironment(folder));
   if (!ran.ok) return null;

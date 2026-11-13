@@ -6,7 +6,7 @@ a look-alike host, a host that left the records, a wrong quantity.
     python ask_guards.py <guards.py or URL> <cases.json>
 
 Each case is {"channel": "chef" or "email", "text": "...", "site": "WL", "to": "...",
-"drop_hosts": ["..."]}. It prints one JSON list: the guard's answer for each case, in order.
+"dropHosts": ["..."]}. It prints one JSON list: the guard's answer for each case, in order.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ def output_request(con, case: dict) -> dict:
         args = {"to": case.get("to", ""), "subject": "Re: your email", "body": case["text"]}
     record = desk.records_for(con, tool, args)
     # A host that left the records, for example a supplier domain that expired.
-    dropped = set(case.get("drop_hosts") or [])
+    dropped = set(case.get("dropHosts") or [])
     record["allowed_hosts"] = [host for host in record["allowed_hosts"] if host not in dropped]
     chef_email = (record.get("site") or {}).get("chef_email")
     return {

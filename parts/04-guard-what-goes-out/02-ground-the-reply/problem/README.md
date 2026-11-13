@@ -2,9 +2,8 @@
 
 ## The problem
 
-A message to a chef can be safe and still wrong. If the desk tells the Wharf Lane chef "baby spinach is now 9
-kg" but the order says 6 kg, the kitchen plans for food that never comes. A wrong number costs a service, and
-nobody blames the guard. They blame the desk and switch it off.
+A message to a chef can be safe and still wrong. Say the desk tells the Wharf Lane chef "baby spinach is now 9 kg".
+The order says 6 kg. Now the kitchen plans for food that never comes. A wrong number can ruin a service.
 
 So every quantity in a chef message must match the order in the system of record. You check it in two tiers:
 
@@ -13,23 +12,9 @@ So every quantity in a chef message must match the order in the system of record
 2. **A model tier.** Only when a message names an item but the pattern is not there, you ask a model for the
    number. If the model gives no clear number, you block, and a person checks the message.
 
-For example, `try_messages.py` sends ten planted messages to your guard. With the sample answer, the output
-looks like this:
+For example, `try_messages.py` sends ten planted messages to your guard. The sample answer gives this:
 
 ![Ten planted chef messages and the verdict on each](../images/expected.png)
-
-```mermaid
-flowchart LR
-  M[Chef message] --> N{Names an item<br/>on the order?}
-  N -->|no| OK[Allow]
-  N -->|yes| E{"Pattern: item is now N"}
-  E -->|found| C{N matches the order?}
-  E -->|not found| LLM[Ask the model for N]
-  LLM -->|no clear N| B[Block: a person checks]
-  LLM -->|N| C
-  C -->|yes| OK
-  C -->|no| B
-```
 
 ## Your challenge
 
@@ -69,11 +54,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                          | Fix                                                                     |
-| ------------------------------------- | ----------------------------------------------------------------------- |
-| `FAIL a chef message with a wrong ...` | Compare with the `qty` of the same item, not any `qty` on the order.  |
-| `FAIL right quantities pass ...`      | Do not send template messages to the model. In replay it blocks them.   |
-| `FAIL the cheap tier decides ...`     | Put `"rule": "ground-exact"` or `"rule": "ground-model"` in each answer. |
+| What you see                           | Fix                                                                      |
+| -------------------------------------- | ------------------------------------------------------------------------ |
+| `FAIL a chef message with a wrong ...` | Compare with the `qty` of the same item, not any `qty` on the order.     |
+| `FAIL right quantities pass ...`       | Do not send template messages to the model. In replay it blocks them.    |
+| `FAIL the cheap tier decides ...`      | Put `"rule": "ground-exact"` or `"rule": "ground-model"` in each answer. |
 
 ## Words you will use
 
