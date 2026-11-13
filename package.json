@@ -1,10 +1,18 @@
 {
-  "name": "workshop-template",
+  "name": "guardrails-workshop",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.4.4",
   "scripts": {
-    "check": "bun scripts/check.ts && bun scripts/verify.ts --all",
-    "verify": "bun scripts/verify.ts"
+    "check": "bun scripts/readable.ts && bun scripts/plain-english.ts && bun scripts/check.ts && bun scripts/verify.ts --all",
+    "readable": "bun scripts/readable.ts",
+    "format": "biome check --write .",
+    "verify": "bun scripts/verify.ts",
+    "plain-english": "bun scripts/plain-english.ts",
+    "shots": "bun images/shots.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.5",
+    "playwright": "1.65.0"
   }
 }
