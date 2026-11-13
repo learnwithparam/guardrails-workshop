@@ -50,9 +50,13 @@ function loadStep(partFolder: string, partName: string, stepName: string): Step 
   };
 }
 
+// A step folder starts with its order number, such as 01-run-the-open-desk.
+// Other folders, such as the __pycache__ that Python writes when a lab runs, are not steps.
+const looksLikeStep = (folderName: string) => /^\d+-/.test(folderName);
+
 // In the orientation only folders with a step.toml are steps; it also holds images/ and pages.
 function stepFolderNames(partFolder: string): string[] {
-  const names = subfolders(partFolder);
+  const names = subfolders(partFolder).filter(looksLikeStep);
   if (partFolder !== ORIENTATION) return names;
   return names.filter((name) => hasSettings(join(partFolder, name)));
 }

@@ -32,14 +32,14 @@ flowchart LR
 
 ## Your challenge
 
-Open `guards.py` in this folder. The input, tool and result layers come from the reference desk, so only the
+Open `guards.py`. The input, tool and result layers come from the reference desk, so only the
 output layer is yours. Fill in `guard_output(request)`:
 
 1. Find every link in `request["text"]`. Take its host with `urlparse(link).hostname`.
 2. Block the message when a host is not exactly in `request["record"]["allowed_hosts"]`. Read that list on every
-   call. Never copy it into your file.
+   call. Never copy it.
 3. When `request["channel"]` is `"email"`, block guest details: a phone number that starts `+44 7700 900`, or an
-   allergy note. Undo `%`-escapes first, because a link can hide them.
+   allergy note. Undo `%`-escapes first, because a link can hide them. A real desk checks its own guest book.
 4. Answer `{"decision": "block", "rule": "...", "reason": "..."}` or `{"decision": "allow", ...}`.
 
 Try it with only your output layer switched on. The file `output_layer_only.py` in the part folder keeps the

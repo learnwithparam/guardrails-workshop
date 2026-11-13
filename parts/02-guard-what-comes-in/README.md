@@ -96,8 +96,10 @@ finish.
 
 ## Assignment
 
-Every supplier email is a possible EchoLeak. A detector that blocks real invoices gets turned off. Hand in a desk
-whose input guards stop attacks and still let real mail through.
+EchoLeak was a 2025 attack on Microsoft 365 Copilot. One email, which the user never opened, made the assistant
+send private data out ([NVD, CVE-2025-32711](https://nvd.nist.gov/vuln/detail/CVE-2025-32711)). Every supplier
+email can be an attack like that. But a detector that blocks real invoices gets turned off. Hand in a desk whose
+input guards stop attacks and still let real mail through.
 
 What you hand in, in your fork:
 
@@ -125,5 +127,5 @@ agent a supplier's words or a guest's details. Run `uv run desk score --guards g
 
 Two kinds of attack still get through. The direct overrides ask for a £900 credit note on a £32.50 shortfall.
 The form carries that number honestly, and nothing checks it. And half the payee changes land, because a fake
-bank change reads exactly like a real one. No input guard can tell them apart. Part 3 moves the promise to the tool layer. It checks every call the agent makes
-against the records, and asks a person before money moves.
+bank change reads exactly like a real one. No input guard can tell them apart. Part 3 moves the promise to the
+tool layer. It checks every call the agent makes against the records, and asks a person before money moves.

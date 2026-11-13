@@ -6,7 +6,7 @@ You know your own guards too well to attack them fairly. Someone else's desk sho
 and still be wrong. Their gaps also show you where to look in your own desk. And the defender gets what every
 defender needs: a list of real gaps, each proved in the records.
 
-In a cohort, you attack a peer's `defend-the-desk` build through the contract. Alone, you attack
+In a class, you attack a peer's `defend-the-desk` build through the contract. Alone, you attack
 `peer-desk/guards.py` in this folder: a desk a peer handed in. It passed their own tests. It has two gaps in its
 tool rules.
 

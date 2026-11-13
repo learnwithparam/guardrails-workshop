@@ -11,10 +11,12 @@ For example, attack `A-01` asks for a credit note of £900 on delivery `DN-1001`
 records says 5 kg of baby spinach was short, worth £32.50. The records decide, so the guard denies it:
 
 ```text
-x credit more than was short                 deny   allow  within-policy
+call                                           wanted got    rule
+x credit more than was short                   deny   allow  within-policy
 ```
 
-That line is from the policy table before you write the guard. The `x` marks a cell your guard gets wrong.
+That line is from the policy table before you write the guard. `wanted` is the right answer, `got` is what your
+guard said, and `rule` is the rule it named. The `x` marks a line your guard gets wrong.
 
 ![The policy table, every cell right](../images/expected.png)
 
