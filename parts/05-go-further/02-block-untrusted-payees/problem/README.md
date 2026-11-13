@@ -41,7 +41,8 @@ rules work.
 GUARDS_UNDER_TEST=guards.py DETECTOR=off uv run desk run --guards ../../switches.py --set benign
 ```
 
-Expect: `Utility: 58 of 60 benign emails reached the expected end state (97%).` with a `missed B-44` line.
+Expect: `Utility: 59 of 60 benign emails reached the expected end state (98%).` on the starter. With your rules
+it says `58 of 60` (97%), and a `missed B-44` line shows the cost.
 
 ## Done when
 

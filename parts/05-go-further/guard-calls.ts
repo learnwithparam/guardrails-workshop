@@ -20,8 +20,11 @@ export type GuardAnswer = {
   plan?: string[];
 };
 
-/** Switches for switches.py: the layers to keep on, and whether the detector is off. */
-export type Switches = { layers?: string; detector?: "on" | "off"; extra?: Record<string, string> };
+/**
+ * Switches for switches.py: the layers to keep on, and whether the detector is off.
+ * withPackage runs Python through uv with one more package, for example a guard framework.
+ */
+export type Switches = { layers?: string; detector?: "on" | "off"; withPackage?: string };
 
 export const newFolder = (prefix: string) => mkdtempSync(join(tmpdir(), prefix));
 
@@ -38,15 +41,22 @@ export function replayEnvironment(
   environment.GUARDS_UNDER_TEST = guards;
   environment.LAYERS = switches.layers ?? "input,tool,output,result";
   environment.DETECTOR = switches.detector ?? "on";
-  return { ...environment, ...switches.extra };
+  return environment;
+}
+
+/** The command that starts Python: the project's, or uv with one more package. */
+function pythonCommand(withPackage?: string): string[] {
+  if (!withPackage) return [python()];
+  return ["uv", "run", "--no-project", "--python", "3.12", "--with", withPackage, "python"];
 }
 
 export function spawnPython(
   args: string[],
   environment: Record<string, string | undefined>,
   workFolder: string = newFolder("marrowfield-cwd-"),
+  withPackage?: string,
 ) {
-  const finished = Bun.spawnSync([python(), ...args], {
+  const finished = Bun.spawnSync([...pythonCommand(withPackage), ...args], {
     cwd: workFolder,
     env: environment,
     stdout: "pipe",
@@ -56,12 +66,13 @@ export function spawnPython(
 }
 
 /** Send each case to the guards and return their answers, or [] if the guards failed to load. */
-export function askGuards(guards: string, cases: GuardCase[]): GuardAnswer[] {
+export function askGuards(guards: string, cases: GuardCase[], withPackage?: string): GuardAnswer[] {
   const folder = newFolder("marrowfield-cases-");
   const casesFile = join(folder, "cases.json");
   writeFileSync(casesFile, JSON.stringify(cases));
   const script = join(PART_FOLDER, "ask_guards.py");
-  const ran = spawnPython([script, guards, casesFile], replayEnvironment(folder));
+  const environment = replayEnvironment(folder);
+  const ran = spawnPython([script, guards, casesFile], environment, folder, withPackage);
   if (!ran.ok) return [];
   try {
     return JSON.parse(ran.out) as GuardAnswer[];
@@ -93,7 +104,9 @@ export function runSwitched<Shape>(
   const outFile = join(stateFolder, "out.json");
   const switchFile = join(PART_FOLDER, "switches.py");
   const args = ["-m", "marrowfield", "desk", ...deskArgs, "--guards", switchFile, "--out", outFile];
-  const ran = spawnPython(args, replayEnvironment(stateFolder, guards, switches));
+  const environment = replayEnvironment(stateFolder, guards, switches);
+  const workFolder = newFolder("marrowfield-cwd-");
+  const ran = spawnPython(args, environment, workFolder, switches.withPackage);
   try {
     const data = JSON.parse(readFileSync(outFile, "utf8")) as Shape;
     return { data, stateFolder, workFolder: ran.workFolder };
