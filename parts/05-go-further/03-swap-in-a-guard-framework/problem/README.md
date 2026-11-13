@@ -59,11 +59,11 @@ The check downloads the framework with uv the first time, so that run needs the 
 
 ## If you get stuck
 
-| What you see                  | Fix                                                                 |
-| ----------------------------- | ------------------------------------------------------------------- |
-| `FAIL the contract holds ...` | An action NeMo cannot find fails open. Register it by its exact name. |
+| What you see                   | Fix                                                                    |
+| ------------------------------ | ---------------------------------------------------------------------- |
+| `FAIL the contract holds ...`  | An action NeMo cannot find fails open. Register it by its exact name.  |
 | `FAIL ... no ... attack leaks` | Make the flow `stop` after the refusal, or the message still goes out. |
-| `FAIL out/score-diff.md ...`  | Run both commands again and copy `N of 48` exactly.                 |
+| `FAIL out/score-diff.md ...`   | Run both commands again and copy `N of 48` exactly.                    |
 
 ## Words you will use
 

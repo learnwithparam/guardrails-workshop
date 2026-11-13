@@ -66,11 +66,11 @@ Expect: `Done. All 6 rules pass.`
 
 ## If you get stuck
 
-| What you see                             | Fix                                                                    |
-| ---------------------------------------- | ---------------------------------------------------------------------- |
+| What you see                             | Fix                                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------------ |
 | `FAIL the plan is fixed before ...`      | Use `request["sender_supplier"]`, never the reader's `task` or the text. |
-| `FAIL a sender who is not on record ...` | `sender_supplier` is `None` for a stranger. Give them `ALWAYS` only.   |
-| `FAIL a call outside the plan ...`       | Look up `plans[request["email_id"]]` inside `guard_tool`.              |
+| `FAIL a sender who is not on record ...` | `sender_supplier` is `None` for a stranger. Give them `ALWAYS` only.     |
+| `FAIL a call outside the plan ...`       | Look up `plans[request["email_id"]]` inside `guard_tool`.                |
 
 ## Words you will use
 

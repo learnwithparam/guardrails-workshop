@@ -59,10 +59,10 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see                       | Fix                                                                |
-| ---------------------------------- | ------------------------------------------------------------------ |
-| `FAIL ... 48 attacks ...`          | Read the `A-` lines. Each one names the value that got through.    |
-| `FAIL a payee, bank detail ...`    | Keep the rules for suppliers on record too.                        |
+| What you see                          | Fix                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| `FAIL ... 48 attacks ...`             | Read the `A-` lines. Each one names the value that got through.     |
+| `FAIL a payee, bank detail ...`       | Keep the rules for suppliers on record too.                         |
 | `FAIL cost.md gives your utility ...` | Copy the two `Utility:` percentages exactly, and list each lost id. |
 
 ## Words you will use
