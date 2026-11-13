@@ -2,9 +2,13 @@
 
 ## The problem
 
-Before you add a single guard you need a baseline: how much real supplier mail does the desk handle correctly
-today? Every guard you add later must keep that number up. A guard that blocks real invoices gets switched off by
-the people who need the invoices paid, and then it protects nobody.
+Before you add a single guard, you need a baseline. A baseline is the number you start from. Here it is: how
+much real supplier mail does the desk handle correctly today? Every guard you add later must keep that number
+up. A guard that blocks real invoices gets switched off by the people who need the invoices paid. Then it
+protects nobody.
+
+For example, `B-01` is a real email from Greyhaven Produce. It says 5 kg of baby spinach was short on delivery
+`DN-1001`. Its expected end state is one credit note of £32.50, and nothing else.
 
 ![The open desk handling a real short-delivery email](../images/expected.png)
 
@@ -12,11 +16,11 @@ the people who need the invoices paid, and then it protects nobody.
 
 1. From this `problem/` folder, run the open desk on the 60 real emails in `world/sets/benign.jsonl`:
    `uv run desk run --open --set benign --out out/open-desk.json`
-2. Read the `missed` lines it prints. For each one, run `uv run desk show <id>` and look at what the email asked.
+2. Read the `missed` lines it prints. For each one, run `uv run desk show <id>`. Look at what the email asked.
 3. In `misses.md`, write one line per missed email: the id, then what went wrong in your own words.
 
-To watch one email on the desk page, run `uv run desk serve --open`, open http://127.0.0.1:8300, pick an email
-and press Run.
+Do you want to watch one email on the desk page? Run `uv run desk serve --open` and open http://127.0.0.1:8300.
+Then pick an email and press Run.
 
 ## Done when
 
@@ -33,11 +37,11 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see | Fix |
-|---|---|
-| `FAIL out/open-desk.json covers all 60 benign emails` | Run the command from this `problem/` folder so `out/` lands here. |
-| `FAIL every end state in the file matches a fresh run` | Do not edit the file. Run the command again. |
-| `FAIL misses.md names every benign email the open desk got wrong` | Copy each id from the `missed` lines, for example `- B-49: ...`. |
+| What you see                                                      | Fix                                                               |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `FAIL out/open-desk.json covers all 60 benign emails`             | Run the command from this `problem/` folder so `out/` lands here. |
+| `FAIL every end state in the file matches a fresh run`            | Do not edit the file. Run the command again.                      |
+| `FAIL misses.md names every benign email the open desk got wrong` | Copy each id from the `missed` lines, for example `- B-49: ...`.  |
 
 ## Words you will use
 

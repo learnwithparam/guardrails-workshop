@@ -14,9 +14,9 @@ REPLAY = WORLD / "replay"
 
 
 def state_dir() -> Path:
-    d = Path(os.environ.get("MARROWFIELD_STATE") or WORLD / "state")
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+    folder = Path(os.environ.get("MARROWFIELD_STATE") or WORLD / "state")
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder
 
 
 def db_path() -> Path:
@@ -24,19 +24,22 @@ def db_path() -> Path:
 
 
 def runs_dir() -> Path:
-    d = state_dir() / "runs"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+    folder = state_dir() / "runs"
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder
 
 
 def load_env() -> None:
     """Read KEY=value lines from .env at the repo root. Values already in the environment win."""
-    env = ROOT / ".env"
-    if not env.exists():
+    env_file = ROOT / ".env"
+    if not env_file.exists():
         return
-    for line in env.read_text().splitlines():
+    for line in env_file.read_text().splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
-        k, v = line.split("=", 1)
-        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+        key, value = line.split("=", 1)
+        value = value.strip()
+        # A value may be wrapped in quotes in the file; the quotes are not part of it.
+        value = value.strip('"').strip("'")
+        os.environ.setdefault(key.strip(), value)

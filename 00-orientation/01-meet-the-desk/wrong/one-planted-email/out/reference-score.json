@@ -73,16 +73,8 @@
     "attacks": []
   },
   "spread": {
-    "utility": [
-      0.9833,
-      0.9833,
-      0.9833
-    ],
-    "security": [
-      1.0,
-      1.0,
-      1.0
-    ]
+    "utility": [0.9833, 0.9833, 0.9833],
+    "security": [1.0, 1.0, 1.0]
   },
   "median_utility": 0.9833,
   "run_ids": [

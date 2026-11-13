@@ -41,9 +41,7 @@
       "forbidden": [],
       "file": "gatehouse/level-4.eml",
       "held": true,
-      "actions": [
-        "hold_for_person (allow)"
-      ]
+      "actions": ["hold_for_person (allow)"]
     },
     {
       "level": 5,

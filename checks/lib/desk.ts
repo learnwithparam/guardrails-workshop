@@ -1,84 +1,114 @@
 // Start the learner's work and read what the world recorded. Checks never read the model's reply.
-// Every run here uses replay mode and a fresh, throwaway copy of the world, so a check never touches your state.
-import { existsSync, mkdtempSync, readFileSync, readdirSync } from "node:fs";
+// Every run here uses replay mode and a fresh, throwaway copy of the world,
+// so a check never touches your state.
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ROOT } from "../../scripts/structure";
+import { parseJsonLines } from "./files";
+import type { EmailResult } from "./world-json";
 
-/** The Python that runs the desk: the project's .venv if `uv sync` made one, else python3 (stdlib is enough in replay). */
+export type { EmailResult };
+
+/**
+ * The Python that runs the desk: the project's .venv if `uv sync` made one,
+ * else python3 (the standard library is enough in replay mode).
+ */
 export function python(): string {
-  const venv = join(ROOT, ".venv", "bin", "python");
-  return existsSync(venv) ? venv : "python3";
+  const venvPython = join(ROOT, ".venv", "bin", "python");
+  return existsSync(venvPython) ? venvPython : "python3";
 }
 
 export type Ran = { ok: boolean; code: number; out: string; state: string };
 
-/** Run `desk <args>` (or `world <args>`) from `cwd`, against a fresh world. */
-export function run(cmd: "desk" | "world", args: string[], cwd: string = ROOT, state?: string): Ran {
-  const st = state ?? mkdtempSync(join(tmpdir(), "marrowfield-"));
-  const p = Bun.spawnSync([python(), "-m", "marrowfield", cmd, ...args], {
-    cwd,
-    env: {
-      ...process.env,
-      PYTHONPATH: [ROOT, join(ROOT, "world")].join(":"),
-      MARROWFIELD_STATE: st,
-      LLM_PROVIDER: "replay",
-      PYTHONDONTWRITEBYTECODE: "1",
-    },
+type Program = "desk" | "world";
+
+const newStateFolder = () => mkdtempSync(join(tmpdir(), "marrowfield-"));
+
+function replayEnvironment(stateFolder: string): Record<string, string | undefined> {
+  const environment: Record<string, string | undefined> = { ...process.env };
+  environment.PYTHONPATH = [ROOT, join(ROOT, "world")].join(":");
+  environment.MARROWFIELD_STATE = stateFolder;
+  // Replay mode answers from saved model replies, so a check needs no key and costs nothing.
+  environment.LLM_PROVIDER = "replay";
+  environment.PYTHONDONTWRITEBYTECODE = "1";
+  return environment;
+}
+
+/** Run `desk <args>` (or `world <args>`) from `workFolder`, against a fresh world. */
+export function run(
+  program: Program,
+  args: string[],
+  workFolder: string = ROOT,
+  stateFolder: string = newStateFolder(),
+): Ran {
+  const finished = Bun.spawnSync([python(), "-m", "marrowfield", program, ...args], {
+    cwd: workFolder,
+    env: replayEnvironment(stateFolder),
     stdout: "pipe",
     stderr: "pipe",
   });
-  const out = p.stdout.toString() + p.stderr.toString();
-  return { ok: p.exitCode === 0, code: p.exitCode ?? 2, out, state: st };
+  const out = finished.stdout.toString() + finished.stderr.toString();
+  const code = finished.exitCode ?? 2;
+  return { ok: finished.exitCode === 0, code, out, state: stateFolder };
 }
 
-/** Run the same thing three times on fresh worlds. Behaviour that depends on a model is judged on all three. */
-export function threeRuns(cmd: "desk" | "world", args: string[], cwd: string = ROOT): Ran[] {
-  return [0, 1, 2].map(() => run(cmd, args, cwd));
+/**
+ * Run the same thing three times on fresh worlds.
+ * Behaviour that depends on a model is judged on all three.
+ */
+export function threeRuns(program: Program, args: string[], workFolder: string = ROOT): Ran[] {
+  return [0, 1, 2].map(() => run(program, args, workFolder));
 }
 
-export type Result = {
-  email_id: string;
-  held: boolean;
-  actions: { tool: string; verdict: string; rule: string }[];
-  changes: { kind: string; [k: string]: unknown }[];
-  forbidden: { kind: string; [k: string]: unknown }[];
-};
-
-/** Every run folder a command wrote under its state dir. */
-export function runDirs(state: string): string[] {
-  const d = join(state, "runs");
-  return existsSync(d) ? readdirSync(d).sort().map((x) => join(d, x)) : [];
+/** Every run folder a command wrote under its state folder. */
+export function runFolders(stateFolder: string): string[] {
+  const runsFolder = join(stateFolder, "runs");
+  if (!existsSync(runsFolder)) return [];
+  const names = readdirSync(runsFolder).sort();
+  return names.map((name) => join(runsFolder, name));
 }
 
-export function jsonl<T = any>(path: string): T[] {
+export function jsonl<Row>(path: string): Row[] {
   if (!existsSync(path)) return [];
-  return readFileSync(path, "utf8").split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l));
+  return parseJsonLines<Row>(readFileSync(path, "utf8"));
 }
 
 /** Per-email results from the world's run logs (results.jsonl), keyed by email id. */
-export function results(state: string): Map<string, Result> {
-  const m = new Map<string, Result>();
-  for (const d of runDirs(state)) for (const r of jsonl<Result>(join(d, "results.jsonl"))) m.set(r.email_id, r);
-  return m;
+export function results(stateFolder: string): Map<string, EmailResult> {
+  const byEmail = new Map<string, EmailResult>();
+  for (const runFolder of runFolders(stateFolder)) {
+    for (const result of jsonl<EmailResult>(join(runFolder, "results.jsonl"))) {
+      byEmail.set(result.email_id, result);
+    }
+  }
+  return byEmail;
 }
 
 /** Every tool call the desk proposed, with the guard verdict, from tool_calls.jsonl. */
-export function toolCalls(state: string): any[] {
-  return runDirs(state).flatMap((d) => jsonl(join(d, "tool_calls.jsonl")));
+export function toolCalls(stateFolder: string): Record<string, unknown>[] {
+  const folders = runFolders(stateFolder);
+  return folders.flatMap((runFolder) => jsonl(join(runFolder, "tool_calls.jsonl")));
 }
 
 /** Every guard decision, from decisions.jsonl. */
-export function decisions(state: string): any[] {
-  return runDirs(state).flatMap((d) => jsonl(join(d, "decisions.jsonl")));
+export function decisions(stateFolder: string): Record<string, unknown>[] {
+  const folders = runFolders(stateFolder);
+  return folders.flatMap((runFolder) => jsonl(join(runFolder, "decisions.jsonl")));
 }
 
 /** Run a desk command that writes JSON with --out, and return what it wrote (null if it failed). */
-export function deskJson(args: string[], cwd: string = ROOT): { data: any; ran: Ran } {
-  const st = mkdtempSync(join(tmpdir(), "marrowfield-"));
-  const out = join(st, "out.json");
-  const ran = run("desk", [...args, "--out", out], cwd, st);
-  let data = null;
-  try { data = JSON.parse(readFileSync(out, "utf8")); } catch { data = null; }
-  return { data, ran };
+export function deskJson<Shape>(
+  args: string[],
+  workFolder: string = ROOT,
+): { data: Shape | null; ran: Ran } {
+  const stateFolder = newStateFolder();
+  const outFile = join(stateFolder, "out.json");
+  const ran = run("desk", [...args, "--out", outFile], workFolder, stateFolder);
+  try {
+    const data = JSON.parse(readFileSync(outFile, "utf8")) as Shape;
+    return { data, ran };
+  } catch {
+    return { data: null, ran };
+  }
 }

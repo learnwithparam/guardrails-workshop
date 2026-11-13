@@ -73,72 +73,132 @@ button.run { background: var(--accent); color: #fff; border: 0; border-radius: 8
   </section>
 </main>
 <script>
-const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const pct = (x) => Math.round(x * 100) + "%";
-let current = null;
+// Short helpers the page uses everywhere.
+const byId = (id) => document.getElementById(id);
+const HTML_ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" };
+const escapeHtml = (text) =>
+  String(text ?? "").replace(/[&<>"]/g, (character) => HTML_ESCAPES[character]);
+const percent = (fraction) => `${Math.round(fraction * 100)}%`;
+let currentEmailId = null;
+
+async function getJson(url, options) {
+  const response = await fetch(url, options);
+  return response.json();
+}
+
+function inboxButton(email) {
+  const sender = escapeHtml(email.name || email.from);
+  return `<button class="mail" data-id="${email.id}"><b>${email.id} · ${sender}</b><span>${escapeHtml(email.subject)}</span></button>`;
+}
 
 async function load() {
-  const s = await (await fetch("/api/state")).json();
-  $("desk").textContent = s.desk;
-  $("inbox").innerHTML = s.inbox.map((m) =>
-    `<button class="mail" data-id="${m.id}"><b>${m.id} · ${esc(m.name || m.from)}</b><span>${esc(m.subject)}</span></button>`).join("");
-  document.querySelectorAll(".mail").forEach((b) => b.onclick = () => pick(b.dataset.id));
-  const q = new URLSearchParams(location.search);
-  if (q.get("email")) { await pick(q.get("email")); if (q.get("run")) await run(); }
+  const state = await getJson("/api/state");
+  byId("desk").textContent = state.desk;
+  byId("inbox").innerHTML = state.inbox.map(inboxButton).join("");
+  for (const button of document.querySelectorAll(".mail")) {
+    button.onclick = () => pick(button.dataset.id);
+  }
+  // A link like ?email=MK-07&run=1 opens that email, and runs it too.
+  const query = new URLSearchParams(location.search);
+  if (query.get("email")) {
+    await pick(query.get("email"));
+    if (query.get("run")) await run();
+  }
   score();
 }
 
 async function pick(id) {
-  current = id;
-  document.querySelectorAll(".mail").forEach((b) => b.classList.toggle("on", b.dataset.id === id));
-  const e = await (await fetch("/api/email/" + id)).json();
-  $("email").innerHTML = `<pre>${esc(e.view)}</pre><button class="run" id="go">Run the desk on ${id}</button>`;
-  $("go").onclick = run;
-  $("run").innerHTML = "";
-  $("ledger").textContent = "Nothing yet.";
+  currentEmailId = id;
+  for (const button of document.querySelectorAll(".mail")) {
+    button.classList.toggle("on", button.dataset.id === id);
+  }
+  const email = await getJson(`/api/email/${id}`);
+  byId("email").innerHTML =
+    `<pre>${escapeHtml(email.view)}</pre><button class="run" id="go">Run the desk on ${id}</button>`;
+  byId("go").onclick = run;
+  byId("run").innerHTML = "";
+  byId("ledger").textContent = "Nothing yet.";
 }
 
-function verdictRow(v, title, why) {
-  return `<li><span class="v ${v}">${esc(v)}</span><div><div class="call">${title}</div>${why ? `<div class="why">${esc(why)}</div>` : ""}</div></li>`;
+function verdictRow(verdict, title, why) {
+  const whyLine = why ? `<div class="why">${escapeHtml(why)}</div>` : "";
+  return `<li><span class="v ${verdict}">${escapeHtml(verdict)}</span><div><div class="call">${title}</div>${whyLine}</div></li>`;
+}
+
+function actionRow(action) {
+  const pairs = Object.entries(action.args).map(([name, value]) => `${name}=${JSON.stringify(value)}`);
+  const args = pairs.join(", ");
+  const shortArgs = args.length > 140 ? `${args.slice(0, 140)}...` : args;
+  const why = action.rule && action.rule !== "none" ? `${action.rule}: ${action.reason}` : "";
+  return verdictRow(action.verdict, `${escapeHtml(action.tool)}(${escapeHtml(shortArgs)})`, why);
+}
+
+// One row per guard verdict: the input guard, each tool call, then each output guard that acted.
+function stepRows(result) {
+  const rows = [];
+  const input = result.decisions.find((decision) => decision.layer === "input");
+  const inputDidNothing = input && input.decision === "allow" && /no input guard/.test(input.reason);
+  if (input && !inputDidNothing) {
+    rows.push(verdictRow(input.decision, `input guard: ${escapeHtml(input.rule)}`, input.reason));
+  }
+  for (const action of result.actions) rows.push(actionRow(action));
+  const outputs = result.decisions.filter(
+    (decision) => decision.layer === "output" && decision.decision !== "allow",
+  );
+  for (const output of outputs) {
+    rows.push(verdictRow(output.decision, `output guard: ${escapeHtml(output.rule)}`, output.reason));
+  }
+  return rows;
+}
+
+function resultNote(result) {
+  if (result.forbidden.length) {
+    const kinds = result.forbidden.map((change) => escapeHtml(change.kind)).join(", ");
+    return `<div class="note bad">Forbidden change in the records: ${kinds}</div>`;
+  }
+  if (result.held) {
+    return `<div class="note held">Held for a person: ${escapeHtml(result.held_reasons.join("; "))}</div>`;
+  }
+  const nothing = result.changes.length ? "" : "Nothing changed.";
+  return `<div class="note good">No forbidden change. ${nothing}</div>`;
+}
+
+function ledgerRow(change) {
+  const details = Object.entries(change)
+    .filter(([name]) => name !== "kind")
+    .map(([name, value]) => `${name} ${value}`)
+    .join(", ");
+  return `<li>${escapeHtml(change.kind)} ${escapeHtml(details)}</li>`;
 }
 
 async function run() {
-  $("run").innerHTML = '<p class="muted">Running...</p>';
-  const r = await (await fetch("/desk/handle", { method: "POST", body: JSON.stringify({ email_id: current }) })).json();
-  const items = [];
-  const input = r.decisions.find((d) => d.layer === "input");
-  if (input && !(input.decision === "allow" && /no input guard/.test(input.reason)))
-    items.push(verdictRow(input.decision, "input guard: " + esc(input.rule), input.reason));
-  const outputs = r.decisions.filter((d) => d.layer === "output" && d.decision !== "allow");
-  for (const a of r.actions) {
-    const args = Object.entries(a.args).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(", ");
-    const why = a.rule && a.rule !== "none" ? `${a.rule}: ${a.reason}` : "";
-    items.push(verdictRow(a.verdict, `${esc(a.tool)}(${esc(args.length > 140 ? args.slice(0, 140) + "..." : args)})`, why));
+  byId("run").innerHTML = '<p class="muted">Running...</p>';
+  // biome-ignore lint/style/useNamingConvention: the server reads the key email_id.
+  const body = JSON.stringify({ email_id: currentEmailId });
+  const result = await getJson("/desk/handle", { method: "POST", body });
+  const steps = stepRows(result).join("") || '<li class="muted">No tool calls.</li>';
+  byId("run").innerHTML = `<ul class="steps">${steps}</ul>${resultNote(result)}`;
+  if (result.changes.length) {
+    byId("ledger").innerHTML = `<ul class="ledger">${result.changes.map(ledgerRow).join("")}</ul>`;
+  } else {
+    byId("ledger").innerHTML = '<span class="muted">No change to the records.</span>';
   }
-  for (const o of outputs) items.push(verdictRow(o.decision, "output guard: " + esc(o.rule), o.reason));
-  let note = "";
-  if (r.forbidden.length) note = `<div class="note bad">Forbidden change in the records: ${r.forbidden.map((f) => esc(f.kind)).join(", ")}</div>`;
-  else if (r.held) note = `<div class="note held">Held for a person: ${esc(r.held_reasons.join("; "))}</div>`;
-  else note = `<div class="note good">No forbidden change. ${r.changes.length ? "" : "Nothing changed."}</div>`;
-  $("run").innerHTML = `<ul class="steps">${items.join("") || '<li class="muted">No tool calls.</li>'}</ul>${note}`;
-  $("ledger").innerHTML = r.changes.length
-    ? `<ul class="ledger">${r.changes.map((c) => `<li>${esc(c.kind)} ${esc(Object.entries(c).filter(([k]) => k !== "kind").map(([k, v]) => `${k} ${v}`).join(", "))}</li>`).join("")}</ul>`
-    : '<span class="muted">No change to the records.</span>';
 }
 
-function bars(name, s, u) {
-  return `<div class="layer"><div class="name">${esc(name)}</div>
-    <div class="row"><span>attacks stopped</span><div class="track"><div class="fill sec" style="width:${pct(s.rate)}"></div></div><span class="num">${s.stopped} of ${s.n}</span></div>
-    <div class="row"><span>good work through</span><div class="track"><div class="fill ut" style="width:${pct(u.rate)}"></div></div><span class="num">${u.passed} of ${u.n}</span></div></div>`;
+function bars(name, security, utility) {
+  return `<div class="layer"><div class="name">${escapeHtml(name)}</div>
+    <div class="row"><span>attacks stopped</span><div class="track"><div class="fill sec" style="width:${percent(security.rate)}"></div></div><span class="num">${security.stopped} of ${security.n}</span></div>
+    <div class="row"><span>good work through</span><div class="track"><div class="fill ut" style="width:${percent(utility.rate)}"></div></div><span class="num">${utility.passed} of ${utility.n}</span></div></div>`;
 }
 
 async function score() {
-  const s = await (await fetch("/api/score")).json();
-  const rows = s.by_layer && s.by_layer.length ? s.by_layer : [{ layer: "this desk", security: s.security, utility: s.utility }];
-  $("score").innerHTML = rows.map((r) => bars(r.layer, r.security, r.utility)).join("");
-  $("score").classList.remove("muted");
+  const scoreboard = await getJson("/api/score");
+  const thisDesk = { layer: "this desk", security: scoreboard.security, utility: scoreboard.utility };
+  const rows = scoreboard.by_layer?.length ? scoreboard.by_layer : [thisDesk];
+  byId("score").innerHTML = rows.map((row) => bars(row.layer, row.security, row.utility)).join("");
+  byId("score").classList.remove("muted");
 }
+
 load();
 </script>
 </body>

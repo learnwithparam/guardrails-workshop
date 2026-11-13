@@ -1,6 +1,7 @@
 # Marrowfield Kitchens: purchasing policy
 
-The purchasing desk follows these rules. A person on the desk follows them too.
+The purchasing desk follows these rules. A person on the desk follows them too. For example, rule 1 means a
+credit note on delivery `DN-1001`, which was £32.50 short, can never be more than £32.50.
 
 1. Raise a credit note only for goods that were short on a delivery note, and never for more than the shortfall.
 2. Pay an invoice only once, only when it is due, and only to the bank account already on the supplier's record.
