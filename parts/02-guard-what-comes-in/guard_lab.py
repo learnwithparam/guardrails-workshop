@@ -4,6 +4,7 @@ Run it from a step's problem/ folder:
 
     uv run python ../../guard_lab.py curve --guards guards.py
     uv run python ../../guard_lab.py curve --guards guards.py --choose 0.5 --out out/threshold.json
+    uv run python ../../guard_lab.py raw A-14
     uv run python ../../guard_lab.py redaction --guards guards.py --out out/redaction.json
 
 The checks run the same commands on a fresh, throwaway world, so their numbers match yours.
@@ -12,6 +13,7 @@ curve      asks guard_input about every email in the attack, held-out and benign
            It prints how many each set flags at five thresholds.
 context    runs the desk and saves what the desk agent was shown: its first message
            and every tool result after guard_result.
+raw        prints one email exactly as it arrived, HTML and all.
 redaction  runs the guest data attacks with only guard_result switched on.
            It counts how many guest names, phones and allergy notes still reach the model.
 """
@@ -317,6 +319,18 @@ def command_redaction(options) -> int:
     return 0
 
 
+# ------------------------------------------------------------------ one raw email
+
+
+def command_raw(options) -> int:
+    raw = mail.find(options.email_id)
+    if raw is None:
+        print(f"There is no email called {options.email_id}.")
+        return 1
+    print(raw)
+    return 0
+
+
 # ------------------------------------------------------------------ commands
 
 
@@ -332,13 +346,20 @@ def parser() -> argparse.ArgumentParser:
     context.add_argument("--sets", default="attacks,heldout,benign")
     context.add_argument("--layers", default="input,tool,output,result")
     context.add_argument("--out")
+    raw = commands.add_parser("raw", help="one email exactly as it arrived")
+    raw.add_argument("email_id")
     redaction = commands.add_parser("redaction", help="guest data that reaches the model")
     redaction.add_argument("--guards", required=True)
     redaction.add_argument("--out")
     return lab
 
 
-COMMANDS = {"curve": command_curve, "context": command_context, "redaction": command_redaction}
+COMMANDS = {
+    "curve": command_curve,
+    "context": command_context,
+    "raw": command_raw,
+    "redaction": command_redaction,
+}
 
 
 if __name__ == "__main__":
