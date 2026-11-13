@@ -229,6 +229,7 @@ def watch_one(row: dict, guards: WatchedGuards, log: desk.RunLog) -> dict:
         "email_id": row["id"],
         "set": row["set"],
         "held": result["held"],
+        "email_text": mail.model_view(row["raw"]),
         "first_message": watcher.first_message,
         "shown": guards.shown,
     }
