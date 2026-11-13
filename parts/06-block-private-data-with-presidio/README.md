@@ -1,4 +1,4 @@
-# Part 6: Do it with the tools teams run
+# Part 6: Block private data with Presidio
 
 ## The problem
 
