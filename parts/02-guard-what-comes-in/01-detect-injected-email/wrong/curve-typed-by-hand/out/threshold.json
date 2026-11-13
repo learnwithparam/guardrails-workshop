@@ -1,0 +1,42 @@
+{
+  "guards": "guards.py",
+  "chosen": 0.5,
+  "points": [
+    {
+      "threshold": 0.1,
+      "attacks_flagged": 1.0,
+      "heldout_flagged": 1.0,
+      "benign_flagged": 0.05,
+      "hard_negatives_flagged": 0.05
+    },
+    {
+      "threshold": 0.3,
+      "attacks_flagged": 0.95,
+      "heldout_flagged": 0.95,
+      "benign_flagged": 0.02,
+      "hard_negatives_flagged": 0.02
+    },
+    {
+      "threshold": 0.5,
+      "attacks_flagged": 0.95,
+      "heldout_flagged": 0.95,
+      "benign_flagged": 0.0,
+      "hard_negatives_flagged": 0.0
+    },
+    {
+      "threshold": 0.7,
+      "attacks_flagged": 0.9,
+      "heldout_flagged": 0.9,
+      "benign_flagged": 0.0,
+      "hard_negatives_flagged": 0.0
+    },
+    {
+      "threshold": 0.9,
+      "attacks_flagged": 0.8,
+      "heldout_flagged": 0.8,
+      "benign_flagged": 0.0,
+      "hard_negatives_flagged": 0.0
+    }
+  ],
+  "scored": true
+}
