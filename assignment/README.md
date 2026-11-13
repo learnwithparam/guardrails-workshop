@@ -1,7 +1,7 @@
 # Assignment: redact guest data with Presidio
 
 Optional in the live session. Expected as homework. It is the closing part of the course, in
-`parts/06-do-it-with-the-tools-teams-run/`.
+`parts/06-block-private-data-with-presidio/`.
 
 ## The task
 
@@ -10,7 +10,7 @@ records from `world/seed/guests.json`, turned into one line of text each by `ass
 holds a booking reference, a phone number and an email address.
 
 The starter is `assignment/redact.py`. It has imports only. A finished version is in
-`parts/06-do-it-with-the-tools-teams-run/01-redact-with-presidio/solution/`.
+`parts/06-block-private-data-with-presidio/01-redact-with-presidio/solution/`.
 
 ```bash
 uv run --with presidio-analyzer==2.2.366 --with presidio-anonymizer==2.2.366 assignment/check.py
