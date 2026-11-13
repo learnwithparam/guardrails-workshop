@@ -51,11 +51,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                                | Fix                                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------------- |
-| `FAIL guard_input blocks every hidden-text` | Run `raw` on each of `A-13` to `A-18` and look at the `style` of the tag.  |
-| `FAIL each block reason quotes`             | Put the words in the reason: `f"text a person cannot see: {hidden}"`.      |
-| `FAIL every benign HTML email passes`       | A colour such as `#555` is grey, not white. Match white exactly.           |
+| What you see                                | Fix                                                                       |
+| ------------------------------------------- | ------------------------------------------------------------------------- |
+| `FAIL guard_input blocks every hidden-text` | Run `raw` on each of `A-13` to `A-18` and look at the `style` of the tag. |
+| `FAIL each block reason quotes`             | Put the words in the reason: `f"text a person cannot see: {hidden}"`.     |
+| `FAIL every benign HTML email passes`       | A colour such as `#555` is grey, not white. Match white exactly.          |
 
 ## Words you will use
 

@@ -1,7 +1,7 @@
 // detect-injected-email: an input guard that flags most attacks and few real emails,
 // with a threshold chosen from a curve. The flags are read from the desk's decision log.
-import { json } from "./lib/files";
-import type { Rule } from "../scripts/verify";
+// biome-ignore-all lint/style/useNamingConvention: these keys keep the lab's snake_case spelling.
+
 import {
   type DeskRun,
   flaggedShare,
@@ -11,6 +11,8 @@ import {
   oncePerFolder,
   threeDeskRuns,
 } from "../parts/02-guard-what-comes-in/lab";
+import type { Rule } from "../scripts/verify";
+import { json } from "./lib/files";
 
 type CurvePoint = {
   threshold: number;
@@ -65,7 +67,8 @@ export default [
   {
     says: "guards.py answers every email with a decision and a score from 0 to 1",
     test: (folder) => freshCurve(folder)?.scored === true,
-    tryNext: 'return a dict like {"decision": "review", "score": 0.6, "reason": "..."} from guard_input',
+    tryNext:
+      'return a dict like {"decision": "review", "score": 0.6, "reason": "..."} from guard_input',
   },
   {
     says: "out/threshold.json has the 5-point curve, and the chosen threshold is one of the points",
@@ -108,7 +111,9 @@ export default [
       if (!point || !attacks || !benign) return false;
       const reportsHardNegatives = typeof point.hard_negatives_flagged === "number";
       const attacksMatch = closeTo(point.attacks_flagged, flaggedShare(attacks));
-      return reportsHardNegatives && attacksMatch && closeTo(point.benign_flagged, flaggedShare(benign));
+      return (
+        reportsHardNegatives && attacksMatch && closeTo(point.benign_flagged, flaggedShare(benign))
+      );
     },
     tryNext: "set THRESHOLD in guards.py to the same number you pass to --choose",
   },

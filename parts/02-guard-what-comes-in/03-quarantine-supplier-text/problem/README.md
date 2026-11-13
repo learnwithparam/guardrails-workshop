@@ -2,8 +2,8 @@
 
 ## The problem
 
-Your detector flags most attacks, but not all. On the held-out set, one in four attacks may slip past a
-detector like yours. Any email that slips past reaches a model that holds every tool. So the next guard does
+Your detector flags most attacks, but not all. It misses the payee changes, and an attacker can always try new
+words. Any email that slips past reaches a model that holds every tool. So the next guard does
 not try to spot the attack. It makes sure the words of the email never reach the model with the tools.
 
 This is the dual LLM pattern. A first model, the quarantined reader, reads the email. It has no tools. It fills
@@ -56,11 +56,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                                 | Fix                                                                   |
-| -------------------------------------------- | --------------------------------------------------------------------- |
-| `FAIL every email ... as a notice form`      | `"view"` must be a dict. Text in `"view"` goes to the agent as it is. |
-| `FAIL no sentence of any email`              | Remove any field that copies the email, such as `details`.            |
-| `FAIL the forms are right`                   | A check is too strict. Compare a missed email with `uv run desk show`. |
+| What you see                            | Fix                                                                    |
+| --------------------------------------- | ---------------------------------------------------------------------- |
+| `FAIL every email ... as a notice form` | `"view"` must be a dict. Text in `"view"` goes to the agent as it is.  |
+| `FAIL no sentence of any email`         | Remove any field that copies the email, such as `details`.             |
+| `FAIL the forms are right`              | A check is too strict. Compare a missed email with `uv run desk show`. |
 
 ## Words you will use
 

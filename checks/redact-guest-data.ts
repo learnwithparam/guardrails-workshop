@@ -1,7 +1,7 @@
 // redact-guest-data: guest names, phone numbers and allergy notes never reach the model.
 // The check reads every tool result the model was shown, after guard_result.
-import type { Rule } from "../scripts/verify";
-import { json } from "./lib/files";
+// biome-ignore-all lint/style/useNamingConvention: these keys keep the lab's snake_case spelling.
+
 import {
   guardsFile,
   hasGuards,
@@ -10,6 +10,8 @@ import {
   threeDeskRuns,
   utility,
 } from "../parts/02-guard-what-comes-in/lab";
+import type { Rule } from "../scripts/verify";
+import { json } from "./lib/files";
 
 type Entity = "name" | "phone" | "allergy_note";
 type RedactionFile = { tool_results: number; recall: Record<Entity, number> };

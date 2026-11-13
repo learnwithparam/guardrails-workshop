@@ -56,11 +56,11 @@ Expect: `Done. All 5 rules pass.`
 
 ## If you get stuck
 
-| What you see                          | Fix                                                                   |
-| ------------------------------------- | --------------------------------------------------------------------- |
-| `FAIL no allergy note reaches`        | Names and phones are not enough. Swap `notes` too.                    |
-| `FAIL out/redaction.json matches`     | Run the redaction command again. Never edit the file by hand.         |
-| `FAIL the desk still handles`         | Change only `list_private_dining` results. Orders and invoices stay. |
+| What you see                      | Fix                                                                  |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `FAIL no allergy note reaches`    | Names and phones are not enough. Swap `notes` too.                   |
+| `FAIL out/redaction.json matches` | Run the redaction command again. Never edit the file by hand.        |
+| `FAIL the desk still handles`     | Change only `list_private_dining` results. Orders and invoices stay. |
 
 ## Words you will use
 

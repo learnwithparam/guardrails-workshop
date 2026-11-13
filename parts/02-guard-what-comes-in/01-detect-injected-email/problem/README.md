@@ -29,8 +29,7 @@ Work in `guards.py` in this folder. It already adds up a score from a list of si
    it, then save the curve with your choice:
    `uv run python ../../guard_lab.py curve --guards guards.py --choose 0.5 --out out/threshold.json`
 
-You may ask a model instead of using rules. Call `llm.complete("judge", ...)` from `marrowfield.llm`, and give
-it a prompt about prompt injection. It must still return a score.
+You may ask a model instead, with `llm.complete("judge", ...)`. It must still return a score.
 
 ## Done when
 
@@ -48,12 +47,12 @@ Expect: `Done. All 7 rules pass.`
 
 ## If you get stuck
 
-| What you see                                 | Fix                                                                 |
-| -------------------------------------------- | ------------------------------------------------------------------- |
-| `FAIL ... flags at least 70% of the attack`  | Add signals. The six payee changes look real, so leave them for Part 3. |
-| `FAIL ... flags at most 10% of the benign`   | A weak word got a strong weight. Read the hard negatives again.     |
-| `FAIL the curve matches a fresh run`         | Run the curve command again after every change to `guards.py`.      |
-| `FAIL the chosen point matches what the desk saw` | `THRESHOLD` and `--choose` must be the same number.            |
+| What you see                                      | Fix                                                                     |
+| ------------------------------------------------- | ----------------------------------------------------------------------- |
+| `FAIL ... flags at least 70% of the attack`       | Add signals. The six payee changes look real, so leave them for Part 3. |
+| `FAIL ... flags at most 10% of the benign`        | A weak word got a strong weight. Read the hard negatives again.         |
+| `FAIL the curve matches a fresh run`              | Run the curve command again after every change to `guards.py`.          |
+| `FAIL the chosen point matches what the desk saw` | `THRESHOLD` and `--choose` must be the same number.                     |
 
 ## Words you will use
 

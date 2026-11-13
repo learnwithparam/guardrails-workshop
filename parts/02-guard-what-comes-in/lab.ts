@@ -71,7 +71,9 @@ export function labJson<Shape>(command: string, args: string[], folder: string):
 }
 
 /** Remember an answer per folder, so a slow run happens once for all the rules of a check. */
-export function oncePerFolder<Answer>(work: (folder: string) => Answer): (folder: string) => Answer {
+export function oncePerFolder<Answer>(
+  work: (folder: string) => Answer,
+): (folder: string) => Answer {
   const saved = new Map<string, Answer>();
   return (folder: string) => {
     if (!saved.has(folder)) saved.set(folder, work(folder));

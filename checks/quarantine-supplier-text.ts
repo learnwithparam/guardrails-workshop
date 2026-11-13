@@ -1,6 +1,7 @@
 // quarantine-supplier-text: a reader with no tools turns each email into a fixed form,
 // and the desk agent sees only the form. The check reads what the agent was really shown.
-import type { Rule } from "../scripts/verify";
+// biome-ignore-all lint/style/useNamingConvention: these keys keep the lab's snake_case spelling.
+
 import {
   guardsFile,
   hasGuards,
@@ -9,6 +10,7 @@ import {
   threeDeskRuns,
   utility,
 } from "../parts/02-guard-what-comes-in/lab";
+import type { Rule } from "../scripts/verify";
 
 type WatchedEmail = {
   email_id: string;
