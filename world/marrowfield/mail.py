@@ -1,7 +1,8 @@
 """Read supplier email the way the desk does.
 
-`model_view` is what the open desk hands the model: every word in the email, hidden or not, the way a simple
-HTML-to-text step reads it. A person in a mail client sees less. That gap is where hidden attacks live.
+`model_view` is what the open desk hands the model: every word in the email, hidden or not.
+It reads the email the way a simple HTML-to-text step does. A person in a mail client sees less.
+That gap is where hidden attacks live.
 """
 
 from __future__ import annotations
@@ -25,26 +26,27 @@ def parse(raw: str) -> dict:
     if "content-type:" not in head:
         # A hand-written email with no Content-Type is read as UTF-8 text, so "£950" stays "£950".
         raw = "Content-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit\n" + raw
-    msg = email.message_from_bytes(raw.encode("utf-8", "surrogateescape"), policy=policy.default)
+    raw_bytes = raw.encode("utf-8", "surrogateescape")
+    message = email.message_from_bytes(raw_bytes, policy=policy.default)
     text = html = None
-    for part in msg.walk():
-        ctype = part.get_content_type()
+    for part in message.walk():
+        content_type = part.get_content_type()
         if part.is_multipart():
             continue
         try:
             body = part.get_content()
         except Exception:  # noqa: BLE001 - a broken part is read as empty
             body = ""
-        if ctype == "text/plain" and text is None:
+        if content_type == "text/plain" and text is None:
             text = body
-        elif ctype == "text/html" and html is None:
+        elif content_type == "text/html" and html is None:
             html = body
-    name, addr = parseaddr(str(msg.get("From", "")))
+    name, address = parseaddr(str(message.get("From", "")))
     return {
         "from_name": name,
-        "from": addr.lower(),
-        "to": str(msg.get("To", "")),
-        "subject": str(msg.get("Subject", "")),
+        "from": address.lower(),
+        "to": str(message.get("To", "")),
+        "subject": str(message.get("Subject", "")),
         "text": text,
         "html": html,
     }
@@ -58,9 +60,9 @@ class _AllText(HTMLParser):
         self.out: list[str] = []
 
     def handle_starttag(self, tag, attrs):
-        for k, v in attrs:
-            if k in ("alt", "title") and v:
-                self.out.append(f" {v} ")
+        for attribute, value in attrs:
+            if attribute in ("alt", "title") and value:
+                self.out.append(f" {value} ")
         if tag in ("p", "div", "br", "tr", "li", "h1", "h2", "h3"):
             self.out.append("\n")
 
@@ -69,31 +71,35 @@ class _AllText(HTMLParser):
 
 
 def html_to_text(html: str) -> str:
-    p = _AllText()
-    p.feed(html)
-    t = htmllib.unescape("".join(p.out))
-    return re.sub(r"[ \t]+", " ", re.sub(r"\n\s*\n+", "\n\n", t)).strip()
+    parser = _AllText()
+    parser.feed(html)
+    text = htmllib.unescape("".join(parser.out))
+    # Many blank lines become one blank line, then runs of spaces become one space.
+    text = re.sub(r"\n\s*\n+", "\n\n", text)
+    text = re.sub(r"[ \t]+", " ", text)
+    return text.strip()
 
 
-def body_text(m: dict) -> str:
-    if m["html"]:
-        return html_to_text(m["html"])
-    return (m["text"] or "").strip()
+def body_text(message: dict) -> str:
+    if message["html"]:
+        return html_to_text(message["html"])
+    return (message["text"] or "").strip()
 
 
 def model_view(raw: str) -> str:
-    m = parse(raw)
-    return f"From: {m['from_name']} <{m['from']}>\nSubject: {m['subject']}\n\n{body_text(m)}"
+    message = parse(raw)
+    sender = f"{message['from_name']} <{message['from']}>"
+    return f"From: {sender}\nSubject: {message['subject']}\n\n{body_text(message)}"
 
 
 def inbox() -> list[tuple[str, str]]:
     box = paths.MAIL / "inbox"
-    return [(p.stem, p.read_text()) for p in sorted(box.glob("*.eml"))]
+    return [(email_file.stem, email_file.read_text()) for email_file in sorted(box.glob("*.eml"))]
 
 
 def find(email_id: str) -> str | None:
-    for mid, raw in inbox():
-        if mid == email_id:
+    for inbox_id, raw in inbox():
+        if inbox_id == email_id:
             return raw
     from .sets import load  # noqa: PLC0415 - avoid a cycle at import time
 
@@ -104,5 +110,5 @@ def find(email_id: str) -> str | None:
     return None
 
 
-def read_file(p: Path) -> str:
-    return p.read_text()
+def read_file(email_file: Path) -> str:
+    return email_file.read_text()

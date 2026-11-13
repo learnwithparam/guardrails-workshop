@@ -228,7 +228,7 @@ def handle(
     m = mail.parse(raw)
     sender = m["from"]
     sup = sender_supplier(con, sender)
-    ctx = tools.Ctx(con=con, email_id=email_id, sender=sender)
+    ctx = tools.ToolContext(con=con, email_id=email_id, sender=sender)
     session = {"read_untrusted": True, "holds_private": False}
     actions: list[dict] = []
     held_reasons: list[str] = []
