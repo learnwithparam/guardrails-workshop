@@ -1,0 +1,15 @@
+define flow check outgoing message
+  $link_verdict = execute check_links
+  if $link_verdict == "block"
+    bot refuse unlisted link
+    stop
+  $guest_verdict = execute check_guest_data
+  if $guest_verdict == "block"
+    bot refuse guest data
+    stop
+
+define bot refuse unlisted link
+  "BLOCKED: a link to a host that is not on the list"
+
+define bot refuse guest data
+  "BLOCKED: guest details in an outside email"

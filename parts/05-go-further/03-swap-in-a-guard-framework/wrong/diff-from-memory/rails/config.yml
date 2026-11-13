@@ -1,0 +1,6 @@
+# No model: this rail runs only Python actions, so it needs no key and makes no model call.
+models: []
+rails:
+  output:
+    flows:
+      - check outgoing message

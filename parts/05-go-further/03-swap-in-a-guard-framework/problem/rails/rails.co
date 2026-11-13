@@ -1,0 +1,9 @@
+define flow check outgoing message
+  $link_verdict = execute check_links
+  if $link_verdict == "block"
+    bot refuse unlisted link
+    stop
+  # TODO: execute check_guest_data, and refuse the message when it says "block".
+
+define bot refuse unlisted link
+  "BLOCKED: a link to a host that is not on the list"
