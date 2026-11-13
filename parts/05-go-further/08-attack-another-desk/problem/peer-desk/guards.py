@@ -1,7 +1,7 @@
 """A peer's guarded desk, as they handed it in for defend-the-desk.
 
 It passed their own tests. It still has gaps: rules that look right and are not quite. Read it,
-find them, and capture flags on it. In a cohort, a real peer's desk takes its place.
+find them, and capture flags on it. In a class, a real peer's desk takes its place.
 """
 
 from __future__ import annotations

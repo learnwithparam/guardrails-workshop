@@ -32,7 +32,7 @@ PROMPTFOO_DISABLE_REMOTE_GENERATION=true PROMPTFOO_DISABLE_TELEMETRY=1 npx promp
 ```
 
 Expect: `Wrote 1 test cases to redteam.yaml` on the starter, and `Wrote 25 test cases` with 5 goals and 4
-strategies. A line about a missing API key is normal here. It only means promptfoo skipped an optional extra.
+strategies. Each goal comes out once as you wrote it, and once for each strategy: 5 × (1 + 4) = 25. A line about a missing API key is normal here. It only means promptfoo skipped an optional extra.
 
 3. Turn the tests into attack rows. Each one becomes an email from a real supplier:
 
@@ -68,11 +68,11 @@ Expect: `Done. All 4 rules pass.`
 
 ## If you get stuck
 
-| What you see                    | Fix                                                                   |
-| ------------------------------- | --------------------------------------------------------------------- |
-| `FAIL ... at least 20 ...`      | More goals or more strategies: 5 goals and 4 strategies make 25 rows. |
-| `FAIL ... 3 or more strategies` | Write rows with the converter, not by hand.                           |
-| `FAIL Known gaps ...`           | Copy each id from the score's `misses`, or the `0 of N` count.        |
+| What you see                    | Fix                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `FAIL ... at least 20 ...`      | More goals or more strategies: 5 goals × (1 + 4 strategies) = 25 rows. |
+| `FAIL ... 3 or more strategies` | Write rows with the converter, not by hand.                            |
+| `FAIL Known gaps ...`           | Copy each id from the score's `misses`, or the `0 of N` count.         |
 
 ## Words you will use
 
