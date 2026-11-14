@@ -38,11 +38,13 @@ Expect: `Done. All 3 rules pass.` once your work is right.
 
 ## Watch and read
 
-| Kind | Title                                       | Author    | Why                                                                        | Link                                                         |
-| ---- | ------------------------------------------- | --------- | -------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| read | Building effective AI agents                | Anthropic | The team that runs agents in production shows simple designs that hold up. | https://www.anthropic.com/research/building-effective-agents |
-| read | Mitigating prompt injections in browser use | Anthropic | Shows layered guards against hidden instructions in outside text.          | https://www.anthropic.com/research/prompt-injection-defenses |
-| read | Making Claude Code safer with sandboxing    | Anthropic | Shows how to limit what an agent can touch, the same idea as a tool guard. | https://www.anthropic.com/research/claude-code-sandboxing    |
+| Kind  | Title                                                    | Author                            | Why                                                                        | Link                                                         |
+| ----- | -------------------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| video | Presidio PII detection and anonymization demo            | Omri Mendels, Presidio maintainer | A live demo of finding and hiding private data.                            | https://www.youtube.com/watch?v=RPJ3-kEUybU                  |
+| video | Data Anonymization With Microsoft Presidio, step by step | M&M Tech                          | Follows the same steps as the Presidio step in this part.                  | https://www.youtube.com/watch?v=4GuK9sPUvus                  |
+| read  | Building effective AI agents                             | Anthropic                         | The team that runs agents in production shows simple designs that hold up. | https://www.anthropic.com/research/building-effective-agents |
+| read  | Mitigating prompt injections in browser use              | Anthropic                         | Shows layered guards against hidden instructions in outside text.          | https://www.anthropic.com/research/prompt-injection-defenses |
+| read  | Making Claude Code safer with sandboxing                 | Anthropic                         | Shows how to limit what an agent can touch, the same idea as a tool guard. | https://www.anthropic.com/research/claude-code-sandboxing    |
 
 ## Project
 

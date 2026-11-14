@@ -80,14 +80,14 @@ you finish.
 
 ## Watch and read
 
-| Kind | Title                                       | Author                | Why                                                                                   | Link                                                            |
-| ---- | ------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| read | Building effective AI agents                | Anthropic engineering | Shows when an agent needs a person in the loop and why simple tools beat clever ones. | https://www.anthropic.com/engineering/building-effective-agents |
-| read | Writing effective tools for AI agents       | Anthropic engineering | Explains how tool names and arguments shape what an agent can do.                     | https://www.anthropic.com/engineering/writing-tools-for-agents  |
-| read | Configure permissions                       | Claude Code docs      | A working allow list, ask list and deny list, from the team that runs it.             | https://code.claude.com/docs/en/permissions                     |
-| read | Making Claude Code safer with sandboxing    | Anthropic engineering | Limits what a run can reach, even when the agent is fooled.                           | https://www.anthropic.com/engineering/claude-code-sandboxing    |
-| read | How we built Claude Code auto mode          | Anthropic engineering | A check on each action that decides when to ask a person.                             | https://www.anthropic.com/engineering/claude-code-auto-mode     |
-| read | Mitigating prompt injections in browser use | Anthropic research    | The numbers behind checking actions, not only words.                                  | https://www.anthropic.com/research/prompt-injection-defenses    |
+| Kind  | Title                                                  | Author                | Why                                                                                   | Link                                                            |
+| ----- | ------------------------------------------------------ | --------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| read  | Building effective AI agents                           | Anthropic engineering | Shows when an agent needs a person in the loop and why simple tools beat clever ones. | https://www.anthropic.com/engineering/building-effective-agents |
+| video | OWASP's Top 10 Ways to Attack LLMs                     | IBM Technology        | Shows the attacks in action, including too much agency.                               | https://www.youtube.com/watch?v=gUNXZMcd2jU                     |
+| video | The OWASP Top 10 for Large Language Model Applications | IBM Technology        | Walks through the ten risks this workshop guards against.                             | https://www.youtube.com/watch?v=cYuesqIKf9A                     |
+| read  | Making Claude Code safer with sandboxing               | Anthropic engineering | Limits what a run can reach, even when the agent is fooled.                           | https://www.anthropic.com/engineering/claude-code-sandboxing    |
+| read  | How we built Claude Code auto mode                     | Anthropic engineering | A check on each action that decides when to ask a person.                             | https://www.anthropic.com/engineering/claude-code-auto-mode     |
+| read  | Mitigating prompt injections in browser use            | Anthropic research    | The numbers behind checking actions, not only words.                                  | https://www.anthropic.com/research/prompt-injection-defenses    |
 
 ## Project
 

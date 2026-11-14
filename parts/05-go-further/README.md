@@ -107,12 +107,14 @@ Expect: `0/9 steps pass.` on a fresh clone, and `Part go-further is done: 9/9 st
 
 ## Watch and read
 
-| Kind | Title                                       | Author    | Why                                                                                                   | Link                                                                                            |
-| ---- | ------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| read | Mitigating prompt injections in browser use | Anthropic | The team that runs a browser agent says how far detection goes, and why a small rate is still a risk. | https://www.anthropic.com/research/prompt-injection-defenses                                    |
-| read | Mitigate jailbreaks and prompt injections   | Anthropic | The official guide to screening input and shaping output, the layers you rebuild here.                | https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks |
-| read | Building effective AI agents                | Anthropic | The team that builds agents explains simple, checkable workflows, like your fixed plan.               | https://www.anthropic.com/engineering/building-effective-agents                                 |
-| read | Constitutional Classifiers                  | Anthropic | How a safety classifier is trained and tested against attackers, like your Llama Guard score.         | https://www.anthropic.com/research/constitutional-classifiers                                   |
+| Kind  | Title                                                              | Author         | Why                                                                                                   | Link                                                                                            |
+| ----- | ------------------------------------------------------------------ | -------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| video | Securing AI Agents: How to Prevent Hidden Prompt Injection Attacks | IBM Technology | Shows hidden text attacks on agents and how to block them.                                            | https://www.youtube.com/watch?v=5ZA1lTxTH3c                                                     |
+| video | OWASP's Top 10 Ways to Attack LLMs                                 | IBM Technology | Shows the attacks in action, including too much agency.                                               | https://www.youtube.com/watch?v=gUNXZMcd2jU                                                     |
+| read  | Mitigating prompt injections in browser use                        | Anthropic      | The team that runs a browser agent says how far detection goes, and why a small rate is still a risk. | https://www.anthropic.com/research/prompt-injection-defenses                                    |
+| read  | Mitigate jailbreaks and prompt injections                          | Anthropic      | The official guide to screening input and shaping output, the layers you rebuild here.                | https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks |
+| read  | Building effective AI agents                                       | Anthropic      | The team that builds agents explains simple, checkable workflows, like your fixed plan.               | https://www.anthropic.com/engineering/building-effective-agents                                 |
+| read  | Constitutional Classifiers                                         | Anthropic      | How a safety classifier is trained and tested against attackers, like your Llama Guard score.         | https://www.anthropic.com/research/constitutional-classifiers                                   |
 
 ## Project
 

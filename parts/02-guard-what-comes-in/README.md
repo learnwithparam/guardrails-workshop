@@ -81,8 +81,12 @@ finish.
 
 ## Watch and read
 
-| Kind | Title | Author | Why | Link |
-| ---- | ----- | ------ | --- | ---- |
+| Kind  | Title                                                              | Author         | Why                                                                             | Link                                                                                            |
+| ----- | ------------------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| video | Simon Willison on the industry's slow answer to prompt injection   | RedMonk        | Explains why we still have no full fix and what to do now.                      | https://www.youtube.com/watch?v=tWp77I-L2KY                                                     |
+| video | Securing AI Agents: How to Prevent Hidden Prompt Injection Attacks | IBM Technology | Shows hidden text attacks on agents and how to block them.                      | https://www.youtube.com/watch?v=5ZA1lTxTH3c                                                     |
+| read  | Mitigate jailbreaks and prompt injections                          | Anthropic      | Lists the layers that screen input before the model sees it.                    | https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks |
+| read  | Mitigating prompt injections in browser use                        | Anthropic      | Shows how a team tests its agent defences against text that tries to hijack it. | https://www.anthropic.com/research/prompt-injection-defenses                                    |
 
 ## Project
 
