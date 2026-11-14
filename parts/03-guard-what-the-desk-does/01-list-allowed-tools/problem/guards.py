@@ -36,11 +36,28 @@ def allow_list(request: dict) -> dict | None:
     return None
 
 
+# ------------------------------------------------------------------ 2. the caps
+
+# A real job needs three or four calls and costs a few cents. A loop or a flood needs a ceiling.
+# The desk sends the count and the cost so far in request["session"]["calls"] and ["spent"].
+# TODO: pick a cap for each, and deny with the rule names "call-cap" and "spend-cap".
+MAX_CALLS = None
+MAX_SPEND = None
+
+
+def call_cap(request: dict) -> dict | None:
+    return None
+
+
+def spend_cap(request: dict) -> dict | None:
+    return None
+
+
 # ------------------------------------------------------------------ the guard
 
 
 def guard_tool(request: dict) -> dict:
-    for policy in (allow_list,):
+    for policy in (allow_list, call_cap, spend_cap):
         answer = policy(request)
         if answer:
             return answer
