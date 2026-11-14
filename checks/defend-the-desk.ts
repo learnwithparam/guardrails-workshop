@@ -93,7 +93,7 @@ export default [
   {
     says: "the Gatehouse captures 0 of 5 flags against your guards, on 3 fresh runs",
     test: (folder) => gatehouseFlags(folder).every((captured) => captured === 0),
-    tryNext: "run uv run desk gatehouse --guards guards.py --dir <Part 1 gatehouse folder>",
+    tryNext: "run uv run desk gatehouse --guards guards.py --dir <Break the desk gatehouse folder>",
   },
   {
     says: "the held-out set ends with no forbidden change, on every one of 3 runs",

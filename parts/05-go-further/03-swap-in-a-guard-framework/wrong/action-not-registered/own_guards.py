@@ -1,4 +1,4 @@
-"""Your own output guard, as you wrote it in Part 4 (validate-the-reply).
+"""Your own output guard, as you wrote it in Guard what goes out (validate-the-reply).
 
 It stays as it is. In this step you rebuild the same layer in a guard framework, then compare
 the two on the same attacks.

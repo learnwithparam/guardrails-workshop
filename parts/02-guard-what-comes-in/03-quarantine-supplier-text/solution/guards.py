@@ -219,6 +219,7 @@ def guard_input(request: dict) -> dict:
         "reason": "; ".join(reasons) or "no injection signal found",
         # The desk shows the agent this form instead of the email.
         "view": notice,
-        # The kind of notice names the job. Part 3 uses it to pick the tools.
+        # The kind of notice names the job.
+        # The Guard what the desk does part uses it to pick the tools.
         "task": notice["kind"],
     }

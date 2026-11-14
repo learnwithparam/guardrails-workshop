@@ -1,8 +1,8 @@
-# Part 6: Block private data with Presidio
+# Block private data with Presidio
 
 ## The problem
 
-In part 2 you wrote your own guest data redactor. It works, and you know every line of it. But a team that
+In the "Guard what comes in" part you wrote your own guest data redactor. It works, and you know every line of it. But a team that
 ships this does not keep a home-made redactor. It uses a tool other teams already trust, so the next engineer
 meets code they know.
 
@@ -51,7 +51,7 @@ The assignment folder is `assignment/`. Its `README.md` holds the task, the Done
 
 Presidio is not the only way to do this job.
 
-- **NeMo Guardrails PII rails.** Choose when the app already runs NeMo rails, as the desk does in part 5.
+- **NeMo Guardrails PII rails.** Choose when the app already runs NeMo rails, as the desk does in the "Go further" part.
   Trade-off: one more config layer for one job.
 
 Write your own choice in `assignment/CHOICE.md`, in a few sentences.

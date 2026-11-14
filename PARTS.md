@@ -1,7 +1,7 @@
 # Parts: the build map
 
 One row per step. A part session builds one part from this page alone: the step folders, their checks, and the
-part README's Walkthrough. Orientation and Part 1 are complete and are the pattern to copy.
+part README's Walkthrough. Orientation and the "Break the desk" part are complete and are the pattern to copy.
 
 ## How a step is built here
 
@@ -68,15 +68,21 @@ part README's Walkthrough. Orientation and Part 1 are complete and are the patte
 
 ## go-further (`parts/05-go-further/`, 180 minutes, optional)
 
-| Step                              | Min | The check reads                                                                                                                       |
-| --------------------------------- | --- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `fix-the-plan-first`              | 20  | the run log has the tool plan before the first email read; no call outside the plan runs                                              |
-| `block-untrusted-payees`          | 20  | with the input detector off: security 100% on attacks and held-out sets; the utility cost against Part 4 printed                      |
-| `swap-in-a-guard-framework`       | 30  | the same contract checks pass with one layer rebuilt in a guard framework (pin its current version); a score diff printed             |
-| `generate-attacks-with-promptfoo` | 25  | at least 20 new attack rows from promptfoo (no harm plugins) in the set schema; a fresh score; new failures named in the guard report |
-| `run-the-agentdojo-banking-suite` | 30  | utility and security on AgentDojo's banking suite with the learner's guards, beside its published defences                            |
-| `shadow-a-new-guard`              | 20  | would-block counts in the log for a replayed set with no change to the records; the switch-on is a config change                      |
-| `price-the-guards`                | 15  | p95 latency and cost per 1,000 emails per layer, computed from `decisions.jsonl`; one layer named to run in parallel                  |
-| `attack-another-desk`             | 20  | flags on a peer's desk (or the reference desk) found by the records, each filed with its attack text                                  |
+| Step                              | Min | The check reads                                                                                                                          |
+| --------------------------------- | --- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `fix-the-plan-first`              | 20  | the run log has the tool plan before the first email read; no call outside the plan runs                                                 |
+| `block-untrusted-payees`          | 20  | with the input detector off: security 100% on attacks and held-out sets; the utility cost against the "Guard what goes out" part printed |
+| `swap-in-a-guard-framework`       | 30  | the same contract checks pass with one layer rebuilt in a guard framework (pin its current version); a score diff printed                |
+| `generate-attacks-with-promptfoo` | 25  | at least 20 new attack rows from promptfoo (no harm plugins) in the set schema; a fresh score; new failures named in the guard report    |
+| `run-the-agentdojo-banking-suite` | 30  | utility and security on AgentDojo's banking suite with the learner's guards, beside its published defences                               |
+| `shadow-a-new-guard`              | 20  | would-block counts in the log for a replayed set with no change to the records; the switch-on is a config change                         |
+| `price-the-guards`                | 15  | p95 latency and cost per 1,000 emails per layer, computed from `decisions.jsonl`; one layer named to run in parallel                     |
+| `attack-another-desk`             | 20  | flags on a peer's desk (or the reference desk) found by the records, each filed with its attack text                                     |
 
 `plan-before-reading` from the brief is split into `fix-the-plan-first` and `block-untrusted-payees` (REVIEW.md).
+
+## block-private-data-with-presidio (`parts/06-block-private-data-with-presidio/`, 20 minutes, optional)
+
+| Step                   | Min | The check reads                                                               |
+| ---------------------- | --- | ----------------------------------------------------------------------------- |
+| `redact-with-presidio` | 20  | the package version, the guest fixtures, and the booking reference recogniser |

@@ -2,7 +2,7 @@
 
 ## The problem
 
-The hand-built redactor from part 2 swaps guest values for placeholders. Teams that run this in production
+The hand-built redactor from the "Guard what comes in" part swaps guest values for placeholders. Teams that run this in production
 use Presidio for the same job. It has two parts. The analyzer finds private values in text. The anonymizer
 swaps them for placeholders.
 

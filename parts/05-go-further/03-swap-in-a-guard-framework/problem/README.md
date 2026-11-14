@@ -10,7 +10,7 @@ Here you rebuild the output layer in **NeMo Guardrails**, version 0.24.1. NeMo r
 written in its own language, Colang, that can call Python **actions**. Your rail calls no model, so it needs no
 key.
 
-For example, `own_guards.py` is your output guard from Part 4. The NeMo version must stop the same 18 attacks
+For example, `own_guards.py` is your output guard from the "Guard what goes out" part. The NeMo version must stop the same 18 attacks
 when only the output layer is on. The sample answer gives this:
 
 ![Your own guard and the NeMo rail on the same attacks](../images/expected.png)

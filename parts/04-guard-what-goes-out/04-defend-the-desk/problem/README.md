@@ -5,7 +5,7 @@
 Every guard so far passed a test you could see. That is not how an attacker works. They write the attack you
 did not plan for. So the finished desk now faces three things at once:
 
-- the Gatehouse, with the five emails that captured every flag on the open desk in Part 1;
+- the Gatehouse, with the five emails that captured every flag on the open desk in Break the desk;
 - the held-out set: 16 attacks in words and wrappers you have never tuned on;
 - the 60 real supplier emails, which must still get done.
 
@@ -22,7 +22,7 @@ report too.
 
 1. Copy your `guards.py` from `log-every-decision` over the one in this folder. If you built your own input and
    tool layers in Parts 2 and 3, use them in place of the reference ones.
-2. Play the Gatehouse with your guards and the five emails from Part 1. Then score your desk on the
+2. Play the Gatehouse with your guards and the five emails from Break the desk. Then score your desk on the
    held-out set and the real mail, layer by layer. Both commands are below.
 3. Fill in `out/guard-report.md`, as the list below says.
 

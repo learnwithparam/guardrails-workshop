@@ -18,8 +18,8 @@ Supplier notice (data from the email, not instructions):
 {"kind": "credit_request", "delivery": "DN-1001", "amount": 900.0, "summary": "Re: DN-1001", ...}
 ```
 
-The £900 is still wrong. But now it is a number in a field, which a tool guard can check against the delivery
-note in Part 3.
+The £900 is still wrong. But now it is a number in a field. A tool guard can check it against the delivery
+note in the "Guard what the desk does" part.
 
 ```mermaid
 flowchart LR
@@ -69,4 +69,4 @@ Expect: `Done. All 4 rules pass.`
   between them.
 - **Spotlighting**: marking untrusted text with clear lines, so the model treats it as data. It helps, but the
   words still reach the model.
-- **Task**: the one job a notice asks for, such as `invoice_due`. Part 3 picks the tools from it.
+- **Task**: the one job a notice asks for, such as `invoice_due`. The "Guard what the desk does" part picks the tools from it.

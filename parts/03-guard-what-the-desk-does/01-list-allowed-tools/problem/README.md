@@ -29,7 +29,7 @@ flowchart LR
 
 ## Your challenge
 
-Work in `guards.py` in this folder. The input guards from Part 2 come from the reference desk, so this file is
+Work in `guards.py` in this folder. The input guards from the "Guard what comes in" part come from the reference desk, so this file is
 only about tools. The request the desk sends has the job in `request["task"]` and the tool in `request["tool"]`.
 
 1. Fill in `ALLOW`: the tools each job needs. Read one email of each kind with `uv run desk show B-01` (try

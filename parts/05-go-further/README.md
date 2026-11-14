@@ -1,4 +1,4 @@
-# Part 5: Go further
+# Go further
 
 ## The problem
 

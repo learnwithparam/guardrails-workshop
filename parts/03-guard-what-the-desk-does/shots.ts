@@ -1,4 +1,4 @@
-// bun parts/03-guard-what-the-desk-does/shots.ts: capture the pictures Part 3's steps show.
+// bun parts/03-guard-what-the-desk-does/shots.ts: capture the pictures this part's steps show.
 // Each picture is real command output from a sample solution, drawn as a dark terminal.
 // Uses Playwright's Chromium. Set PW_CHROMIUM to a Chrome binary if Playwright has none.
 import { mkdirSync, mkdtempSync } from "node:fs";
