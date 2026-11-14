@@ -1,7 +1,8 @@
 """Marrowfield's tool guard: every call the desk agent proposes is checked before it runs.
 
-Part 2 built the input guards. Here they come from the reference desk, so this file can focus on
-tools. The desk calls guard_tool once per proposed call and runs the call only on "allow".
+The Guard what comes in part built the input guards. Here they come from the reference desk,
+so this file can focus on tools.
+The desk calls guard_tool once per proposed call and runs the call only on "allow".
 An "ask" goes to a person first. A "deny" never runs.
 """
 

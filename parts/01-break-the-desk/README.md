@@ -1,4 +1,4 @@
-# Part 1: Break the desk
+# Break the desk
 
 ## The problem
 

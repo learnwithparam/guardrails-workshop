@@ -1,4 +1,4 @@
-"""The guard lab for Part 2: try your input and result guards on the world's sets.
+"""The guard lab for Guard what comes in: try your input and result guards on the world's sets.
 
 Run it from a step's problem/ folder:
 
@@ -336,7 +336,7 @@ def command_raw(options) -> int:
 
 
 def parser() -> argparse.ArgumentParser:
-    lab = argparse.ArgumentParser(prog="guard_lab", description="Try your Part 2 guards.")
+    lab = argparse.ArgumentParser(prog="guard_lab", description="Try your input and result guards.")
     commands = lab.add_subparsers(dest="command", required=True)
     curve = commands.add_parser("curve", help="flag rates at five thresholds")
     curve.add_argument("--guards", required=True)

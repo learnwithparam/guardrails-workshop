@@ -29,7 +29,7 @@ Not held.
 5. Fill in `goal.md` from your own run: `Attacks stopped: N of 48`, `Good work through: N of 60`, and
    `Planted emails:` with the ids you found.
 
-By the end of Part 4, your own desk prints a line like the reference desk's.
+By the end of the "Guard what goes out" part, your own desk prints a line like the reference desk's.
 
 ## Done when
 

@@ -1,4 +1,4 @@
-# Part 2: Guard what comes in
+# Guard what comes in
 
 ## The problem
 
@@ -31,7 +31,7 @@ Guard 2 (86M) prevented 81.2% of attacks, at a cost of 3% of the agent's useful 
 prevented 78.4%
 ([Llama Prompt Guard 2 model card](https://github.com/meta-llama/PurpleLlama/blob/main/Llama-Prompt-Guard-2/86M/MODEL_CARD.md)).
 So a strong detector still lets about one attack in five through. That is why it is one layer, scored on two
-numbers. It is never the promise. The quarantined reader and the tool guards in Part 3 carry the promise.
+numbers. It is never the promise. The quarantined reader and the tool guards in the "Guard what the desk does" part carry the promise.
 
 ```mermaid
 flowchart LR
@@ -127,5 +127,5 @@ agent a supplier's words or a guest's details. Run `uv run desk score --guards g
 
 Two kinds of attack still get through. The direct overrides ask for a £900 credit note on a £32.50 shortfall.
 The form carries that number honestly, and nothing checks it. And half the payee changes land, because a fake
-bank change reads exactly like a real one. No input guard can tell them apart. Part 3 moves the promise to the
+bank change reads exactly like a real one. No input guard can tell them apart. The "Guard what the desk does" part moves the promise to the
 tool layer. It checks every call the agent makes against the records, and asks a person before money moves.

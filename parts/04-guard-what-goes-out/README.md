@@ -1,4 +1,4 @@
-# Part 4: Guard what goes out, and watch
+# Guard what goes out, and watch
 
 ## The problem
 
@@ -91,6 +91,6 @@ hosts and guest data in outside mail, and checks every quantity against the orde
 with its latency, and an alert watches that log. The desk stops every held-out attack and still handles 59 of 60
 real emails. Your guard report says what each layer costs and what it still misses.
 
-Part 5 is optional. It asks what happens when an attacker learns your detector. It fixes the tool plan before
+The "Go further" part is optional. It asks what happens when an attacker learns your detector. It fixes the tool plan before
 any email is read, and refuses any payee that came from the email. It also swaps in a guard framework, makes
 new attacks with a tool, and prices each layer from the same `decisions.jsonl` you wrote here.

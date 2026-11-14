@@ -73,11 +73,11 @@ attacks they have not seen.
 
 ```mermaid
 flowchart LR
-  IN[Supplier inbox<br/>60 real, 48 planted, 16 held out] --> IG[Input guards<br/>Part 2]
+  IN[Supplier inbox<br/>60 real, 48 planted, 16 held out] --> IG[Input guards<br/>Guard what comes in]
   IG --> AG[Desk agent]
-  AG --> TG[Tool guards<br/>Part 3]
+  AG --> TG[Tool guards<br/>Guard what the desk does]
   TG --> SOR[(System of record<br/>orders, invoices, payments,<br/>suppliers, guests)]
-  AG --> OG[Output guards<br/>Part 4]
+  AG --> OG[Output guards<br/>Guard what goes out]
   OG --> OUT[Outbox]
   SOR --> CHECK[Checks diff the records<br/>bun run verify step-name]
   IG & TG & OG --> LOG[decisions.jsonl]
@@ -85,14 +85,15 @@ flowchart LR
 
 ## Parts
 
-| Part                                                                       | Steps                                                                                                            | Minutes | You can show                                                               |
-| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------- |
-| [Orientation](00-orientation/README.md)                                    | `meet-the-desk`                                                                                                  | 15      | the goal, in the finished desk's own numbers                               |
-| [1. Break the desk](parts/01-break-the-desk/README.md)                     | `run-the-open-desk`, `play-the-gatehouse`, `write-the-attack-set`, `write-the-benign-set`, `score-the-open-desk` | 60      | flags captured, your own attack and benign sets, a red scoreboard          |
-| [2. Guard what comes in](parts/02-guard-what-comes-in/README.md)           | `detect-injected-email`, `reveal-hidden-text`, `quarantine-supplier-text`, `redact-guest-data`                   | 65      | a detector with its threshold curve, and a desk that never reads raw email |
-| [3. Guard what the desk does](parts/03-guard-what-the-desk-does/README.md) | `list-allowed-tools`, `check-tool-arguments`, `ask-before-money-moves`, `break-the-trifecta`                     | 55      | the fake bank change held, the real one paid after a call back             |
-| [4. Guard what goes out](parts/04-guard-what-goes-out/README.md)           | `validate-the-reply`, `ground-the-reply`, `log-every-decision`, `defend-the-desk`                                | 60      | a green scoreboard on the held-out set, and the guard report               |
-| [5. Go further](parts/05-go-further/README.md) (optional)                  | eight steps, from `fix-the-plan-first` to `attack-another-desk`                                                  | 180     | a desk that holds with the detector switched off                           |
+| Part                                                                                               | Steps                                                                                                            | Minutes | You can show                                                                                       |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| [Orientation](00-orientation/README.md)                                                            | `meet-the-desk`                                                                                                  | 15      | the goal, in the finished desk's own numbers                                                       |
+| [Break the desk](parts/01-break-the-desk/README.md)                                                | `run-the-open-desk`, `play-the-gatehouse`, `write-the-attack-set`, `write-the-benign-set`, `score-the-open-desk` | 60      | flags captured, your own attack and benign sets, a red scoreboard                                  |
+| [Guard what comes in](parts/02-guard-what-comes-in/README.md)                                      | `detect-injected-email`, `reveal-hidden-text`, `quarantine-supplier-text`, `redact-guest-data`                   | 65      | a detector with its threshold curve, and a desk that never reads raw email                         |
+| [Guard what the desk does](parts/03-guard-what-the-desk-does/README.md)                            | `list-allowed-tools`, `check-tool-arguments`, `ask-before-money-moves`, `break-the-trifecta`                     | 55      | the fake bank change held, the real one paid after a call back                                     |
+| [Guard what goes out](parts/04-guard-what-goes-out/README.md)                                      | `validate-the-reply`, `ground-the-reply`, `log-every-decision`, `defend-the-desk`                                | 60      | a green scoreboard on the held-out set, and the guard report                                       |
+| [Go further](parts/05-go-further/README.md) (optional)                                             | eight steps, from `fix-the-plan-first` to `attack-another-desk`                                                  | 180     | a desk that holds with the detector switched off                                                   |
+| [Block private data with Presidio](parts/06-block-private-data-with-presidio/README.md) (optional) | `redact-with-presidio`                                                                                           | 20      | the guest data redactor rebuilt with Presidio, and a script that proves no email or phone survives |
 
 Each step has a challenge, a Done when list and one command: `bun run verify <step-name>`. You can run the same
 parts as one day, four evenings or four sessions with a group. The plans are in `schedules.toml`. The full build
@@ -124,7 +125,7 @@ Fork this repo, or bring your own world with the same four guard routes. Then sh
    Willison. A "trifecta" is three things together. Here they are private data, untrusted content and a way to
    send data out. Together, they are how data gets stolen.
 2. [Agents Rule of Two](https://ai.meta.com/blog/practical-ai-agent-security/), Meta. This is the session rule
-   you write in code in Part 3.
+   you write in code in the "Guard what the desk does" part.
 3. [Mitigating the risk of prompt injections in browser use](https://www.anthropic.com/research/prompt-injection-defenses),
    Anthropic. It shows how a team that ships an agent measures attack success. It also shows why a low rate is
    still a risk.

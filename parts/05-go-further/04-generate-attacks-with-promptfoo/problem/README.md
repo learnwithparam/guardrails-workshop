@@ -42,7 +42,7 @@ bun promptfoo-to-set.ts
 
 Expect: `Wrote 25 attack rows to sets/promptfoo.jsonl.`
 
-4. Score your guards on the new set. `guards.py` is the reference desk. Put your own from Part 4 in its place:
+4. Score your guards on the new set. `guards.py` is the reference desk. Swap in yours from Guard what goes out:
 
 ```bash
 uv run desk score --guards guards.py --attacks sets/promptfoo.jsonl --benign none --out out/score-promptfoo.json

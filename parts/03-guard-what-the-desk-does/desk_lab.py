@@ -1,4 +1,4 @@
-"""The desk lab for Part 3: try your tool guard on the calls the desk agent makes.
+"""The desk lab for Guard what the desk does: try your tool guard on the calls the desk agent makes.
 
 Run it from a step's problem/ folder:
 
@@ -291,7 +291,7 @@ def command_trifecta(options) -> int:
 
 
 def parser() -> argparse.ArgumentParser:
-    lab = argparse.ArgumentParser(prog="desk_lab", description="Try your Part 3 tool guard.")
+    lab = argparse.ArgumentParser(prog="desk_lab", description="Try your tool guard.")
     commands = lab.add_subparsers(dest="command", required=True)
     inject = commands.add_parser("inject", help="slip extra calls into the agent's first turn")
     inject.add_argument("--guards", required=True)

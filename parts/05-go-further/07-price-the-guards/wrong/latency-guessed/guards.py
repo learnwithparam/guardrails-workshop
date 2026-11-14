@@ -1,6 +1,7 @@
 """Your guarded desk, with every verdict written to out/decisions.jsonl.
 
-This is the logging wrapper from Part 4 (log-every-decision) around the reference desk's layers.
+This is the logging wrapper from Guard what goes out (log-every-decision)
+around the reference desk's layers.
 Put your own layers in their place to price your own desk.
 """
 

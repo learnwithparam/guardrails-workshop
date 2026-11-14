@@ -1,8 +1,8 @@
 """Your guards for shadow-a-new-guard.
 
-The desk here has one layer: your output guard from Part 4 (links and guest data). It lets the
-desk's own prompt leak out in an email. The new guard closes that gap. It runs in the mode that
-shadow.toml names:
+The desk here has one layer: your output guard from Guard what goes out (links and guest data).
+It lets the desk's own prompt leak out in an email. The new guard closes that gap.
+It runs in the mode that shadow.toml names:
 
     off      the new guard does nothing
     shadow   it decides, writes what it would block to out/shadow.jsonl, and blocks nothing
@@ -46,7 +46,7 @@ def block(rule: str, reason: str) -> dict:
 
 
 def links_and_guest_data(request: dict) -> dict | None:
-    """Your output guard from Part 4."""
+    """Your output guard from Guard what goes out."""
     text = request.get("text") or ""
     allowed_hosts = set((request.get("record") or {}).get("allowed_hosts") or [])
     for link in LINK.findall(text):

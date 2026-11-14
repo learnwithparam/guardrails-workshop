@@ -1,4 +1,4 @@
-// What the Part 2 checks share: run the learner's guards on the desk and in the guard lab,
+// What the checks in this part share: run the learner's guards on the desk and in the guard lab,
 // on a fresh, throwaway world in replay mode, and read what the world wrote down.
 // biome-ignore-all lint/style/useNamingConvention: the keys keep the world's snake_case spelling.
 import { mkdtempSync, readFileSync } from "node:fs";

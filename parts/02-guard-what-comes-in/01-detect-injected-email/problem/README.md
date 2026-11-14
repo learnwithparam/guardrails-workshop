@@ -47,12 +47,12 @@ Expect: `Done. All 7 rules pass.`
 
 ## If you get stuck
 
-| What you see                                      | Fix                                                                     |
-| ------------------------------------------------- | ----------------------------------------------------------------------- |
-| `FAIL ... flags at least 70% of the attack`       | Add signals. The six payee changes look real, so leave them for Part 3. |
-| `FAIL ... flags at most 10% of the benign`        | A weak word got a strong weight. Read the hard negatives again.         |
-| `FAIL the curve matches a fresh run`              | Run the curve command again after every change to `guards.py`.          |
-| `FAIL the chosen point matches what the desk saw` | `THRESHOLD` and `--choose` must be the same number.                     |
+| What you see                                      | Fix                                                                                                  |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `FAIL ... flags at least 70% of the attack`       | Add signals. The six payee changes look real, so leave them for the "Guard what the desk does" part. |
+| `FAIL ... flags at most 10% of the benign`        | A weak word got a strong weight. Read the hard negatives again.                                      |
+| `FAIL the curve matches a fresh run`              | Run the curve command again after every change to `guards.py`.                                       |
+| `FAIL the chosen point matches what the desk saw` | `THRESHOLD` and `--choose` must be the same number.                                                  |
 
 ## Words you will use
 
