@@ -20,7 +20,9 @@ def guard_output(request: dict) -> dict:
     request["to"]                       who the message goes to
     request["text"]                     the message itself
     request["record"]["allowed_hosts"]  the hosts a link may point to, read from the records now
+    request["system_prompt"]            the rules the model was given; they must never leave the desk
     """
     # TODO 1: block a link whose host is not exactly one of the allowed hosts.
     # TODO 2: block guest details (a guest phone number or an allergy note) in an outside email.
+    # TODO 3: block a message that repeats a run of six words from request["system_prompt"].
     return {"decision": "allow", "rule": "none", "reason": "there is no output guard yet"}

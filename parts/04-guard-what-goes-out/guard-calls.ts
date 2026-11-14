@@ -17,6 +17,7 @@ export type MessageCase = {
   site?: string;
   to?: string;
   dropHosts?: string[];
+  systemPrompt?: string;
 };
 
 export type GuardAnswer = { decision?: string; rule?: string; reason?: string };

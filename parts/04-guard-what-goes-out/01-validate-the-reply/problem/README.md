@@ -40,7 +40,10 @@ output layer is yours. Fill in `guard_output(request)`:
    call. Never copy it.
 3. When `request["channel"]` is `"email"`, block guest details: a phone number that starts `+44 7700 900`, or an
    allergy note. Undo `%`-escapes first, because a link can hide them. A real desk checks its own guest book.
-4. Answer `{"decision": "block", "rule": "...", "reason": "..."}` or `{"decision": "allow", ...}`.
+4. Block a message that repeats the system prompt, the rules the model was given. The desk sends it as
+   `request["system_prompt"]`. Lower-case both texts and look for a run of six words in a row. Name the rule
+   `"no-prompt-leak"`. Read the prompt from the request on every call.
+5. Answer `{"decision": "block", "rule": "...", "reason": "..."}` or `{"decision": "allow", ...}`.
 
 Try it with only your output layer switched on. The file `output_layer_only.py` in the part folder keeps the
 other layers open, so the reference tool guard cannot hide what your guard misses:
@@ -60,12 +63,14 @@ attacks need the input and tool layers.
 - At least 95% of real messages to head chefs still go out.
 - A look-alike host is blocked: the host must match exactly.
 - A host that left the records is blocked at once, and a listed host still passes.
+- A message that repeats the system prompt is blocked, even in capital letters or a quoted layout.
+- The prompt is read from the request, and normal messages still pass.
 
 ```bash
 bun run verify validate-the-reply
 ```
 
-Expect: `Done. All 4 rules pass.`
+Expect: `Done. All 6 rules pass.`
 
 ## If you get stuck
 
@@ -74,9 +79,11 @@ Expect: `Done. All 4 rules pass.`
 | `FAIL ... no link or guest data`    | Undo `%`-escapes with `unquote` twice, then look for the phone digits.     |
 | `FAIL a look-alike host`            | Compare the whole host with `in allowed_hosts`. Never test `name in link`. |
 | `FAIL a host that left the records` | Read `request["record"]["allowed_hosts"]` inside the function each time.   |
+| `FAIL ... repeats the system prompt` | Test six words in a row, not one marker phrase. Lower-case both sides.     |
 
 ## Words you will use
 
 - **Host**: the name of the server in a link, for example `greyhavenproduce.example`.
 - **Allow list**: the hosts a link may point to. Here it comes from the system of record.
+- **System prompt leakage**: the model's own rules showing up in a reply. They can reveal limits to an attacker.
 - **Exfiltration**: carrying private data out of a system, here inside a link or an email.
