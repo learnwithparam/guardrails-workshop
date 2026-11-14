@@ -2,55 +2,62 @@
 
 ## The problem
 
-A message to a chef can be safe and still wrong. Say the desk tells the Wharf Lane chef "baby spinach is now 9 kg".
-The order says 6 kg. Now the kitchen plans for food that never comes. A wrong number can ruin a service.
+A safe message can still be wrong. For example, the desk tells the Wharf Lane chef "baby spinach is now 9 kg". The order says 6 kg. The kitchen plans for food that never comes.
 
-So every quantity in a chef message must match the order in the system of record. You check it in two tiers:
+```mermaid
+flowchart LR
+  M[Chef message] --> C{Pattern finds<br/>the number?}
+  C -->|yes| E{Matches the order?}
+  C -->|no| Q[Ask the model]
+  Q -->|no clear number| B[Block]
+  E -->|no| B
+  E -->|yes| S[Send]
+  Q -->|clear number| E
+```
 
-1. **A cheap tier.** The desk writes its messages from a template: `Order PO-WL-GRE: baby spinach is now 6 kg.`
-   A pattern finds the number at once, with no model call.
-2. **A model tier.** Only when a message names an item but the pattern is not there, you ask a model for the
-   number. If the model gives no clear number, you block, and a person checks the message.
+## Watch it done
 
-For example, `try_messages.py` sends ten planted messages to your guard. The sample answer gives this:
+Before, all ten planted messages get `allow`, and the last line says `0 of 10 messages needed a model call (0%).` After, 6 lines say `block`, and 2 of 10 messages need a model call:
 
 ![Ten planted chef messages and the verdict on each](../images/expected.png)
 
-## Your challenge
+## Your turn
 
-Open `guards.py`. Your link and guest data rules from the last step are already in it. Finish the TODO at the
-end of `guard_output`:
+Open `guards.py`. Your link rules from the last step are in it. Finish the TODO at the end of `guard_output`.
 
-1. `request["record"]["orders_mentioned"]` maps each order id in the text to its lines. For example,
-   `{"PO-WL-GRE": [{"item": "baby spinach", "unit": "kg", "qty": 6}, ...]}`.
-2. For each line whose item the message names, look for `<item> is now <number>`. Compare it with that line's
-   `qty`, not with any number on the order. Answer with rule `ground-exact`.
-3. When the item is named but the pattern is missing, ask the model with `llm.complete("judge", ...)`. Answer
-   with rule `ground-model`. No clear number means block.
-
-Then try your guard on the planted messages:
+1. Read `request["record"]["orders_mentioned"]`. It maps each order id in the text to its lines. For example, `{"PO-WL-GRE": [{"item": "baby spinach", "unit": "kg", "qty": 6}, ...]}`.
+2. For each line whose item the message names, look for "<item> is now <number>". This is the cheap tier, a pattern with no model call. Compare the number with that line's `qty`, not with any number on the order. Answer with rule `ground-exact`.
+3. When the item is named but the pattern is missing, ask the model with `llm.complete("judge", ...)`. This is the model tier. Answer with rule `ground-model`. No clear number means block.
+4. Run your guard on the planted messages.
 
 ```bash
 uv run python try_messages.py
 ```
 
-Expect: `0 of 10 messages needed a model call (0%).` on the starter, with every line `allow`. With a working
-guard, 6 lines say `block` and the last line says `2 of 10 messages needed a model call (20%).`
+Expect: `0 of 10 messages needed a model call (0%).` on the starter, with every line `allow`. With a working guard, 6 lines say `block` and the last line says `2 of 10 messages needed a model call (20%).`
 
-In replay mode the model gives no number, so the model tier always blocks. That is the safe way to fail.
+In replay mode the model gives no number, so the model tier blocks. That is the safe way to fail.
+
+## Do it on your work
+
+Pick one fact your system states in a message, such as a price or a count. Find the record that holds the true value. Compare the two before the message goes out. Good looks like a cheap pattern first, and a block when the check cannot decide.
 
 ## Done when
 
 - A chef message with a wrong quantity is blocked, even when that number belongs to another item on the order.
 - A wrong quantity written in other words is blocked too.
 - Right quantities pass, and at least 95% of real chef messages still go out.
-- The cheap tier decides the desk's own messages (rule `ground-exact`). The model tier decides only the rest.
+- The cheap tier decides the desk's own messages. The model tier decides only the rest.
 
 ```bash
 bun run verify ground-the-reply
 ```
 
 Expect: `Done. All 4 rules pass.`
+
+## Solution
+
+The after state is `solution/guards.py`.
 
 ## If you get stuck
 

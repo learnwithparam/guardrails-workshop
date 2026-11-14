@@ -2,10 +2,7 @@
 
 ## The problem
 
-The desk guards worked because you could see every tool and every attack. Your own agent is different. Nobody
-has listed its tools, tried an attack on it or written down what still gets through. For example, a library
-assistant that can waive fines and email members needs the same guards as the desk. Until someone files the
-attacks, nobody knows if it has them.
+Nobody has listed your agent's tools, tried an attack on it or written down what still gets through. For example, a library assistant that can waive fines and email members needs the same guards as the desk. Until someone files the attacks, nobody knows if it has them.
 
 ```mermaid
 flowchart LR
@@ -15,19 +12,23 @@ flowchart LR
   X --> P[GUARD-PLAN.md<br/>with numbers and gaps]
 ```
 
-## Your challenge
+## Watch it done
 
-Pick an agent you own or work with: a chatbot, a script that calls tools, a workflow with a model in it. It must
-read text from outside, such as email, tickets or web pages. Work in this folder. The sample answer is about a
-library assistant, so you can see the shape.
+This step is the capstone. You guard your own agent, not the desk. Before, the empty plan fails with a `FAIL` line for each gap. After, the sample plan passes.
 
-1. Open `GUARD-PLAN.md`. Fill in the title, `Agent`, `Owner` and `Untrusted input` for your agent.
-2. List every tool it can use in the Tools table. Mark its effect and the layer where you guard it. Anything
-   that moves money or sends outside must be `ask` or `deny`.
-3. Try three different attacks on your agent. Save each one in `evidence/attack-1.txt`, `attack-2.txt` and so on.
-   A file holds the attack text and a line that starts `Result:` with what your agent did.
-4. File the attacks in the plan, then fill in the Numbers and Known gaps.
-5. Check your work:
+```text
+Done. All 7 rules pass.
+```
+
+## Your turn
+
+Pick an agent you own. It must read outside text, such as email or web pages.
+
+1. Open `GUARD-PLAN.md`. Fill in the title, `Agent`, `Owner` and `Untrusted input`.
+2. List every tool in the Tools table. Mark its effect and the layer where you guard it. A tool that moves money or sends outside must be `ask` or `deny`.
+3. Try three different attacks. Save each in `evidence/attack-1.txt`, `attack-2.txt` and so on. Each file holds the attack and a `Result:` line.
+4. File the attacks in the plan. Then fill in the Numbers and Known gaps.
+5. Check your work.
 
 ```bash
 bun run verify guard-your-own-agent
@@ -37,18 +38,35 @@ Expect: `Done. All 7 rules pass.` on the sample, and a `FAIL` line for each part
 
 ## Do it on your work
 
-Run the same plan on the agent you ship. Good looks like three real attacks with evidence, one gap you could
-not close, and a number for the real tasks that still work.
+Fill `GUARD-PLAN.md` for your own agent and save the evidence files. Good looks like three real attacks with evidence, one gap you could not close, and a number for the real tasks that still work.
+
+The `capstone/` folder holds the same capstone. Run its check on any folder with a `GUARD-PLAN.md` and an `evidence/` folder.
+
+```bash
+bun capstone/check.ts <folder>
+```
+
+Expect: seven PASS lines and exit code 0 when finished. The empty template fails.
 
 ## Done when
 
-- The plan names your agent, its owner and where untrusted text enters. It is not about the desk.
-- The Tools table has at least four tools, each with an effect, a layer, a rule and a decision.
+- The plan names your agent, its owner and where untrusted text enters.
+- The Tools table has at least four tools, each with an effect, layer, rule and decision.
 - A tool that moves money or sends outside is `ask` or `deny`, and private data is hidden.
-- At least three different attacks are filed, each with the layer that stopped it.
+- Three different attacks are filed, each with the layer that stopped it.
 - Each attack has an evidence file with the attack text and a `Result:` line.
-- The numbers match the table, and most real tasks still get done.
+- The numbers match the table, and most real tasks work.
 - Known gaps names at least one thing the guards do not stop.
+
+```bash
+bun run verify guard-your-own-agent
+```
+
+Expect: `Done. All 7 rules pass.`
+
+## Solution
+
+The after state is a filled plan and its evidence files. See `solution/GUARD-PLAN.md` and `solution/evidence/`.
 
 ## If you get stuck
 

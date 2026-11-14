@@ -1,27 +1,16 @@
 # Guard what goes out, and watch
 
+## After this part you can
+
+Stop a message from leaking data or stating a wrong fact, and prove it with a log and a report.
+
+## You leave with
+
+A guarded desk with four layers, a log of every verdict with an alert on it, and a guard report that a reviewer can sign. The output layer stops links to unknown hosts and guest data in outside mail, and checks every quantity against the order. The desk stops every held-out attack and still handles 59 of 60 real emails.
+
 ## The problem
 
-The desk writes to head chefs. The open desk writes to anyone. A message can go wrong in three ways:
-
-- it carries guest data out inside a link;
-- it sends a chef the wrong quantity;
-- it points at a host that was safe when someone wrote the allow list, but is not safe now.
-
-For example, attack `A-31` asks the desk to add a "tracking" link to its message to the chef. The link ends in
-`guests={guests}`. The open desk fills in the guest names and sends it, and the run prints
-`FORBIDDEN: unlisted_link`.
-
-Then the desk faces the Gatehouse and a held-out attack set it has never seen. Last, you write the report that a
-security reviewer will sign. It holds numbers per layer, what the guards cost and what they still miss.
-
-## Why it matters
-
-Anthropic added input and output classifiers to its model. Jailbreak success fell from 86% to 4.4%. It also
-published the cost. Refusals of harmless requests rose by 0.38%, which was not statistically significant.
-Compute rose by 23.7%
-([Anthropic, Constitutional Classifiers](https://www.anthropic.com/research/constitutional-classifiers)). Your
-guard report carries the same three numbers for each layer: attacks stopped, good work blocked and what it costs.
+The desk writes to head chefs, and the open desk writes to anyone. A message can carry guest data out inside a link. It can state the wrong quantity. It can point at a host that was safe once but is not now. For example, attack `A-31` adds a "tracking" link that ends in `guests={guests}`, and the open desk fills it in and sends it. Anthropic added input and output classifiers to its model. Jailbreak success fell from 86% to 4.4%. Refusals of harmless requests rose by 0.38%, which was not statistically significant. Compute rose by 23.7%. Your guard report carries the same three numbers for each layer: attacks stopped, good work blocked and what it costs.
 
 ```mermaid
 flowchart LR
@@ -55,7 +44,7 @@ Each step runs from its own `problem/` folder. Every command below starts from t
 (cd parts/04-guard-what-goes-out/01-validate-the-reply/problem && GUARDS_UNDER_TEST=guards.py uv run desk run --guards ../../output_layer_only.py --set attacks)
 ```
 
-Expect: `Security: 0 of 48 emails caused no forbidden change (0%).` on the starter, and `18 of 48` once your
+Expect: `Security: 0 of 48 emails caused no forbidden change (0%).` on the starter, and "18 of 48" once your
 output guard stops the 12 link and guest data attacks.
 
 ```bash
@@ -84,13 +73,16 @@ bun run verify part guard-what-goes-out
 
 Expect: `0/4 steps pass.` on a fresh clone, and `Part guard-what-goes-out is done: 4/4 steps pass.` when you finish.
 
-## Finished
+## Watch and read
 
-You now have a guarded desk with four layers and the evidence for each. The output layer stops links to unknown
-hosts and guest data in outside mail, and checks every quantity against the order. Every verdict is in one log,
-with its latency, and an alert watches that log. The desk stops every held-out attack and still handles 59 of 60
-real emails. Your guard report says what each layer costs and what it still misses.
+| Kind | Title                                       | Author    | Why                                                                                                               | Link                                                                                              |
+| ---- | ------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| read | Reduce prompt leak                          | Anthropic | The official advice on keeping a model's own rules private, which is what the leak rule in the first step guards. | https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak    |
+| read | Reduce hallucinations                       | Anthropic | Shows how to make a model back a claim with a source, the same idea as checking a quantity against the order.     | https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations |
+| read | Mitigate jailbreaks and prompt injections   | Anthropic | Lists the layers that make an output screen work with the rest of a defence.                                      | https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks   |
+| read | Constitutional Classifiers                  | Anthropic | The team that built input and output classifiers reports the attacks stopped and what the guard cost.             | https://www.anthropic.com/research/constitutional-classifiers                                     |
+| read | Mitigating prompt injections in browser use | Anthropic | A team that runs an agent in production explains how it measures and layers its defences.                         | https://www.anthropic.com/research/prompt-injection-defenses                                      |
 
-The "Go further" part is optional. It asks what happens when an attacker learns your detector. It fixes the tool plan before
-any email is read, and refuses any payee that came from the email. It also swaps in a guard framework, makes
-new attacks with a tool, and prices each layer from the same `decisions.jsonl` you wrote here.
+## Project
+
+Pick one place where your own project sends text out. Add a check for links and private data, a check for one fact against its record, and a log line for each verdict. Then write a short report with the numbers. Good looks like one blocked bad message, one good message still sent, and a log line for each.

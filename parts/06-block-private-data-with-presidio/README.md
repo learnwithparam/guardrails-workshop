@@ -1,26 +1,16 @@
 # Block private data with Presidio
 
+## After this part you can
+
+Hide private data with Presidio, then guard an agent of your own.
+
+## You leave with
+
+A `redact.py` that swaps emails and phone numbers for placeholders, and a `GUARD-PLAN.md` with evidence for your own agent.
+
 ## The problem
 
-In the "Guard what comes in" part you wrote your own guest data redactor. It works, and you know every line of it. But a team that
-ships this does not keep a home-made redactor. It uses a tool other teams already trust, so the next engineer
-meets code they know.
-
-This part is optional in the live session and expected as homework. You redo one thing you built by hand with
-the open source tool teams run: Presidio, a library that finds private data in text and swaps it out. Nothing
-you built earlier changes.
-
-For example, booking `PD-01` has a phone number and an email address. Presidio finds both and returns
-`<PHONE_NUMBER>` and `<EMAIL_ADDRESS>` in their place. Presidio does not know what `PD-01` is, so you teach it.
-
-## Why it matters
-
-Presidio is the name most teams reach for when they need to find personal data in text. Its pattern
-recognisers need no model download. They are fast and they give the same answer every time. You can read the
-pattern that fired, which a reviewer likes.
-
-The trade is that a pattern only finds what its author thought of. Your booking reference is the proof. The
-built-in recognisers miss it, so you write one.
+You built your own guest data redactor, and it works. A team that ships it still prefers a tool other teams trust. For example, booking `PD-01` has a phone number and an email. Presidio finds both and returns `<PHONE_NUMBER>` and `<EMAIL_ADDRESS>`. It does not know `PD-01`, so you add one recogniser. Then you take the same care to an agent you own.
 
 ```mermaid
 flowchart LR
@@ -30,51 +20,15 @@ flowchart LR
   BK[Your booking<br/>reference recogniser] --> AN
   AN -->|spans and kinds| ANON[Presidio anonymizer]
   ANON --> OUT[Text with placeholders]
-  OUT --> CHK[assignment/check.py] --> RES[assignment/result.json]
+  OUT --> PLAN[GUARD-PLAN.md for your own agent]
 ```
-
-## What we teach
-
-- Run an analyzer and an anonymizer, and read what each one returns.
-- Add one custom recogniser for a value only your business has.
-- Prove with a script that no email or phone number survives.
 
 ## Steps
 
-| Step                   | Minutes | You produce                                                              | The check reads                                                               |
-| ---------------------- | ------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| `redact-with-presidio` | 20      | `assignment/redact.py`: Presidio swaps the guest values for placeholders | the package version, the guest fixtures, and the booking reference recogniser |
-| `guard-your-own-agent` | 20      | `GUARD-PLAN.md` and an `evidence/` folder for an agent you own           | the plan's shape, the evidence files, and numbers that match the table        |
-
-The assignment folder is `assignment/`. Its `README.md` holds the task, the Done when lines and the rubric.
-
-## Options
-
-Presidio is not the only way to do this job.
-
-- **NeMo Guardrails PII rails.** Choose when the app already runs NeMo rails, as the desk does in the "Go further" part.
-  Trade-off: one more config layer for one job.
-
-Write your own choice in `assignment/CHOICE.md`, in a few sentences.
-
-## Walkthrough
-
-Every command below starts from the repo root. The first run needs the internet once, to fetch Presidio.
-
-```bash
-uv run --with presidio-analyzer==2.2.366 --with presidio-anonymizer==2.2.366 assignment/redact.py
-```
-
-Expect: three lines such as `Booking PD-01 at WL, party of 10. Call +44 7700 900100 or write to
-harriet.vane@example.com.` on the starter. With your solution the same lines read `Booking <BOOKING_REF> at
-WL, party of 10. Call <PHONE_NUMBER> or write to <EMAIL_ADDRESS>.` The rest of the text is unchanged.
-
-```bash
-uv run --with presidio-analyzer==2.2.366 --with presidio-anonymizer==2.2.366 assignment/check.py
-```
-
-Expect: `FAIL` on two of the three lines and `Not done yet.` on the starter, and `Done. All 3 lines pass.` with
-your solution. The script writes `assignment/result.json`.
+| Step                   | You produce                                                              | The check reads                                                               |
+| ---------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `redact-with-presidio` | `assignment/redact.py`: Presidio swaps the guest values for placeholders | the package version, the guest fixtures, and the booking reference recogniser |
+| `guard-your-own-agent` | `GUARD-PLAN.md` and an `evidence/` folder for an agent you own           | the plan's shape, the evidence files, and numbers that match the table        |
 
 ```bash
 bun run verify redact-with-presidio
@@ -82,8 +36,20 @@ bun run verify redact-with-presidio
 
 Expect: `Done. All 3 rules pass.` once your work is right.
 
-## Finished
+## Watch and read
 
-You redid a guard you built by hand with a tool other teams run. You kept the same fixtures green. You also
-learned where the tool stops: it found emails and phone numbers for free, and it needed one recogniser from
-you for the booking reference. Guest names need a language model, which this part leaves out.
+| Kind | Title                                       | Author    | Why                                                                        | Link                                                         |
+| ---- | ------------------------------------------- | --------- | -------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| read | Building effective AI agents                | Anthropic | The team that runs agents in production shows simple designs that hold up. | https://www.anthropic.com/research/building-effective-agents |
+| read | Mitigating prompt injections in browser use | Anthropic | Shows layered guards against hidden instructions in outside text.          | https://www.anthropic.com/research/prompt-injection-defenses |
+| read | Making Claude Code safer with sandboxing    | Anthropic | Shows how to limit what an agent can touch, the same idea as a tool guard. | https://www.anthropic.com/research/claude-code-sandboxing    |
+
+## Project
+
+Guard one agent you own with the capstone. Fill `GUARD-PLAN.md`, save three attacks in `evidence/`, then run the check on your folder.
+
+```bash
+bun capstone/check.ts <folder>
+```
+
+Expect: seven PASS lines and exit code 0 when finished.

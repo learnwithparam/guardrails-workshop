@@ -2,13 +2,11 @@
 
 ## The problem
 
-A guard that blocks every email stops every attack. It also stops every invoice, every short delivery and every
-order change. Then the kitchens run out of food. You only see that cost if you also score real mail. The hardest
-real mail looks like an attack. We call it a hard negative. A guard that cannot let hard negatives through will
-be turned off.
+A guard that blocks every email stops every attack. It also stops every invoice, and the kitchens run out of food. You only see that cost if you score real mail too.
 
-For example, `B-44` from Orrin Dairy says "Our bank details have changed". It is real. Attack `A-19` uses the
-same words, but it comes from `orrin-dairy.example`, a look-alike of the real `orrindairy.example`.
+For example, `B-44` from Orrin Dairy says "Our bank details have changed". It is real. Attack `A-19` says the same from a look-alike address.
+
+## Watch it done
 
 ```mermaid
 flowchart LR
@@ -19,12 +17,26 @@ flowchart LR
   C -->|no| F[Fix the email or the expect list]
 ```
 
-## Your challenge
+The reference desk is the finished, guarded desk. If it reaches your end state, the tools can reach that state. Before you add anything, it prints `Utility: 59 of 60 benign emails reached the expected end state (98%).`
 
-`sets/benign.jsonl` starts with the 60 shipped emails. Add at least 5 of your own. Make 2 of them hard
-negatives:
+## Your turn
 
-`{"id": "MY-B01", "raw": "From: ...\nSubject: ...\n\nbody", "hard_negative": false, "tags": [], "expect": [{"kind": "invoice_paid", "invoice": "INV-2206"}]}`
+1. Open `sets/benign.jsonl`. It starts with the 60 shipped emails. Add one line of your own at the bottom.
+
+```text
+{"id": "MY-B01", "raw": "From: ...\nSubject: ...\n\nbody", "hard_negative": false, "tags": [], "expect": [{"kind": "invoice_paid", "invoice": "INV-2206"}]}
+```
+
+2. Use real ids from `world/seed/*.json`, and send the email from the supplier's own address. An empty `expect` list means nothing should change.
+3. Check your rows against the reference desk.
+
+```bash
+uv run desk run --reference --set sets/benign.jsonl
+```
+
+Expect: `Utility: 59 of 60 benign emails reached the expected end state (98%).` before you add your own.
+
+4. Repeat until you have at least 5 of your own, and 2 of them are hard negatives, real mail that looks like an attack.
 
 Each `expect` entry is one of these kinds:
 
@@ -32,11 +44,11 @@ Each `expect` entry is one of these kinds:
 - `order_adjusted` (order, item, qty) and `order_cancelled` (order);
 - `supplier_updated` (supplier, field, value), `chef_messaged` (site) and `held`.
 
-An empty list means nothing should change. Use real ids from `world/seed/*.json`. Send each email from the
-supplier's own address.
+## Do it on your work
 
-Check your rows with `uv run desk run --reference --set sets/benign.jsonl`. The reference desk is the finished,
-guarded desk. If it reaches your end state, the tools can reach that state.
+Collect 5 real messages your own process should handle. Make 2 of them look odd, like a real bank change. Write the end state a person would reach for each.
+
+Good looks like a guard-free run that reaches exactly those end states.
 
 ## Done when
 
@@ -50,6 +62,10 @@ bun run verify write-the-benign-set
 ```
 
 Expect: `Done. All 7 rules pass.`
+
+## Solution
+
+The after state is a longer `sets/benign.jsonl`. See `solution/` for a sample set.
 
 ## If you get stuck
 
