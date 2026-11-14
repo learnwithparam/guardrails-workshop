@@ -44,6 +44,7 @@ flowchart LR
 | Step                   | Minutes | You produce                                                              | The check reads                                                               |
 | ---------------------- | ------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
 | `redact-with-presidio` | 20      | `assignment/redact.py`: Presidio swaps the guest values for placeholders | the package version, the guest fixtures, and the booking reference recogniser |
+| `guard-your-own-agent` | 20      | `GUARD-PLAN.md` and an `evidence/` folder for an agent you own           | the plan's shape, the evidence files, and numbers that match the table        |
 
 The assignment folder is `assignment/`. Its `README.md` holds the task, the Done when lines and the rubric.
 

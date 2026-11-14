@@ -82,8 +82,9 @@ part README's Walkthrough. Orientation and the "Break the desk" part are complet
 
 `plan-before-reading` from the brief is split into `fix-the-plan-first` and `block-untrusted-payees` (REVIEW.md).
 
-## block-private-data-with-presidio (`parts/06-block-private-data-with-presidio/`, 20 minutes, optional)
+## block-private-data-with-presidio (`parts/06-block-private-data-with-presidio/`, 40 minutes, optional)
 
-| Step                   | Min | The check reads                                                               |
-| ---------------------- | --- | ----------------------------------------------------------------------------- |
-| `redact-with-presidio` | 20  | the package version, the guest fixtures, and the booking reference recogniser |
+| Step                   | Min | The check reads                                                                                                                              |
+| ---------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `redact-with-presidio` | 20  | the package version, the guest fixtures, and the booking reference recogniser                                                                |
+| `guard-your-own-agent` | 20  | the learner's own `GUARD-PLAN.md`: shape, at least 3 attacks each with an evidence file, numbers that match the table; never reads the world |
