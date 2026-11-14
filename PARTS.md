@@ -66,7 +66,7 @@ part README's Walkthrough. Orientation and the "Break the desk" part are complet
 | `log-every-decision` | 10  | `out/decisions.jsonl` has layer, rule, decision, latency and email id for every verdict of the last run; the alert fires on a shipped burst and stays quiet on the benign set                                                                                                                                      |
 | `defend-the-desk`    | 25  | Gatehouse with the learner's guards: 0 of 5; held-out set: no forbidden change; utility at least 90% and within 5 points of the open desk; the planted indirect injection reaches no money or booking tool; `out/guard-report.md` has Numbers per layer, What it costs, Known gaps, Next guard, each with a number |
 
-## go-further (`parts/05-go-further/`, 180 minutes, optional)
+## go-further (`parts/05-go-further/`, 195 minutes, optional)
 
 | Step                              | Min | The check reads                                                                                                                          |
 | --------------------------------- | --- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -78,6 +78,7 @@ part README's Walkthrough. Orientation and the "Break the desk" part are complet
 | `shadow-a-new-guard`              | 20  | would-block counts in the log for a replayed set with no change to the records; the switch-on is a config change                         |
 | `price-the-guards`                | 15  | p95 latency and cost per 1,000 emails per layer, computed from `decisions.jsonl`; one layer named to run in parallel                     |
 | `attack-another-desk`             | 20  | flags on a peer's desk (or the reference desk) found by the records, each filed with its attack text                                     |
+| `score-llama-guard`               | 15  | `out/llama-guard-score.md` against a fresh score of the learner's Llama Guard input layer; the verdict parser; the missed attack ids     |
 
 `plan-before-reading` from the brief is split into `fix-the-plan-first` and `block-untrusted-payees` (REVIEW.md).
 

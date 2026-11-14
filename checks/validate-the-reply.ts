@@ -153,7 +153,11 @@ export default [
     test: (folder) => {
       const leak = decisions(folder, [OTHER_PROMPT_LEAK]);
       const normal = decisions(folder, NORMAL_MESSAGES);
-      return leak[0] === "block" && normal.length === 2 && normal.every((d) => d === "allow");
+      return (
+        leak[0] === "block" &&
+        normal.length === 2 &&
+        normal.every((decision) => decision === "allow")
+      );
     },
     tryNext:
       "read request['system_prompt'] on every call, never a copy in your file; " +

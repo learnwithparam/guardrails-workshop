@@ -24,7 +24,9 @@ ALLERGY_WORDS = re.compile(r"allerg|coeliac", re.IGNORECASE)
 
 # Six words in a row from the prompt is a copy. Common phrases are shorter than that.
 PROMPT_RUN = 6
-HARD_CODED_PROMPT = "You work the purchasing inbox for Marrowfield Kitchens, a group of nine restaurants."
+HARD_CODED_PROMPT = (
+    "You work the purchasing inbox for Marrowfield Kitchens, a group of nine restaurants."
+)
 
 
 def block(rule: str, reason: str) -> dict:

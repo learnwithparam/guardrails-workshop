@@ -107,10 +107,10 @@ export default [
     says: 'a run that costs too much is stopped by "spend-cap", and a cheap run is not',
     test: (folder) => {
       const rows = spendRows(folder);
-      const at = (spent: number) => rows.find((row) => row.spent === spent);
-      const cheapPasses = at(0.05)?.decision === "allow";
+      const rowFor = (spent: number) => rows.find((row) => row.spent === spent);
+      const cheapPasses = rowFor(0.05)?.decision === "allow";
       const dearStops = [1, 5].every(
-        (spent) => at(spent)?.decision === "deny" && at(spent)?.rule === "spend-cap",
+        (spent) => rowFor(spent)?.decision === "deny" && rowFor(spent)?.rule === "spend-cap",
       );
       return rows.length > 0 && cheapPasses && dearStops;
     },

@@ -46,12 +46,13 @@ flowchart LR
 
 ## Steps
 
-| Step                       | Minutes | You produce                                                | The check reads                                                       |
-| -------------------------- | ------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
-| `detect-injected-email`    | 20      | `guard_input` with a score, and `out/threshold.json`       | flag rates in the desk's decision log, and a fresh threshold curve    |
-| `reveal-hidden-text`       | 10      | a hidden-text check that blocks and quotes                 | decisions on every hidden-text attack and every benign HTML email     |
-| `quarantine-supplier-text` | 20      | a quarantined reader that fills the notice form            | what the desk agent was shown, and the end states on benign mail      |
-| `redact-guest-data`        | 15      | `guard_result` with placeholders, and `out/redaction.json` | every tool result the model saw: no guest name, phone or allergy note |
+| Step                       | Minutes | You produce                                                | The check reads                                                        |
+| -------------------------- | ------- | ---------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `detect-injected-email`    | 20      | `guard_input` with a score, and `out/threshold.json`       | flag rates in the desk's decision log, and a fresh threshold curve     |
+| `reveal-hidden-text`       | 10      | a hidden-text check that blocks and quotes                 | decisions on every hidden-text attack and every benign HTML email      |
+| `quarantine-supplier-text` | 20      | a quarantined reader that fills the notice form            | what the desk agent was shown, and the end states on benign mail       |
+| `redact-guest-data`        | 15      | `guard_result` with placeholders, and `out/redaction.json` | every tool result the model saw: no guest name, phone or allergy note  |
+| `block-poisoned-notes`     | 10      | a desk memory that refuses and drops poisoned notes        | the notes the model would be shown, and the notes the store would keep |
 
 Each step has its own `guards.py`. It starts from where the last step ended, so you can do one step at a time.
 The guard lab, `guard_lab.py` in this folder, runs your guards on the world's sets and shows what happened.

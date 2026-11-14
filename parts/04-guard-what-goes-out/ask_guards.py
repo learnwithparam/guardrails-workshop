@@ -6,7 +6,8 @@ a look-alike host, a host that left the records, a wrong quantity.
     python ask_guards.py <guards.py or URL> <cases.json>
 
 Each case is {"channel": "chef" or "email", "text": "...", "site": "WL", "to": "...",
-"dropHosts": ["..."], "systemPrompt": "..."}. It prints one JSON list: the guard's answer for each case, in order.
+"dropHosts": ["..."], "systemPrompt": "..."}.
+It prints one JSON list: the guard's answer for each case, in order.
 """
 
 from __future__ import annotations

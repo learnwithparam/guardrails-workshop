@@ -11,10 +11,12 @@ from marrowfield.llama_guard_client import classify
 
 def parse_verdict(answer: str) -> tuple[bool, list[str]]:
     """Return (safe, categories). Anything that is not exactly `safe` counts as not safe."""
-    lines = [line.strip() for line in (answer or "").strip().splitlines() if line.strip()]
+    stripped = [line.strip() for line in (answer or "").splitlines()]
+    lines = [line for line in stripped if line]
     if lines and lines[0].lower() == "safe":
         return True, []
-    codes = lines[1].replace(" ", "").split(",") if len(lines) > 1 else []
+    second_line = lines[1] if len(lines) > 1 else ""
+    codes = second_line.replace(" ", "").split(",")
     return False, [code for code in codes if code]
 
 
@@ -27,4 +29,5 @@ def guard_input(request: dict) -> dict:
     if safe:
         return {"decision": "allow", "rule": "llama-guard", "reason": "Llama Guard said safe"}
     shown = ", ".join(categories) or "no category"
-    return {"decision": "block", "rule": "llama-guard", "reason": f"Llama Guard said unsafe: {shown}"}
+    reason = f"Llama Guard said unsafe: {shown}"
+    return {"decision": "block", "rule": "llama-guard", "reason": reason}

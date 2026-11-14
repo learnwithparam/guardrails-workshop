@@ -49,14 +49,16 @@ def call_cap(request: dict) -> dict | None:
     calls = (request.get("session") or {}).get("calls", 0)
     if calls < MAX_CALLS:
         return None
-    return verdict("deny", "call-cap", f"{calls} calls already ran for this email; the cap is {MAX_CALLS}")
+    reason = f"{calls} calls already ran for this email; the cap is {MAX_CALLS}"
+    return verdict("deny", "call-cap", reason)
 
 
 def spend_cap(request: dict) -> dict | None:
     spent = (request.get("session") or {}).get("spent", 0.0)
     if spent < MAX_SPEND:
         return None
-    return verdict("deny", "spend-cap", f"this email already cost ${spent}; the cap is ${MAX_SPEND}")
+    reason = f"this email already cost ${spent}; the cap is ${MAX_SPEND}"
+    return verdict("deny", "spend-cap", reason)
 
 
 # ------------------------------------------------------------------ the guard

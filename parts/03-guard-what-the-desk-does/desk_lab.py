@@ -299,7 +299,9 @@ def command_trifecta(options) -> int:
 FLOOD_SIZE = 30
 FLOOD_REASON = "flood-"
 # One call that every job may make, so only a cap can stop it.
-FLOOD_CALLS = [("hold_for_person", {"reason": f"{FLOOD_REASON}{n}"}) for n in range(FLOOD_SIZE)]
+FLOOD_CALLS = [
+    ("hold_for_person", {"reason": f"{FLOOD_REASON}{number}"}) for number in range(FLOOD_SIZE)
+]
 FLOOD_EMAILS = 10
 
 

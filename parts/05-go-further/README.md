@@ -46,6 +46,7 @@ flowchart LR
 | `shadow-a-new-guard`              | 20      | a new guard that runs off, in shadow or switched on from `shadow.toml`      | would-block lines with no change to the records; switched on by the config only                      |
 | `price-the-guards`                | 15      | p95 latency per layer and cost per thousand emails, in `prices.md`          | the numbers recomputed from your `out/decisions.jsonl` and `out/score.json`; one layer named         |
 | `attack-another-desk`             | 20      | flags captured on a peer's desk, filed with their attack text               | each flag's forbidden change in the records on 3 fresh runs, and a Known gaps line for each          |
+| `score-llama-guard`               | 15      | a Llama Guard input layer and `out/llama-guard-score.md`                    | the attacks and benign mail it flags, from a fresh score, and the attacks it missed                  |
 
 Do `fix-the-plan-first` and `block-untrusted-payees` first, in that order. The other six stand alone, so pick the
 ones that fit your work. The framework, promptfoo and AgentDojo steps download their tool the first time, so they
