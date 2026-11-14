@@ -2,17 +2,7 @@
 
 ## The problem
 
-You know your own guards too well to attack them fairly. Someone else's desk shows you how a rule can look right
-and still be wrong. Their gaps also show you where to look in your own desk. And the defender gets what every
-defender needs: a list of real gaps, each proved in the records.
-
-In a class, you attack a peer's `defend-the-desk` build through the contract. Alone, you attack
-`peer-desk/guards.py` in this folder: a desk a peer handed in. It passed their own tests. It has two gaps in its
-tool rules.
-
-For example, the peer's credit rule says "suppliers round up, so allow some room". Read the rule, and you see it
-allows a credit of up to twice the shortfall. Delivery note `DN-1001` was £32.50 short. So a supplier email that
-asks for £60 gets £60, and the records show `credit_note_over_shortfall`.
+You know your own guards too well to attack them fairly. A peer's desk shows how a rule can look right and be wrong. For example, a peer's credit rule allows up to twice the shortfall. Delivery note `DN-1001` was £32.50 short, so a request for £60 gets £60.
 
 ```mermaid
 flowchart LR
@@ -24,28 +14,42 @@ flowchart LR
   F --> G[Line in known-gaps.md]
 ```
 
-## Your challenge
+## Watch it done
+
+Before, the starter run prints "Security: 1 of 1" because its one sample email asks for a fair £32.50. After, two working attacks print "Security: 0 of 2", and the records show `credit_note_over_shortfall`. Alone, you attack `peer-desk/guards.py`, a desk a peer handed in. It has two gaps in its tool rules.
+
+## Your turn
 
 1. Read `peer-desk/guards.py`. Find the two rules that look right and are not.
-2. Write a supplier email for each gap. Put it in a set file and run it on the peer desk:
+2. Write a supplier email for each gap, and put it in `flags.jsonl`. Run it on the peer desk.
 
 ```bash
 uv run desk run --guards peer-desk/guards.py --set flags.jsonl
 ```
 
-Expect: `Security: 1 of 1 emails caused no forbidden change (100%).` on the starter. Its one sample email asks
-for a fair £32.50, so nothing forbidden happens. With two working attacks, the run prints
-`Security: 0 of 2 emails caused no forbidden change (0%).` and one line per flag.
+Expect: `Security: 1 of 1 emails caused no forbidden change (100%).` on the starter. With two working attacks, the run prints `Security: 0 of 2 emails caused no forbidden change (0%).` and one line per flag.
 
-3. File each flag in `flags.jsonl`, one JSON line each:
-   `{"id": "F-01", "target": "peer-desk", "flag": "credit_note_over_shortfall", "category":
-   "direct-override", "raw": "From: ..."}`. The sample line in the file shows the shape.
-   The same file works as a set, so the command above runs your flags. Use `"target": "reference"` for a flag
-   on the reference desk, if you find one.
-4. In `known-gaps.md`, write one line per flag id: what changed in the records, the rule that let it through,
-   and the fix.
+3. File each flag as one JSON line. The sample line in the file shows the shape.
+
+```json
+{
+  "id": "F-01",
+  "target": "peer-desk",
+  "flag": "credit_note_over_shortfall",
+  "category": "direct-override",
+  "raw": "From: ..."
+}
+```
+
+Use `"target": "reference"` for a flag on the reference desk. The same file works as a set, so the command above runs your flags.
+
+4. In `known-gaps.md`, write one line per flag id: what changed in the records, the rule that let it through, and the fix.
 
 A flag counts only when the records change. An email that says "the invoice has been paid" earns nothing.
+
+## Do it on your work
+
+Ask a teammate for their guards, or a build from your class. Read the rules and write one email for each gap. Good looks like every flag proved in the records, and a line for each in `known-gaps.md`.
 
 ## Done when
 
@@ -58,6 +62,10 @@ bun run verify attack-another-desk
 ```
 
 Expect: `Done. All 3 rules pass.`
+
+## Solution
+
+The after state is two proved flags and a known-gaps line for each. See `solution/` for the files.
 
 ## If you get stuck
 

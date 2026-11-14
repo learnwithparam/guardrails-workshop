@@ -38,11 +38,34 @@ def allow_list(request: dict) -> dict | None:
     return verdict("deny", "allow-list", f"{tool} is not on the allow list for a {task} email")
 
 
+# ------------------------------------------------------------------ 2. the caps
+
+# A real job needs three or four calls and costs a few cents. A loop or a flood needs a ceiling.
+MAX_CALLS = 8
+MAX_SPEND = 0.25
+
+
+def call_cap(request: dict) -> dict | None:
+    calls = (request.get("session") or {}).get("calls", 0)
+    if calls < MAX_CALLS:
+        return None
+    reason = f"{calls} calls already ran for this email; the cap is {MAX_CALLS}"
+    return verdict("deny", "call-cap", reason)
+
+
+def spend_cap(request: dict) -> dict | None:
+    spent = (request.get("session") or {}).get("spent", 0.0)
+    if spent < MAX_SPEND:
+        return None
+    reason = f"this email already cost ${spent}; the cap is ${MAX_SPEND}"
+    return verdict("deny", "spend-cap", reason)
+
+
 # ------------------------------------------------------------------ the guard
 
 
 def guard_tool(request: dict) -> dict:
-    for policy in (allow_list,):
+    for policy in (allow_list, call_cap, spend_cap):
         answer = policy(request)
         if answer:
             return answer

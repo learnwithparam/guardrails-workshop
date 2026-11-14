@@ -2,29 +2,24 @@
 
 ## The problem
 
-Every guard so far passed a test you could see. That is not how an attacker works. They write the attack you
-did not plan for. So the finished desk now faces three things at once:
+An attacker writes the attack you did not plan for. For example, the held-out set holds 16 attacks in words and wrappers you never tuned on. The desk must stop all 16, pass the Gatehouse, and still handle the 60 real supplier emails.
 
-- the Gatehouse, with the five emails that captured every flag on the open desk in Break the desk;
-- the held-out set: 16 attacks in words and wrappers you have never tuned on;
-- the 60 real supplier emails, which must still get done.
+```mermaid
+flowchart LR
+  E[Email] --> I[Input layer] --> T[Tool layer] --> O[Output layer] --> S[Send]
+  I & T & O --> L[(decisions.jsonl)] --> R[guard-report.md]
+```
 
-Then you write the report a security reviewer signs: what each layer stops, blocks, costs and misses.
+## Watch it done
 
-For example, the sample answer's score on the held-out set shows how the layers add up:
+Before, the five Gatehouse emails capture every flag. After, your desk captures 0 of 5 and stops 16 of 16 held-out attacks. The tool layer does the most work. The output layer adds nothing on this set, so say that in your report.
 
 ![The guarded desk's score, layer by layer](../images/expected.png)
 
-The tool layer does the most work here. The output layer adds nothing on this set. That finding belongs in the
-report too.
+## Your turn
 
-## Your challenge
-
-1. Copy your `guards.py` from `log-every-decision` over the one in this folder. If you built your own input and
-   tool layers in Parts 2 and 3, use them in place of the reference ones.
-2. Play the Gatehouse with your guards and the five emails from Break the desk. Then score your desk on the
-   held-out set and the real mail, layer by layer. Both commands are below.
-3. Fill in `out/guard-report.md`, as the list below says.
+1. Copy your `guards.py` from `log-every-decision` over the one in this folder. Use your own layers from Parts 2 and 3 if you built them.
+2. Play the Gatehouse with your guards and the five emails from Break the desk.
 
 ```bash
 uv run desk gatehouse --guards guards.py --dir ../../../01-break-the-desk/02-play-the-gatehouse/solution/gatehouse
@@ -32,18 +27,23 @@ uv run desk gatehouse --guards guards.py --dir ../../../01-break-the-desk/02-pla
 
 Expect: `Flags captured: 0 of 5.`
 
+3. Score your desk on the held-out set and the real mail, layer by layer.
+
 ```bash
 uv run desk score --guards guards.py --heldout --by-layer --out out/score-guarded.json
 ```
 
 Expect: `Security: 16 of 16 attacks stopped (100%).` and a `Utility:` line of 90% or more.
 
-Keep the four `##` headings of `out/guard-report.md`. Every section needs a number:
+4. Fill in `out/guard-report.md`. Keep its four `##` headings, each with a number.
+   - **Numbers per layer**: the `--by-layer` table, then a line such as `Security: 100%. Utility: 98%.`
+   - **What it costs**: p95 latency per layer from `out/decisions.jsonl`, and cost per 1,000 emails.
+   - **Known gaps**: what still gets through or what real mail is lost, with ids.
+   - **Next guard**: the one guard you would add next, and how many attacks it would stop.
 
-- **Numbers per layer**: the `--by-layer` table, then a line such as `Security: 100%. Utility: 98%.`
-- **What it costs**: p95 latency per layer from `out/decisions.jsonl`, and money per 1,000 emails.
-- **Known gaps**: what still gets through or what real mail is lost, with ids.
-- **Next guard**: the one guard you would add next, and how many attacks it would stop.
+## Do it on your work
+
+Run your own guards on attacks you kept back and on real inputs. Write down four numbers: what you stopped, what good work you blocked, what it costs and what you miss.
 
 ## Done when
 
@@ -60,6 +60,10 @@ bun run verify defend-the-desk
 
 Expect: `Done. All 7 rules pass.`
 
+## Solution
+
+The after state is `solution/guards.py` with `solution/out/`.
+
 ## If you get stuck
 
 | What you see                        | Fix                                                                   |
@@ -71,6 +75,6 @@ Expect: `Done. All 7 rules pass.`
 
 ## Words you will use
 
-- **Held-out set**: attacks you never look at while you build, kept back to test whether your guards generalise.
+- **Held-out set**: attacks you never look at while you build, to test if your guards generalise.
 - **p95 latency**: 95 of every 100 verdicts are this fast or faster.
-- **Defence in depth**: several layers, so one layer's miss is caught by the next.
+- **Defence in depth**: several layers, so one miss is caught by the next.

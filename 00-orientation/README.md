@@ -1,7 +1,7 @@
 # Start here: meet the desk
 
 In this first step you set up the repo and meet Marrowfield Kitchens and its purchasing desk. You run the
-finished, guarded desk. Then you write down the goal in that desk's own numbers. It takes about 15 minutes, and
+finished, guarded desk. Then you write down the goal in that desk's own numbers. It takes a short while, and
 you need no model key.
 
 ![The finished desk holding a planted email](images/first-run.png)

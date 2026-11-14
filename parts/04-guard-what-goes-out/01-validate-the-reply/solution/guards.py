@@ -22,6 +22,10 @@ GUEST_PHONE_DIGITS = "7700900"
 ALLERGY_WORDS = re.compile(r"allerg|coeliac", re.IGNORECASE)
 
 
+# Six words in a row from the prompt is a copy. Common phrases are shorter than that.
+PROMPT_RUN = 6
+
+
 def block(rule: str, reason: str) -> dict:
     return {"decision": "block", "rule": rule, "reason": reason}
 
@@ -42,6 +46,20 @@ def has_guest_details(text: str) -> bool:
     return GUEST_PHONE_DIGITS in digits_only or bool(ALLERGY_WORDS.search(plain_text))
 
 
+def words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9']+", text.lower())
+
+
+def leaks_prompt(text: str, prompt: str) -> bool:
+    """Does the message repeat a run of the system prompt, in any case or layout?"""
+    prompt_words = words(prompt)
+    message = " ".join(words(text))
+    for start in range(len(prompt_words) - PROMPT_RUN + 1):
+        if " ".join(prompt_words[start : start + PROMPT_RUN]) in message:
+            return True
+    return False
+
+
 def guard_output(request: dict) -> dict:
     """Look at one message before it is sent. Answer allow or block."""
     text = request.get("text") or ""
@@ -52,6 +70,8 @@ def guard_output(request: dict) -> dict:
     host = unlisted_host(text, allowed_hosts)
     if host:
         return block("exact-host-links", f"{host} is not on the link list")
+    if leaks_prompt(text, request.get("system_prompt") or ""):
+        return block("no-prompt-leak", "the message repeats the system prompt")
     if request.get("channel") == "email" and has_guest_details(text):
         return block("no-guest-data-out", "guest details in an email to an outside address")
     return {"decision": "allow", "rule": "output", "reason": "links and guest data check out"}

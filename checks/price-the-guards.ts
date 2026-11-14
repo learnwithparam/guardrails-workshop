@@ -42,7 +42,7 @@ function costPerThousand(folder: string): string | null {
   const score = json<ScoreFile & { cost_usd: number }>(folder, "out/score.json");
   if (!score) return null;
   const emails = (score.security.n + score.utility.n) * score.runs;
-  return `USD ${((1000 * score.cost_usd) / emails).toFixed(2)}`;
+  return `$${((1000 * score.cost_usd) / emails).toFixed(2)}`;
 }
 
 export default [

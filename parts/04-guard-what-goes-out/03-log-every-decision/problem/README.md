@@ -2,18 +2,7 @@
 
 ## The problem
 
-A guard that blocks in silence is a guard nobody can trust. When a chef asks why their message never came, you
-need the line that says which rule stopped it. When a supplier's mail starts to fail, you need to see it before
-they phone. And when someone asks what the guards cost, you need the latency of each one.
-
-So every verdict, from every layer, goes into one log. Then one small rule reads the log and raises an alert
-when something looks like an attack in progress.
-
-For example, `sets/burst.jsonl` holds 8 emails from `tidewell-fish-billing.example`, a look-alike of Tidewell
-Fish Co. They arrive one after another. Each one hides a new bank account in text a person cannot see. Your input layer blocks
-each one, and your alert should say so:
-
-![The alert firing on the burst](../images/expected.png)
+A guard that blocks in silence cannot be trusted. For example, `sets/burst.jsonl` holds 8 emails from `tidewell-fish-billing.example`, a look-alike of a real supplier. Each hides a new bank account. Without a log, nobody sees the pattern.
 
 ```mermaid
 flowchart LR
@@ -26,10 +15,15 @@ flowchart LR
   A -->|no| Q[Quiet]
 ```
 
-## Your challenge
+## Watch it done
 
-1. In `guards.py`, fill in `logged(layer, guard)`. It returns a new function that times the guard, writes one
-   line with `write_line(...)`, and returns the guard's answer unchanged. A line looks like this:
+Before, the alert on the burst prints `Quiet: no sender domain had more than 5 blocked emails.` After, the last line starts with `ALERT: 8 emails from tidewell-fish-billing.example were blocked`:
+
+![The alert firing on the burst](../images/expected.png)
+
+## Your turn
+
+1. In `guards.py`, fill in `logged(layer, guard)`. It returns a new function that times the guard, writes one line with `write_line(...)`, and returns the guard's answer unchanged. A line looks like this:
 
    ```json
    {"at": "<the time now>", "email_id": "B-01", "sender_domain": "greyhavenproduce.example",
@@ -37,25 +31,26 @@ flowchart LR
    ```
 
    The bottom of the file already wraps each layer: `guard_input = logged("input", ...)`.
-2. In `alert.py`, fill in `blocked_emails_per_hour`. Count blocked emails, not lines, for each sender domain and
-   clock hour.
-
-Run the burst, then the alert:
+2. In `alert.py`, fill in `blocked_emails_per_hour`. Count blocked emails, not lines, for each sender domain and clock hour.
+3. Run the burst, then the alert.
 
 ```bash
 uv run desk run --guards guards.py --set sets/burst.jsonl && uv run python alert.py out/decisions.jsonl
 ```
 
-Expect: `Quiet: no sender domain had more than 5 blocked emails.` on the starter. With both parts done, the last
-line starts with `ALERT: 8 emails from tidewell-fish-billing.example were blocked`.
+Expect: `Quiet: no sender domain had more than 5 blocked emails.` on the starter. With both parts done, the last line starts with `ALERT: 8 emails from tidewell-fish-billing.example were blocked`.
 
-Then run the 60 real emails and the alert again:
+4. Run the 60 real emails and the alert again.
 
 ```bash
 uv run desk run --guards guards.py --set benign && uv run python alert.py out/decisions.jsonl
 ```
 
 Expect: `Quiet: no sender domain had more than 5 blocked emails.`
+
+## Do it on your work
+
+Pick one guard or filter in your own project. Wrap it so each answer writes one line: the time, the rule, the verdict and how long it took. Then write one alert for a burst, such as many blocks from one sender. Good looks like a log you can search by id, and an alert that stays quiet on normal days.
 
 ## Done when
 
@@ -69,6 +64,10 @@ bun run verify log-every-decision
 ```
 
 Expect: `Done. All 5 rules pass.`
+
+## Solution
+
+The after state is a `logged` wrapper and a working `blocked_emails_per_hour`. See `solution/guards.py` and `solution/alert.py` for the files.
 
 ## If you get stuck
 

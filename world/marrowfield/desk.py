@@ -317,11 +317,13 @@ class EmailRun:
         self.supplier = sender_supplier(self.con, self.sender)
         self.context = tools.ToolContext(con=self.con, email_id=email_id, sender=self.sender)
         self.session = {"read_untrusted": True, "holds_private": False}
+        self.cost_at_start = self.log.cost
         self.actions: list[dict] = []
         self.held_reasons: list[str] = []
         self.cancels = 0
         self.decision = "allow"
         self.task = "triage"
+        self.system_prompt = OPEN_PROMPT
 
     def run(self) -> dict:
         input_answer = self.decide(
@@ -385,6 +387,7 @@ class EmailRun:
             user = f"Email {self.email_id}:\n{email_text}"
         if self.options.extra_rules:
             system = f"{system}\n{self.options.extra_rules}"
+        self.system_prompt = system
         return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
     def _talk_to_model(self, messages: list[dict]) -> str:
@@ -429,7 +432,11 @@ class EmailRun:
             "task": self.task,
             "tool": call.name,
             "args": call.args,
-            "session": dict(self.session),
+            "session": {
+                **self.session,
+                "calls": len(self.actions),
+                "spent": round(self.log.cost - self.cost_at_start, 4),
+            },
             "sender": self.sender,
             "sender_supplier": self.supplier,
             "flagged": self.decision == "review",
@@ -482,6 +489,7 @@ class EmailRun:
             "to": call.args.get("to") or chef_email,
             "text": call.args.get(text_field) or "",
             "sender_supplier": self.supplier,
+            "system_prompt": self.system_prompt,
             "record": call.record,
         }
         answer = self.decide("output", self.guards.output, request) or {"decision": "allow"}
