@@ -30,7 +30,7 @@ set `LLAMA_GUARD_MODEL` and `LLM_PROVIDER` in `.env`. The score file then says `
 uv run python ../../llama_score.py llama_guard.py
 ```
 
-Expect: `Mode: stand-in`, `Llama Guard: 2 of 48`, `Benign flagged: 0 of 60`, and a line of missed attack ids.
+Expect: `Mode: stand-in`, "Llama Guard: 2 of 48", "Benign flagged: 0 of 60", and a line of missed attack ids.
 
 ## Done when
 

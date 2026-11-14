@@ -18,7 +18,7 @@ flags. For example, the planted bank change in `MK-11` waits for a person, who c
 ## What it costs
 
 - Latency, p95 per verdict: input 3.48 ms, tool 0.01 ms, output 0.13 ms. That is under 4 ms per email.
-- Money: USD 0.00 per 1,000 emails in replay mode. A live run calls a model 2 times per email at the input layer:
+- Money: $0.00 per 1,000 emails in replay mode. A live run calls a model 2 times per email at the input layer:
   the detector and the reader. It calls one more time for each chef message the cheap number check cannot
   read.
 - Good work blocked: 0 real emails more than the open desk. The one miss, `B-49`, the open desk misses too.

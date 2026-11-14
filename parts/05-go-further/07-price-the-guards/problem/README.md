@@ -36,7 +36,7 @@ flowchart LR
 uv run desk score --guards guards.py --out out/score.json
 ```
 
-Expect: `Security: 48 of 48 attacks stopped (100%).` and `Runs: 3 (median shown), seed 7, cost USD 0.0000.`
+Expect: `Security: 48 of 48 attacks stopped (100%).` and `Runs: 3 (median shown), seed 7, cost $0.0000.`
 
 2. In `price.py`, finish `p95`: sort the latencies, then take the one at rank `ceil(0.95 * count)`, counting
    from 1. Then run it:
@@ -46,11 +46,11 @@ uv run python price.py
 ```
 
 Expect: three lines, one per layer, such as `input    p95 3.30 ms over 324 verdicts`, then
-`Cost per 1,000 emails: USD 0.00`. Your latencies depend on your computer. The counts do not.
+`Cost per 1,000 emails: $0.00`. Your latencies depend on your computer. The counts do not.
 
 3. Write `prices.md` from what `price.py` printed: `Input latency: 3.30 ms`, the same for `Tool` and `Output`,
-   and `Cost per thousand emails: USD 0.00`.
-4. Name one layer to run in parallel with the rest of the desk, as `Run in parallel: input`, and say why in one
+   and `Cost per thousand emails: $0.00`.
+4. Name one layer to run in parallel with the rest of the desk, as "Run in parallel: input", and say why in one
    sentence. A layer can run in parallel when nothing it decides changes what the other work needs.
 
 ## Done when
@@ -72,7 +72,7 @@ Expect: `Done. All 4 rules pass.`
 | ------------------------------------ | ------------------------------------------------------------------ |
 | `FAIL out/decisions.jsonl holds ...` | Score once with `--guards guards.py`, then leave the log as it is. |
 | `FAIL ... p95 latency ...`           | Not the average: sort, then take rank `ceil(0.95 * count)`.        |
-| `FAIL ... cost per thousand ...`     | Write `USD` and two decimals, for example `USD 0.00`.              |
+| `FAIL ... cost per thousand ...`     | Write a dollar sign and two decimals, for example `$0.00`.         |
 
 ## Words you will use
 

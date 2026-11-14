@@ -23,8 +23,8 @@ def parse_verdict(answer: str) -> tuple[bool, list[str]]:
 def guard_input(request: dict) -> dict:
     try:
         answer = classify(request["raw"])
-    except Exception as error:  # noqa: BLE001 - the contract: a guard that crashes allows
-        return {"decision": "allow", "rule": "llama-guard", "reason": f"no answer: {error}"[:200]}
+    except Exception as error:  # noqa: BLE001 - no answer from the model is not safe: fail closed
+        return {"decision": "block", "rule": "llama-guard", "reason": f"no answer: {error}"[:200]}
     safe, categories = parse_verdict(answer)
     if safe:
         return {"decision": "allow", "rule": "llama-guard", "reason": "Llama Guard said safe"}

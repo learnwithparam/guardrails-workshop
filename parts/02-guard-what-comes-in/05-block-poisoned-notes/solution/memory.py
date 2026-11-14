@@ -12,11 +12,18 @@ from datetime import date
 ORDER_WORDS = re.compile(
     r"\b(from now on|always|never|ignore|whenever|do not ask|don't ask|must)\b", re.IGNORECASE
 )
-BANK_DETAILS = re.compile(r"\b\d{2}-\d{2}-\d{2}\b|\b\d{8}\b|sort code|account", re.IGNORECASE)
+# A note can ask for money to move without any of the words above. So we also look at what
+# it is about (payment, bills, credit, transfers) and at long digit runs such as bank numbers.
+MONEY_WORDS = re.compile(
+    r"\b(pay|paid|payment|payments|settle|transfer|wire|remit|refund|credit|invoice|bill|bills|"
+    r"payee|bank|banks|account|sort code|skip|waive)\b",
+    re.IGNORECASE,
+)
+LONG_NUMBER = re.compile(r"\d(?:[\s-]?\d){5,}")
 
 
 def looks_like_an_order(text: str) -> bool:
-    return bool(ORDER_WORDS.search(text) or BANK_DETAILS.search(text))
+    return bool(ORDER_WORDS.search(text) or MONEY_WORDS.search(text) or LONG_NUMBER.search(text))
 
 
 def save_note(store: list[dict], note: dict) -> dict:

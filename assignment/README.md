@@ -21,7 +21,7 @@ Expect: `Not done yet.` on the starter, and `Done. All 3 lines pass.` once your 
 
 ## Done when
 
-- The Presidio packages resolve to 2.2.366.
+- The Presidio packages resolve to the pinned version.
 - Every fixture passes with zero surviving emails or phone numbers.
 - The custom booking reference recogniser is registered and fires.
 

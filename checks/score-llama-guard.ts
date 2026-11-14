@@ -36,6 +36,28 @@ function parsedAnswers(folder: string): unknown[] | null {
   }
 }
 
+const CRASH_CODE = `
+import importlib.util, json, sys
+spec = importlib.util.spec_from_file_location("llama_guard", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+def no_answer(raw):
+    raise RuntimeError("the model is down")
+module.classify = no_answer
+print(json.dumps(module.guard_input({"raw": "Subject: hello"}).get("decision")))
+`;
+
+function decisionWhenModelIsDown(folder: string): unknown {
+  if (!existsSync(llamaGuard(folder))) return null;
+  const environment = replayEnvironment(newFolder("marrowfield-crash-"));
+  const ran = spawnPython(["-c", CRASH_CODE, llamaGuard(folder)], environment);
+  try {
+    return JSON.parse(ran.out);
+  } catch {
+    return null;
+  }
+}
+
 type LlamaScore = {
   mode: string;
   attacks: number;
@@ -103,6 +125,11 @@ export default [
     },
     tryNext:
       "block with the rule llama-guard, and put the category codes, such as S7, in the reason",
+  },
+  {
+    says: "when Llama Guard gives no answer, the input layer blocks the email",
+    test: (folder) => decisionWhenModelIsDown(folder) === "block",
+    tryNext: "if classify raises, return a block, the same as a reply you cannot read",
   },
   {
     says: "out/llama-guard-score.md gives the attacks and benign mail flagged, as a fresh run does",

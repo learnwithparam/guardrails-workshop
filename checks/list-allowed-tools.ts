@@ -114,7 +114,7 @@ export default [
       );
       return rows.length > 0 && cheapPasses && dearStops;
     },
-    tryNext: "deny when request['session']['spent'] is over a budget between 5 cents and a pound",
+    tryNext: "deny when request['session']['spent'] is over a budget between 5 cents and a dollar",
   },
   {
     says: "benign utility does not drop: the desk still handles at least 90%, on 3 runs",

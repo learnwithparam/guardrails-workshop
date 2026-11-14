@@ -19,14 +19,14 @@ Not held.
 
 ## Your challenge
 
-1. Run the finished, guarded desk: `uv run desk serve --reference`, then open http://127.0.0.1:8300.
+1. Run the finished, guarded desk: `uv run desk serve --reference`, then open http://localhost:8300.
 2. Pick `MK-07` and press Run. The supplier was really short on a delivery, so the credit note goes through. The
    footer also asks the desk to forward the guest list. Find the guard that stopped it.
 3. Find the planted emails in the inbox. Run the open desk on each one: `uv run desk handle MK-01`, then
    `MK-02`, and so on. A planted email makes the open desk print a `FORBIDDEN` line.
 4. From this `problem/` folder, score the reference desk:
    `uv run desk score --reference --by-layer --out out/reference-score.json`
-5. Fill in `goal.md` from your own run: `Attacks stopped: N of 48`, `Good work through: N of 60`, and
+5. Fill in `goal.md` from your own run: "Attacks stopped: N of 48", "Good work through: N of 60", and
    `Planted emails:` with the ids you found.
 
 By the end of the "Guard what goes out" part, your own desk prints a line like the reference desk's.
@@ -49,7 +49,7 @@ Expect: `Done. All 5 rules pass.`
 | What you see                                                     | Fix                                                                               |
 | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | `FAIL out/reference-score.json is a score of the reference desk` | Run the score command from this `problem/` folder, with `--reference --by-layer`. |
-| `FAIL goal.md says how many attacks ...`                         | Write it as `Attacks stopped: 48 of 48`, the words then a colon.                  |
+| `FAIL goal.md says how many attacks ...`                         | Write it as "Attacks stopped: 48 of 48", the words then a colon.                  |
 | `FAIL goal.md names every planted email`                         | Run `uv run desk handle` on each inbox email with no flag (the open desk).        |
 
 ## Words you will use

@@ -1,7 +1,7 @@
 # When something goes wrong
 
 When a command or a check fails, it prints a message. Every such message is in one of the tables below. Search
-this page for the words you see. For example, search for `Address already in use` when the desk page does not
+this page for the words you see. For example, search for "Address already in use" when the desk page does not
 start.
 
 ## Setup and commands
@@ -10,7 +10,7 @@ start.
 | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `uv: command not found`                                                                         | uv is not installed.                                              | Install it from docs.astral.sh/uv, then open a new terminal.                     |
 | `bun: command not found`                                                                        | Bun is not installed.                                             | Install it from bun.sh, then open a new terminal.                                |
-| `No interpreter found for Python 3.12`                                                          | uv cannot find or download Python 3.12.                           | Run `uv python install 3.12`, then `uv sync`.                                    |
+| `No interpreter found for Python 3.12`                                                          | uv cannot find or download the Python this course needs.          | Run `uv python install 3.12`, then `uv sync`.                                    |
 | `FAIL  LLM_PROVIDER is '...'. Use one of: replay, anthropic, openrouter, openai, ollama.`       | The provider name in `.env` is misspelled.                        | Fix `LLM_PROVIDER` in `.env`, or delete the line to use replay.                  |
 | `FAIL  LLM_PROVIDER is anthropic but ANTHROPIC_API_KEY is empty in .env.` (or another provider) | You chose a live provider without its key.                        | Add the key to `.env` (never on the command line), or set `LLM_PROVIDER=replay`. |
 | `FAIL  role fast  provider ...  AuthenticationError`                                            | The key is wrong or has no credit.                                | Check the key with your provider, then run `uv run models` again.                |
@@ -18,11 +18,11 @@ start.
 | `LLM_PROVIDER is ollama but OLLAMA_MODEL is not set in .env.`                                   | You chose a local model without naming it.                        | Set `OLLAMA_MODEL` in `.env` to a model you have pulled.                         |
 | `There is no email called "..."`                                                                | The id is not in the inbox or the sets.                           | Run `uv run desk inbox` and copy an id.                                          |
 | `There is no set called '...'`                                                                  | `--set`, `--attacks` or `--benign` names no file.                 | Use `benign`, `attacks`, `heldout`, `inbox` or a path to a `.jsonl` file.        |
-| `There is no folder gatehouse`                                                                  | `uv run desk gatehouse` ran outside the step's `problem/` folder. | `cd` into the step's `problem/` folder, or pass `--dir`.                         |
+| "There is no folder gatehouse"                                                                  | `uv run desk gatehouse` ran outside the step's `problem/` folder. | `cd` into the step's `problem/` folder, or pass `--dir`.                         |
 | `no guards file at ...`                                                                         | `--guards` names a file that does not exist.                      | Check the path, relative to the folder you run from.                             |
 | `... line N is not valid JSON`                                                                  | One line of a set file is broken.                                 | Each line is one JSON object. A line break inside `raw` is written `\n`.         |
-| `OSError: [Errno 98] Address already in use`                                                    | Another desk page is still running on port 8300.                  | Stop it with Ctrl+C, or run with `--port 8301`.                                  |
-| `ModuleNotFoundError: No module named 'marrowfield'`                                            | The command ran with a Python outside the project.                | Run it with `uv run`, from inside the repo.                                      |
+| "OSError: [Errno 98] Address already in use"                                                    | Another desk page is still running on port 8300.                  | Stop it with Ctrl+C, or run with `--port 8301`.                                  |
+| "ModuleNotFoundError: No module named 'marrowfield'"                                            | The command ran with a Python outside the project.                | Run it with `uv run`, from inside the repo.                                      |
 
 ## Checks
 

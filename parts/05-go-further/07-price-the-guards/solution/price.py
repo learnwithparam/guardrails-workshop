@@ -33,7 +33,7 @@ def main() -> None:
         print(f"{layer:8} p95 {p95(layer_latencies):.2f} ms over {len(layer_latencies)} verdicts")
     score = json.loads(Path("out/score.json").read_text())
     emails = (score["security"]["n"] + score["utility"]["n"]) * score["runs"]
-    print(f"Cost per 1,000 emails: USD {1000 * score['cost_usd'] / emails:.2f}")
+    print(f"Cost per 1,000 emails: ${1000 * score['cost_usd'] / emails:.2f}")
 
 
 if __name__ == "__main__":

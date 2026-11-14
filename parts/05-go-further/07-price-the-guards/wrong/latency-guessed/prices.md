@@ -7,7 +7,7 @@ From `out/decisions.jsonl` and `out/score.json`, after one score of 3 runs on 48
 Input latency: 2.00 ms
 Tool latency: 0.10 ms
 Output latency: 0.50 ms
-Cost per thousand emails: USD 0.00
+Cost per thousand emails: $0.00
 
 The input layer is the slow one, because it asks a model twice in a live run: the detector and the reader.
 Replay mode costs nothing, so the money line is 0.00 here. Run it live to price it.

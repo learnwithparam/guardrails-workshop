@@ -1,4 +1,4 @@
-# Llama Guard on the attack set
+# Llama Guard stand-in on the attack set
 
 Mode: TODO
 Llama Guard: TODO
