@@ -74,11 +74,11 @@ Expect: `Done. All 6 rules pass.`
 
 ## If you get stuck
 
-| What you see                        | Fix                                                                        |
-| ----------------------------------- | -------------------------------------------------------------------------- |
-| `FAIL ... no link or guest data`    | Undo `%`-escapes with `unquote` twice, then look for the phone digits.     |
-| `FAIL a look-alike host`            | Compare the whole host with `in allowed_hosts`. Never test `name in link`. |
-| `FAIL a host that left the records` | Read `request["record"]["allowed_hosts"]` inside the function each time.   |
+| What you see                         | Fix                                                                        |
+| ------------------------------------ | -------------------------------------------------------------------------- |
+| `FAIL ... no link or guest data`     | Undo `%`-escapes with `unquote` twice, then look for the phone digits.     |
+| `FAIL a look-alike host`             | Compare the whole host with `in allowed_hosts`. Never test `name in link`. |
+| `FAIL a host that left the records`  | Read `request["record"]["allowed_hosts"]` inside the function each time.   |
 | `FAIL ... repeats the system prompt` | Test six words in a row, not one marker phrase. Lower-case both sides.     |
 
 ## Words you will use

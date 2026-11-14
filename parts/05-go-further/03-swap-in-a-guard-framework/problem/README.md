@@ -41,6 +41,25 @@ Expect: `Security: 18 of 48 emails caused no forbidden change (38%).`
 5. Write the two numbers in `out/score-diff.md`, as `Own guard: 18 of 48` and `NeMo guard: 18 of 48`, and one
    line on what the framework cost you.
 
+## Score Llama Guard too
+
+A second framework layer is a safety model. **Llama Guard** reads a text and answers `safe`, or `unsafe` and a
+code for the harm, such as `S7` for privacy. Score it as your input layer. Be ready for a low number: it was
+trained on harm, not on prompt injection.
+
+In replay mode a small stand-in answers in Llama Guard's format, so you need no key. To score the real model, set
+`LLAMA_GUARD_MODEL` and `LLM_PROVIDER` in `.env`, and the file says `Mode: live`.
+
+5. In `llama_guard.py`, finish `parse_verdict` and `guard_input`. Block an unsafe email with the rule
+   `"llama-guard"` and the category codes in the reason.
+6. Score it on the attack set and the benign set, then copy the lines into `out/llama-guard-score.md`:
+
+```bash
+uv run python ../../llama_score.py llama_guard.py
+```
+
+Expect: `Llama Guard: 2 of 48` and `Benign flagged: 0 of 60` in replay mode, and a line of missed attack ids.
+
 ## Done when
 
 - `nemo_guards.py` runs a NeMo Guardrails output rail from `rails/`, and answers with it.
@@ -48,12 +67,14 @@ Expect: `Security: 18 of 48 emails caused no forbidden change (38%).`
 - With only this layer on, no `output-channel` or `data-exfiltration` attack leaks.
 - At least 95% of real messages to head chefs still go out.
 - `out/score-diff.md` gives both guards' scores on the 48 attacks, as a fresh run measures them.
+- `llama_guard.py` reads Llama Guard's answer, and the input layer blocks an unsafe email under `llama-guard`.
+- `out/llama-guard-score.md` gives the attacks flagged and the benign mail flagged, and names attacks it missed.
 
 ```bash
 bun run verify swap-in-a-guard-framework
 ```
 
-Expect: `Done. All 5 rules pass.`
+Expect: `Done. All 9 rules pass.`
 
 The check downloads the framework with uv the first time, so that run needs the internet.
 
@@ -67,6 +88,7 @@ The check downloads the framework with uv the first time, so that run needs the 
 
 ## Words you will use
 
+- **Llama Guard**: a safety model that answers `safe` or `unsafe` with a harm code. It does not look for injection.
 - **Guard framework**: a library that runs guards in one shared way, so a team does not write each from scratch.
 - **Rail**: in NeMo Guardrails, a flow that checks input or output and can refuse it.
 - **Action**: a Python function a rail calls, here to test the links and the guest data.
