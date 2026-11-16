@@ -14,7 +14,7 @@ flowchart LR
 
 ## Watch it done
 
-Before, the starter allows every email. After, the score file reads "Mode: stand-in", "Llama Guard: 2 of 48", "Benign flagged: 0 of 60", and a line of missed attack ids. Replay mode uses a keyword stand-in that answers in Llama Guard's format. It is not the real model. These numbers describe the stand-in only. Only a live run scores the real model.
+Before, the starter allows every email. After, the score file reads "Mode: stand-in", "Llama Guard: 2 of 48", "Benign flagged: 0 of 60", and a line of missed attack ids. Replay mode uses a keyword stand-in that answers in Llama Guard's format. It is not the real model, so these numbers describe the stand-in only. Only a live run scores the real model.
 
 ## Your turn
 

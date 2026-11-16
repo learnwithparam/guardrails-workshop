@@ -31,7 +31,7 @@ GUARDS_UNDER_TEST=own_guards.py LAYERS=output uv run desk run --guards ../../swi
 
 Expect: `Security: 18 of 48 emails caused no forbidden change (38%).`
 
-6. Write both numbers in `out/score-diff.md`, as "Own guard: 18 of 48" and "NeMo guard: 18 of 48", and one line on what the framework cost you.
+6. Write both numbers in `out/score-diff.md`, as "Own guard: 18 of 48" and "NeMo guard: 18 of 48". Add one line on what the framework cost you.
 
 ## Do it on your work
 

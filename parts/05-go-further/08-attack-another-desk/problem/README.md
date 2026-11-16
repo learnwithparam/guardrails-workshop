@@ -16,7 +16,7 @@ flowchart LR
 
 ## Watch it done
 
-Before, the starter run prints "Security: 1 of 1" because its one sample email asks for a fair £32.50. After, two working attacks print "Security: 0 of 2", and the records show `credit_note_over_shortfall`. Alone, you attack `peer-desk/guards.py`, a desk a peer handed in. It has two gaps in its tool rules.
+Before, the starter run prints "Security: 1 of 1" because its one sample email asks for a fair £32.50. After, two working attacks print "Security: 0 of 2", and the records show `credit_note_over_shortfall`. On your own, you attack `peer-desk/guards.py`, a desk a peer handed in. It has two gaps in its tool rules.
 
 ## Your turn
 

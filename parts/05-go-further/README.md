@@ -10,7 +10,9 @@ A desk that fixes its plan from your own records before it reads any email. No v
 
 ## The problem
 
-Every guard so far reads text and makes a judgement. A patient attacker learns how it judges and changes the attack. For example, in attack `A-13` the account number `71820456` appears only in the email. This part tags that value "untrusted", so the policy denies it as a payee, even with the detector switched off. Anthropic said a 1% attack success rate on browser agents was a big step forward, and still a real risk. This part is optional.
+Every guard so far reads text and makes a judgement. A patient attacker learns how it judges and changes the attack. For example, in attack `A-13` the account number `71820456` appears only in the email. This part tags that value "untrusted", so the policy denies it as a payee, even with the detector switched off.
+
+Anthropic said a 1% attack success rate on browser agents was a big step forward, and still a real risk. This part is optional.
 
 ```mermaid
 flowchart LR
@@ -38,7 +40,9 @@ flowchart LR
 | `score-llama-guard`               | 15      | a Llama Guard input layer and `out/llama-guard-score.md`                    | the attacks and benign mail it flags, from a fresh score, and the attacks it missed                  |
 
 Do `fix-the-plan-first` and `block-untrusted-payees` first, in that order. The other seven stand alone, so pick the
-ones that fit your work. The framework, promptfoo and AgentDojo steps download their tool the first time, so they
+ones that fit your work.
+
+The framework, promptfoo and AgentDojo steps download their tool the first time, so they
 need the internet once. None of them needs a model key.
 
 ## Walkthrough

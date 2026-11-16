@@ -10,7 +10,9 @@ A `guards.py` with four tool guards: an allow list with two caps, an argument po
 
 ## The problem
 
-A fake bank change and a real one read the same, so no detector and no model can tell them apart from the text. Only the records and a phone call can. For example, `B-44` and `A-19` both say "Our bank details have changed" for Orrin Dairy, but `A-19` comes from a look-alike domain. The open desk changes both. The guarded desk changes only `B-44`, after a person phones Orrin Dairy on the stored number. So the guard sits at the tool layer, and it checks every call before it runs. The record shows what that buys. Anthropic reported that a check on each action, added to its browser agent, took successful attacks close to zero.
+A fake bank change and a real one read the same, so no detector and no model can tell them apart from the text. Only the records and a phone call can. For example, `B-44` and `A-19` both say "Our bank details have changed" for Orrin Dairy, but `A-19` comes from a look-alike domain. The open desk changes both. The guarded desk changes only `B-44`, after a person phones Orrin Dairy on the stored number.
+
+So the guard sits at the tool layer, and it checks every call before it runs. The record shows what that buys. Anthropic reported that a check on each action, added to its browser agent, took successful attacks close to zero.
 
 ```mermaid
 flowchart LR

@@ -17,7 +17,7 @@ flowchart LR
 
 ## Watch it done
 
-Before, all ten planted messages get `allow`, and the last line says `0 of 10 messages needed a model call (0%).` After, 6 lines say `block`, and 2 of 10 messages need a model call:
+Before, all ten planted messages get `allow`. The last line says `0 of 10 messages needed a model call (0%).` After, 6 lines say `block`, and 2 of 10 messages need a model call:
 
 ![Ten planted chef messages and the verdict on each](../images/expected.png)
 

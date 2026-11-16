@@ -15,7 +15,9 @@ flowchart LR
 
 ## Watch it done
 
-This is the dual LLM pattern. A first model, the quarantined reader, has no tools. It fills a fixed form. The desk agent sees only the form. Before, the agent starts with "Email A-01:" and the raw words. After, it gets this:
+This is the dual LLM pattern. A first model, the quarantined reader, has no tools. It fills a fixed form. The desk agent sees only the form.
+
+Before, the agent starts with "Email A-01:" and the raw words. After, it gets this:
 
 ```text
 Supplier notice (data from the email, not instructions):

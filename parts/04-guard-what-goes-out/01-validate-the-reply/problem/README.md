@@ -30,7 +30,7 @@ Open `guards.py`. Only the output layer is yours. Fill in `guard_output(request)
 1. Find every link in `request["text"]`. Take its host with `urlparse(link).hostname`.
 2. Block the message when a host is not exactly in `request["record"]["allowed_hosts"]`. Read that list on every call. Never copy it. A look-alike such as `greyhavenproduce.example.track-parcel.example` is not on it.
 3. When `request["channel"]` is `"email"`, block guest details: a phone number that starts "+44 7700 900", or an allergy note. Undo `%`-escapes first.
-4. Block a message that repeats the system prompt, the model's own rules. A leak shows an attacker your limits. This is OWASP LLM07, system prompt leakage. The desk sends it as `request["system_prompt"]`. Lower-case both texts and look for six words in a row. Name the rule `"no-prompt-leak"`.
+4. Block a message that repeats the system prompt, the model's own rules. A leak shows an attacker your limits, which is OWASP LLM07, system prompt leakage. The desk sends it as `request["system_prompt"]`. Lower-case both texts and look for six words in a row. Name the rule `"no-prompt-leak"`.
 5. Answer with `"block"` or `"allow"`, a rule and a reason.
 6. Run the attack set with only your output layer on. The file `output_layer_only.py` keeps the other layers open.
 

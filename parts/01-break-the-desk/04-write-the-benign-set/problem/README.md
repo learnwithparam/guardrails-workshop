@@ -40,8 +40,8 @@ Expect: `Utility: 59 of 60 benign emails reached the expected end state (98%).` 
 
 Each `expect` entry is one of these kinds:
 
-- `credit_note` (supplier, delivery, amount) and `invoice_paid` (invoice);
-- `order_adjusted` (order, item, qty) and `order_cancelled` (order);
+- `credit_note` (supplier, delivery, amount) and `invoice_paid` (invoice).
+- `order_adjusted` (order, item, qty) and `order_cancelled` (order).
 - `supplier_updated` (supplier, field, value), `chef_messaged` (site) and `held`.
 
 ## Do it on your work

@@ -10,7 +10,11 @@ A guarded desk with four layers, a log of every verdict with an alert on it, and
 
 ## The problem
 
-The desk writes to head chefs, and the open desk writes to anyone. A message can carry guest data out inside a link. It can state the wrong quantity. It can point at a host that was safe once but is not now. For example, attack `A-31` adds a "tracking" link that ends in `guests={guests}`, and the open desk fills it in and sends it. Anthropic added input and output classifiers to its model. Jailbreak success fell from 86% to 4.4%. Refusals of harmless requests rose by 0.38%, which was not statistically significant. Compute rose by 23.7%. Your guard report carries the same three numbers for each layer: attacks stopped, good work blocked and what it costs.
+The desk writes to head chefs, and the open desk writes to anyone. A message can carry guest data out inside a link. It can state the wrong quantity. It can point at a host that was safe once but is not now. For example, attack `A-31` adds a "tracking" link that ends in `guests={guests}`, and the open desk fills it in and sends it.
+
+Anthropic added input and output classifiers to its model. Jailbreak success fell from 86% to 4.4%. Refusals of harmless requests rose by 0.38%, which was not statistically significant. Compute rose by 23.7%.
+
+Your guard report carries the same three numbers for each layer: attacks stopped, good work blocked and what it costs.
 
 ```mermaid
 flowchart LR

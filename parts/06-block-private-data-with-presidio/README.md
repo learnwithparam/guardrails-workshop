@@ -10,7 +10,9 @@ A `redact.py` that swaps emails and phone numbers for placeholders, and a `GUARD
 
 ## The problem
 
-You built your own guest data redactor, and it works. A team that ships it still prefers a tool other teams trust. For example, booking `PD-01` has a phone number and an email. Presidio finds both and returns `<PHONE_NUMBER>` and `<EMAIL_ADDRESS>`. It does not know `PD-01`, so you add one recogniser. Then you take the same care to an agent you own.
+You built your own guest data redactor, and it works. A team that ships it still prefers a tool other teams trust. For example, booking `PD-01` has a phone number and an email. Presidio finds both and returns `<PHONE_NUMBER>` and `<EMAIL_ADDRESS>`. It does not know `PD-01`, so you add one recogniser.
+
+Then you take the same care to an agent you own.
 
 ```mermaid
 flowchart LR
